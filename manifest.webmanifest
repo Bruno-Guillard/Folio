@@ -1,7 +1,7 @@
 {
-  "name": "Mes Montres",
-  "short_name": "Montres",
-  "description": "Gestion personnelle de collection, achats, ventes et bénéfices de montres.",
+  "name": "Folio",
+  "short_name": "Folio",
+  "description": "Collectionner, suivre et revendre ses objets.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

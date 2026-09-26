@@ -78,9 +78,9 @@
     const folders = await WatchDB.getAll('folders');
     if (folders.length) return;
     const now = Date.now();
-    const defaults = ['En vente', 'Vendues', 'Perso'];
+    const defaults = ['En vente', 'Vendus', 'Collection'];
     for (let i = 0; i < defaults.length; i++) {
-      await WatchDB.put('folders', { id: uid('folder'), name: defaults[i], createdAt: now + i });
+      await WatchDB.put('folders', { id: uid('folder'), name: defaults[i], createdAt: now + i, updatedAt: now + i });
     }
   }
 
@@ -108,8 +108,8 @@
   }
 
   function renderHome() {
-    els.subtitle.textContent = `${state.watches.length} montre${state.watches.length > 1 ? 's' : ''}`;
-    els.fab.setAttribute('aria-label', 'Ajouter une montre');
+    els.subtitle.textContent = `${state.watches.length} objet${state.watches.length > 1 ? 's' : ''}`;
+    els.fab.setAttribute('aria-label', 'Ajouter un objet');
     const t = totals(state.watches);
     let html = summaryHtml(t);
     html += `<div class="section-head"><div class="section-title">Dossiers</div><button class="text-btn" data-action="new-folder">＋ Nouveau</button></div>`;
@@ -144,9 +144,9 @@
     els.subtitle.textContent = folder.name;
     const t = totals(watches);
     let html = summaryHtml(t, folder.name);
-    html += `<div class="section-head"><div class="section-title">${watches.length} montre${watches.length > 1 ? 's' : ''}</div><button class="text-btn" data-action="folder-menu">Gérer</button></div>`;
+    html += `<div class="section-head"><div class="section-title">${watches.length} objet${watches.length > 1 ? 's' : ''}</div><button class="text-btn" data-action="folder-menu">Gérer</button></div>`;
     if (!watches.length) {
-      html += `<div class="empty"><span class="big">⌚</span>Aucune montre dans ce dossier.<br>Appuie sur ＋ pour en ajouter une.</div>`;
+      html += `<div class="empty"><span class="big">⌚</span>Aucun objet dans ce dossier.<br>Appuie sur ＋ pour en ajouter un.</div>`;
     } else {
       html += `<div class="watch-grid">${watches.map(watchCardHtml).join('')}</div>`;
     }
@@ -176,7 +176,7 @@
     const w = state.watches.find(x => x.id === watchId);
     if (!w) return setView('home');
     const folder = state.folders.find(f => f.id === w.folderId);
-    els.subtitle.textContent = folder?.name || 'Montre';
+    els.subtitle.textContent = folder?.name || 'Objet';
     els.fab.classList.add('hidden');
     const p = watchProfit(w);
     const photos = Array.isArray(w.photos) ? w.photos : [];
@@ -252,7 +252,7 @@
       e.preventDefault();
       const name = els.sheetContent.querySelector('#folderName').value.trim();
       if (!name) return;
-      await WatchDB.put('folders', { id: uid('folder'), name, createdAt: Date.now() });
+      await WatchDB.put('folders', { id: uid('folder'), name, createdAt: Date.now(), updatedAt: Date.now() });
       await loadData(); closeSheet(); render(); toast('Dossier créé');
     });
   }
@@ -282,7 +282,7 @@
       e.preventDefault();
       const name = els.sheetContent.querySelector('#renameFolderName').value.trim();
       if (!name) return;
-      await WatchDB.put('folders', { ...folder, name });
+      await WatchDB.put('folders', { ...folder, name, updatedAt: Date.now() });
       await loadData(); closeSheet(); render(); toast('Dossier renommé');
     });
   }
@@ -290,7 +290,7 @@
   async function deleteFolder(folder) {
     const watches = state.watches.filter(w => w.folderId === folder.id);
     if (watches.length) {
-      alert('Ce dossier contient des montres. Déplace-les ou supprime-les avant de supprimer le dossier.');
+      alert('Ce dossier contient des objets. Déplace-les ou supprime-les avant de supprimer le dossier.');
       return;
     }
     if (!confirm(`Supprimer le dossier « ${folder.name} » ?`)) return;
@@ -305,7 +305,7 @@
     state.draftPhotos = w?.photos ? [...w.photos] : [];
     const folderId = w?.folderId || (state.view.type === 'folder' ? state.view.id : state.folders[0].id);
     openSheet(`
-      <h2 class="sheet-title">${w ? 'Modifier la montre' : 'Ajouter une montre'}</h2>
+      <h2 class="sheet-title">${w ? 'Modifier l’objet' : 'Ajouter un objet'}</h2>
       <form id="watchForm" class="form">
         <div class="field"><label>Nom / modèle</label><input id="watchName" value="${esc(w?.name || '')}" placeholder="Ex. Seiko Lord Matic" required></div>
         <div class="field"><label>Dossier</label><select id="watchFolder">${state.folders.map(f=>`<option value="${f.id}" ${f.id===folderId?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div>
@@ -387,27 +387,30 @@
     const id = data.id;
     closeSheet();
     setView('watch', id);
-    toast(old ? 'Montre modifiée' : 'Montre ajoutée');
+    toast(old ? 'Objet modifié' : 'Objet ajouté');
   }
 
   async function deleteCurrentWatch() {
     const w = state.watches.find(x => x.id === state.view.id);
     if (!w) return;
-    if (!confirm(`Supprimer « ${w.name || 'cette montre'} » ?`)) return;
+    if (!confirm(`Supprimer « ${w.name || 'cet objet'} » ?`)) return;
     const folderId = w.folderId;
     await WatchDB.del('watches', w.id);
     await loadData();
     setView('folder', folderId);
-    toast('Montre supprimée');
+    toast('Objet supprimé');
   }
 
   function showMainMenu() {
     openSheet(`
       <h2 class="sheet-title">Menu</h2>
       <div class="sheet-list">
-        <button class="sheet-action" data-menu="export">Exporter une sauvegarde</button>
-        <button class="sheet-action" data-menu="import">Importer une sauvegarde</button>
+        <button class="sheet-action" data-menu="export">Exporter Folio</button>
+        <button class="sheet-action" data-menu="import">Importer sur cet appareil</button>
         <button class="sheet-action" data-menu="new-folder">Créer un dossier</button>
+      </div>
+      <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-top:14px;">
+        L’export contient les dossiers, les fiches, les prix, les descriptions et toutes les photos.
       </div>`);
     els.sheetContent.querySelector('[data-menu="export"]').addEventListener('click', exportBackup);
     els.sheetContent.querySelector('[data-menu="import"]').addEventListener('click', () => { closeSheet(); els.backupFile.click(); });
@@ -424,6 +427,8 @@
   }
 
   function dataURLToBlob(dataURL) {
+    if (dataURL instanceof Blob) return dataURL;
+    if (typeof dataURL !== 'string' || !dataURL.startsWith('data:')) return null;
     const [meta, data] = dataURL.split(',');
     const mime = /data:(.*?);base64/.exec(meta)?.[1] || 'application/octet-stream';
     const bin = atob(data); const arr = new Uint8Array(bin.length);
@@ -431,40 +436,197 @@
     return new Blob([arr], {type:mime});
   }
 
-  async function exportBackup() {
-    const watches = [];
+  function safeStamp() {
+    return new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+  }
+
+  async function buildBackupPayload() {
+    const items = [];
     for (const w of state.watches) {
       const photos = [];
       for (const p of (w.photos || [])) photos.push(await blobToDataURL(p));
-      watches.push({ ...w, photos });
+      items.push({ ...w, photos });
     }
-    const payload = { version: 1, exportedAt: new Date().toISOString(), folders: state.folders, watches };
+    return {
+      format: 'folio-backup',
+      version: 2,
+      app: 'Folio',
+      exportedAt: new Date().toISOString(),
+      folders: state.folders,
+      items
+    };
+  }
+
+  function downloadPayload(payload, filename) {
     const blob = new Blob([JSON.stringify(payload)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `mes-montres-sauvegarde-${new Date().toISOString().slice(0,10)}.json`;
-    document.body.appendChild(a); a.click(); a.remove();
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 5000);
-    closeSheet(); toast('Sauvegarde exportée');
+  }
+
+  async function exportBackup({ close = true, prefix = 'Folio' } = {}) {
+    try {
+      const payload = await buildBackupPayload();
+      downloadPayload(payload, `${prefix}-${safeStamp()}.folio`);
+      if (close) closeSheet();
+      toast('Sauvegarde Folio exportée');
+      return true;
+    } catch (err) {
+      console.error(err);
+      alert('Impossible de créer la sauvegarde Folio.');
+      return false;
+    }
+  }
+
+  function normalizeImportedBackup(data) {
+    const items = Array.isArray(data?.items) ? data.items : data?.watches;
+    if (!data || !Array.isArray(data.folders) || !Array.isArray(items)) throw new Error('Format incorrect');
+    return {
+      version: Number(data.version) || 1,
+      exportedAt: data.exportedAt || null,
+      folders: data.folders.filter(f => f && f.id && typeof f.name === 'string'),
+      items: items.filter(w => w && w.id)
+    };
+  }
+
+  async function hydrateImportedItem(w, folderIdMap = new Map()) {
+    const photos = (w.photos || []).map(dataURLToBlob).filter(Boolean);
+    return {
+      ...w,
+      folderId: folderIdMap.get(w.folderId) || w.folderId,
+      photos,
+      createdAt: Number(w.createdAt) || Date.now(),
+      updatedAt: Number(w.updatedAt) || Number(w.createdAt) || Date.now()
+    };
+  }
+
+  function showImportChoice(data, filename) {
+    const dateText = data.exportedAt ? new Date(data.exportedAt).toLocaleString('fr-FR') : 'date inconnue';
+    openSheet(`
+      <h2 class="sheet-title">Importer Folio</h2>
+      <div class="import-summary">
+        <strong>${esc(filename || 'Sauvegarde Folio')}</strong>
+        <span>${data.folders.length} dossier${data.folders.length > 1 ? 's' : ''} · ${data.items.length} objet${data.items.length > 1 ? 's' : ''}</span>
+        <span>Sauvegarde : ${esc(dateText)}</span>
+      </div>
+      <div class="sheet-list">
+        <button class="sheet-action" data-import="merge"><strong>Fusionner</strong><small>Ajoute le contenu et conserve les éléments déjà présents.</small></button>
+        <button class="sheet-action danger" data-import="replace"><strong>Remplacer la collection</strong><small>Une sauvegarde de sécurité de cet appareil sera exportée avant le remplacement.</small></button>
+        <button class="sheet-action" data-import="cancel">Annuler</button>
+      </div>`);
+    els.sheetContent.querySelector('[data-import="merge"]').addEventListener('click', () => mergeBackup(data));
+    els.sheetContent.querySelector('[data-import="replace"]').addEventListener('click', () => replaceBackup(data));
+    els.sheetContent.querySelector('[data-import="cancel"]').addEventListener('click', closeSheet);
+  }
+
+  async function mergeBackup(data) {
+    try {
+      const localFolders = await WatchDB.getAll('folders');
+      const localItems = await WatchDB.getAll('watches');
+      const foldersById = new Map(localFolders.map(f => [f.id, f]));
+      const foldersByName = new Map(localFolders.map(f => [String(f.name).trim().toLocaleLowerCase('fr'), f]));
+      const folderIdMap = new Map();
+      let addedFolders = 0, updatedFolders = 0, addedItems = 0, updatedItems = 0;
+
+      for (const incoming of data.folders) {
+        const sameId = foldersById.get(incoming.id);
+        const key = String(incoming.name).trim().toLocaleLowerCase('fr');
+        const sameName = foldersByName.get(key);
+        if (sameId) {
+          folderIdMap.set(incoming.id, sameId.id);
+          const localTime = Number(sameId.updatedAt) || Number(sameId.createdAt) || 0;
+          const incomingTime = Number(incoming.updatedAt) || Number(incoming.createdAt) || 0;
+          if (incomingTime > localTime) {
+            const next = { ...sameId, ...incoming, updatedAt: incomingTime || Date.now() };
+            await WatchDB.put('folders', next);
+            foldersById.set(next.id, next);
+            foldersByName.set(String(next.name).trim().toLocaleLowerCase('fr'), next);
+            updatedFolders++;
+          }
+        } else if (sameName) {
+          folderIdMap.set(incoming.id, sameName.id);
+        } else {
+          const next = { ...incoming, createdAt: Number(incoming.createdAt) || Date.now(), updatedAt: Number(incoming.updatedAt) || Number(incoming.createdAt) || Date.now() };
+          await WatchDB.put('folders', next);
+          folderIdMap.set(incoming.id, next.id);
+          foldersById.set(next.id, next);
+          foldersByName.set(key, next);
+          addedFolders++;
+        }
+      }
+
+      const itemsById = new Map(localItems.map(w => [w.id, w]));
+      for (const incoming of data.items) {
+        const next = await hydrateImportedItem(incoming, folderIdMap);
+        const local = itemsById.get(next.id);
+        if (!local) {
+          await WatchDB.put('watches', next);
+          itemsById.set(next.id, next);
+          addedItems++;
+          continue;
+        }
+        const localTime = Number(local.updatedAt) || Number(local.createdAt) || 0;
+        const incomingTime = Number(next.updatedAt) || Number(next.createdAt) || 0;
+        if (incomingTime > localTime) {
+          await WatchDB.put('watches', next);
+          itemsById.set(next.id, next);
+          updatedItems++;
+        }
+      }
+
+      await loadData();
+      closeSheet();
+      setView('home');
+      toast(`Fusion terminée · ${addedItems} ajouté${addedItems > 1 ? 's' : ''}, ${updatedItems} mis à jour`);
+    } catch (err) {
+      console.error(err);
+      alert('Impossible de fusionner cette sauvegarde.');
+    }
+  }
+
+  async function replaceBackup(data) {
+    try {
+      const hasLocalData = state.folders.length || state.watches.length;
+      if (hasLocalData) {
+        const ok = await exportBackup({ close: false, prefix: 'Folio-securite-avant-import' });
+        if (!ok) return;
+      }
+
+      await WatchDB.clear('watches');
+      await WatchDB.clear('folders');
+      const folderIds = new Set();
+      for (const f of data.folders) {
+        const next = { ...f, createdAt: Number(f.createdAt) || Date.now(), updatedAt: Number(f.updatedAt) || Number(f.createdAt) || Date.now() };
+        await WatchDB.put('folders', next);
+        folderIds.add(next.id);
+      }
+      for (const w of data.items) {
+        const next = await hydrateImportedItem(w);
+        if (folderIds.has(next.folderId)) await WatchDB.put('watches', next);
+      }
+
+      await loadData();
+      closeSheet();
+      setView('home');
+      toast('Collection remplacée');
+    } catch (err) {
+      console.error(err);
+      alert('Impossible de remplacer la collection. Les données locales n’ont pas été modifiées volontairement après l’erreur.');
+    }
   }
 
   async function importBackup(file) {
     try {
-      const data = JSON.parse(await file.text());
-      if (!data || !Array.isArray(data.folders) || !Array.isArray(data.watches)) throw new Error('Format incorrect');
-      if (!confirm('Importer cette sauvegarde remplacera les données actuelles. Continuer ?')) return;
-      await WatchDB.clear('watches');
-      await WatchDB.clear('folders');
-      for (const f of data.folders) await WatchDB.put('folders', f);
-      for (const w of data.watches) {
-        const photos = (w.photos || []).map(dataURLToBlob);
-        await WatchDB.put('watches', { ...w, photos });
-      }
-      await loadData(); setView('home'); toast('Sauvegarde importée');
+      const data = normalizeImportedBackup(JSON.parse(await file.text()));
+      showImportChoice(data, file.name);
     } catch (err) {
-      alert('Impossible d’importer cette sauvegarde.');
       console.error(err);
+      alert('Ce fichier n’est pas une sauvegarde Folio valide.');
     }
   }
 
