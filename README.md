@@ -1,66 +1,73 @@
-# Folio — PWA
+# Folio V5 — bibliothèque synchronisée
 
-**Folio** est une application locale pour collectionner, suivre et éventuellement revendre des objets : montres, vêtements, cartes, sneakers, vinyles, photo, objets vintage, etc.
+Folio est une PWA personnelle pour gérer une collection et suivre achats, ventes et bénéfices.
 
-## Fonctions incluses
+## Nouveauté V5
 
-- Dossiers personnalisables (avec `En vente`, `Vendus` et `Collection` sur une nouvelle installation)
-- Ajout, modification et suppression d'objets
-- Plusieurs photos par objet ; la première sert de vignette
-- Description libre
-- Prix d'achat, frais, prix de vente
-- Bénéfice automatique : `vente - achat - frais`
-- Totaux achat / vente / bénéfice par dossier
-- Totaux généraux sur l'écran d'accueil
-- Fonctionnement hors connexion avec IndexedDB + service worker
-- Installation comme PWA sur téléphone ou ordinateur
+La collection peut maintenant être synchronisée entre plusieurs appareils grâce à Supabase :
 
-## Sauvegarde portable Mac ↔ téléphone
+- une fiche ajoutée sur le Mac est retrouvée sur le téléphone ;
+- une fiche ajoutée ou modifiée sur le téléphone est retrouvée sur le Mac ;
+- les dossiers, l'ordre des objets, les descriptions et les prix sont synchronisés ;
+- les photos sont enregistrées dans le bucket privé `folio-photos` ;
+- une copie locale reste conservée dans IndexedDB pour l'affichage et la sauvegarde `.folio` ;
+- la synchronisation se fait au lancement, au retour dans l'application, toutes les 60 secondes quand elle est ouverte, et manuellement via le badge de synchronisation.
 
-Dans **Menu → Exporter Folio**, l'application crée un fichier `.folio` contenant :
+## Connexion
 
-- tous les dossiers ;
-- toutes les fiches ;
-- les prix et descriptions ;
-- toutes les photos.
+Au premier lancement de V5 sur chaque appareil, Folio demande l'adresse e-mail et le mot de passe du compte créé dans Supabase Authentication.
 
-Ce fichier peut être envoyé par AirDrop, Messages, e-mail, Drive, etc., puis importé dans Folio sur un autre appareil.
+La session est ensuite conservée sur l'appareil. Le badge en haut indique :
 
-À l'import, trois choix sont proposés :
+- `Local` : pas connecté à Supabase ;
+- `Sync` : synchronisation en cours ;
+- `Synchronisé` : bibliothèque à jour ;
+- `À synchroniser` : une opération n'a pas encore pu être envoyée.
 
-- **Nouveaux uniquement** : ajoute seulement les objets dont l’identifiant interne n’existe pas encore sur l’appareil. Les fiches déjà présentes ne sont jamais modifiées. Les dossiers existants de même nom sont réutilisés.
-- **Fusionner** : conserve les données locales et ajoute les nouveaux éléments. Pour un même objet déjà connu par son identifiant interne, la version la plus récemment modifiée est conservée. Les dossiers portant le même nom sont rapprochés afin d'éviter les doublons courants.
-- **Remplacer la collection** : remplace les données de l'appareil par celles du fichier. Avant le remplacement, Folio déclenche automatiquement le téléchargement d'une sauvegarde de sécurité de l'état actuel.
+## Sécurité
 
-Les anciennes sauvegardes JSON de la première version restent importables.
+Le fichier `cloud.js` contient uniquement :
 
-## Publication avec GitHub Pages
+- le Project URL Supabase ;
+- la **Publishable key**.
 
-1. Créer un dépôt GitHub, par exemple `folio`.
-2. Envoyer tous les fichiers de ce dossier à la racine du dépôt (`index.html` doit être à la racine).
-3. Dans GitHub : **Settings → Pages**.
-4. Dans **Build and deployment**, choisir **Deploy from a branch**.
-5. Sélectionner la branche `main` et le dossier `/ (root)`, puis enregistrer.
-6. Ouvrir l'adresse fournie par GitHub Pages et installer Folio sur l'écran d'accueil.
+Ces deux informations sont prévues pour être présentes dans une application web côté navigateur. La sécurité des données repose sur l'authentification et les règles RLS créées dans Supabase.
 
-## Confidentialité et stockage
+Ne jamais ajouter au dépôt :
 
-Le code de Folio peut être public sur GitHub Pages, mais **les fiches, prix, descriptions et photos restent dans IndexedDB sur l'appareil**. Elles ne sont pas envoyées automatiquement sur GitHub.
+- le mot de passe de la base PostgreSQL ;
+- une Secret key ;
+- la clé `service_role` ;
+- le mot de passe du compte Folio.
 
-Le fichier `.folio` est une sauvegarde locale complète. Comme il contient les photos et les données de collection, il doit être conservé comme un fichier personnel.
+## Photos
 
-## Photos : ajout et ordre
+Les photos sont rangées dans le bucket privé `folio-photos` selon la structure :
 
-- Sur Mac/PC, les photos peuvent être ajoutées par glisser-déposer depuis le Finder vers la zone Photos.
-- Sur téléphone, le bouton « Ajouter des photos » ouvre la photothèque / le sélecteur d’images.
-- Sur Mac/PC, les vignettes peuvent être glissées pour changer leur ordre.
-- Sur mobile, un appui prolongé puis un déplacement permet de réordonner les photos.
-- La première photo est toujours utilisée comme photo principale / vignette de l’objet.
+`<user_id>/<item_id>/<fichier>`
 
-## Ordre des objets dans un dossier
+Elles ne disposent pas d'une URL publique. Folio les télécharge avec la session authentifiée du propriétaire.
 
-- Sur Mac/PC, un objet peut être glissé vers une autre position dans son dossier.
-- Sur téléphone, un appui prolongé puis un déplacement permet de le réordonner.
-- L’ordre est enregistré dans la fiche et inclus dans les exports `.folio`.
-- Un nouvel objet créé dans Folio apparaît en tête de son dossier.
-- Avec l’import **Nouveaux uniquement**, les objets déjà présents conservent leur ordre ; les nouveaux sont ajoutés sans modifier les fiches existantes.
+## Passage depuis V4
+
+Folio conserve le nom de base IndexedDB de V4. Les fiches déjà présentes sur l'appareil ne sont donc pas volontairement effacées lors de la mise à jour.
+
+Les anciens identifiants internes sont convertis en UUID avant la première synchronisation afin de pouvoir être enregistrés dans PostgreSQL.
+
+L'export/import `.folio` reste disponible comme sauvegarde indépendante du cloud.
+
+## Publication GitHub Pages
+
+Remplacer les fichiers de la version précédente par le contenu de ce dossier dans **le même dépôt et le même chemin GitHub Pages**.
+
+Le Service Worker utilise maintenant le cache `folio-v5-sync`. Une PWA déjà installée recevra donc la nouvelle version sans devoir être supprimée/réinstallée. Une fermeture/réouverture ou une actualisation peut être nécessaire juste après la publication.
+
+## Fichiers principaux
+
+- `index.html` — interface PWA
+- `styles.css` — interface et responsive
+- `db.js` — cache local IndexedDB
+- `cloud.js` — connexion privée Supabase
+- `app.js` — logique de Folio
+- `sw.js` — cache PWA
+- `manifest.webmanifest` — installation mobile

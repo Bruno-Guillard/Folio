@@ -10,7 +10,8 @@
     sheet: document.getElementById('sheet'),
     sheetBackdrop: document.getElementById('sheetBackdrop'),
     sheetContent: document.getElementById('sheetContent'),
-    backupFile: document.getElementById('backupFile')
+    backupFile: document.getElementById('backupFile'),
+    syncBadge: document.getElementById('syncBadge')
   };
 
   const state = {
@@ -20,13 +21,400 @@
     objectUrls: new Set(),
     editingWatchId: null,
     draftPhotos: [],
-    suppressWatchClickUntil: 0
+    suppressWatchClickUntil: 0,
+    syncStatus: 'local',
+    syncBusy: false,
+    lastSyncError: ''
   };
 
   const uid = (prefix='id') => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
   const euro = (v) => Number.isFinite(Number(v)) ? `${Number(v).toLocaleString('fr-FR', { maximumFractionDigits: 2 })} €` : '—';
   const num = (v) => v === '' || v === null || v === undefined ? null : Number(v);
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+
+  const newUuid = () => crypto.randomUUID();
+  const isUuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''));
+
+  function setSyncStatus(status, error='') {
+    state.syncStatus = status;
+    state.lastSyncError = error || '';
+    if (!els.syncBadge) return;
+    els.syncBadge.className = `sync-badge ${status}`;
+    if (status === 'syncing') {
+      els.syncBadge.innerHTML = '<span class="sync-progress">Sync</span>';
+      els.syncBadge.title = 'Synchronisation en cours';
+    } else if (status === 'synced') {
+      els.syncBadge.textContent = 'Synchronisé';
+      els.syncBadge.title = 'Bibliothèque synchronisée';
+    } else if (status === 'error') {
+      els.syncBadge.textContent = 'À synchroniser';
+      els.syncBadge.title = error || 'Synchronisation incomplète';
+    } else {
+      els.syncBadge.textContent = 'Local';
+      els.syncBadge.title = 'Données locales — connexion Folio inactive';
+    }
+  }
+
+  async function stableUuid(namespace, value) {
+    const source = `${namespace}:${String(value)}`;
+    if (!crypto.subtle) return newUuid();
+    const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(source)));
+    const b = digest.slice(0, 16);
+    b[6] = (b[6] & 0x0f) | 0x50;
+    b[8] = (b[8] & 0x3f) | 0x80;
+    const h = [...b].map(x => x.toString(16).padStart(2, '0')).join('');
+    return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+  }
+
+  async function normalizeLocalIds() {
+    const folders = await WatchDB.getAll('folders');
+    const watches = await WatchDB.getAll('watches');
+    const needs = folders.some(f => !isUuid(f.id)) || watches.some(w => !isUuid(w.id));
+    if (!needs) return false;
+
+    const folderMap = new Map();
+    for (const f of folders) folderMap.set(f.id, isUuid(f.id) ? f.id : await stableUuid('folio-folder', f.id));
+    const itemMap = new Map();
+    for (const w of watches) itemMap.set(w.id, isUuid(w.id) ? w.id : await stableUuid('folio-item', w.id));
+
+    await WatchDB.clear('watches');
+    await WatchDB.clear('folders');
+    for (const f of folders) {
+      await WatchDB.put('folders', {
+        ...f,
+        id: folderMap.get(f.id),
+        pendingSync: true,
+        updatedAt: Number(f.updatedAt) || Number(f.createdAt) || Date.now()
+      });
+    }
+    for (const w of watches) {
+      await WatchDB.put('watches', {
+        ...w,
+        id: itemMap.get(w.id),
+        folderId: folderMap.get(w.folderId) || w.folderId,
+        pendingSync: 'full',
+        updatedAt: Number(w.updatedAt) || Number(w.createdAt) || Date.now()
+      });
+    }
+    return true;
+  }
+
+  function defaultFolderNamesOnly() {
+    if (state.watches.length) return false;
+    if (!state.folders.length || state.folders.length > 3) return false;
+    const allowed = new Set(['en vente', 'vendus', 'collection']);
+    return state.folders.every(f => allowed.has(String(f.name || '').trim().toLocaleLowerCase('fr')));
+  }
+
+  async function enqueueDelete(kind, entityId) {
+    await WatchDB.put('syncQueue', {
+      id: newUuid(),
+      kind,
+      entityId,
+      createdAt: Date.now()
+    });
+  }
+
+  async function processDeleteQueue() {
+    if (!FolioCloud.isSignedIn()) return;
+    const jobs = (await WatchDB.getAll('syncQueue')).sort((a,b) => (a.createdAt || 0) - (b.createdAt || 0));
+    for (const job of jobs) {
+      if (job.kind === 'delete-item') await FolioCloud.deleteItem(job.entityId);
+      if (job.kind === 'delete-folder') await FolioCloud.deleteFolder(job.entityId);
+      await WatchDB.del('syncQueue', job.id);
+    }
+  }
+
+  async function clearFolderPending(folderId) {
+    const current = await WatchDB.get('folders', folderId);
+    if (!current) return;
+    await WatchDB.put('folders', { ...current, pendingSync: false });
+  }
+
+  async function clearItemPending(itemId) {
+    const current = await WatchDB.get('watches', itemId);
+    if (!current) return;
+    await WatchDB.put('watches', { ...current, pendingSync: false });
+  }
+
+  async function syncFolderRecord(folder, { quiet=false } = {}) {
+    if (!FolioCloud.isSignedIn()) return false;
+    try {
+      setSyncStatus('syncing');
+      await FolioCloud.upsertFolder(folder);
+      await clearFolderPending(folder.id);
+      setSyncStatus('synced');
+      return true;
+    } catch (err) {
+      console.error(err);
+      setSyncStatus('error', err.message);
+      if (!quiet) toast('Enregistré localement · synchronisation en attente');
+      return false;
+    }
+  }
+
+  async function syncItemRecord(item, { full=true, quiet=false } = {}) {
+    if (!FolioCloud.isSignedIn()) return false;
+    try {
+      setSyncStatus('syncing');
+      const folder = item.folderId ? await WatchDB.get('folders', item.folderId) : null;
+      if (folder?.pendingSync) {
+        await FolioCloud.upsertFolder(folder);
+        await clearFolderPending(folder.id);
+      }
+      if (full) await FolioCloud.saveItemWithPhotos(item);
+      else await FolioCloud.upsertItem(item);
+      await clearItemPending(item.id);
+      setSyncStatus('synced');
+      return true;
+    } catch (err) {
+      console.error(err);
+      setSyncStatus('error', err.message);
+      if (!quiet) toast('Enregistré localement · synchronisation en attente');
+      return false;
+    }
+  }
+
+  async function markAllPendingFull() {
+    const folders = await WatchDB.getAll('folders');
+    const watches = await WatchDB.getAll('watches');
+    for (const f of folders) await WatchDB.put('folders', { ...f, pendingSync: true });
+    for (const w of watches) await WatchDB.put('watches', { ...w, pendingSync: 'full' });
+  }
+
+
+  async function reconcileLocalFoldersWithRemote(remote) {
+    if (!remote?.folders?.length) return;
+    const localFolders = await WatchDB.getAll('folders');
+    const localWatches = await WatchDB.getAll('watches');
+    const remoteById = new Map(remote.folders.map(f => [f.id, f]));
+    const remoteByName = new Map(remote.folders.map(f => [String(f.name || '').trim().toLocaleLowerCase('fr'), f]));
+    let changed = false;
+
+    for (const local of localFolders) {
+      if (remoteById.has(local.id)) continue;
+      const match = remoteByName.get(String(local.name || '').trim().toLocaleLowerCase('fr'));
+      if (!match) continue;
+
+      for (const w of localWatches.filter(x => x.folderId === local.id)) {
+        await WatchDB.put('watches', {
+          ...w,
+          folderId: match.id,
+          updatedAt: Date.now(),
+          pendingSync: w.pendingSync === 'full' ? 'full' : 'meta'
+        });
+      }
+      await WatchDB.del('folders', local.id);
+      const existingRemoteFolder = await WatchDB.get('folders', match.id);
+      if (!existingRemoteFolder) {
+        await WatchDB.put('folders', {
+          id: match.id,
+          name: match.name || local.name,
+          order: Number(match.sort_order) || 0,
+          createdAt: remoteTime(match.created_at),
+          updatedAt: remoteTime(match.updated_at),
+          pendingSync: false
+        });
+      }
+      changed = true;
+    }
+    if (changed) await loadData();
+  }
+
+  async function pushPending() {
+    const folders = await WatchDB.getAll('folders');
+    for (const f of folders.filter(x => x.pendingSync)) {
+      await FolioCloud.upsertFolder(f);
+      await clearFolderPending(f.id);
+    }
+    const watches = await WatchDB.getAll('watches');
+    for (const w of watches.filter(x => x.pendingSync)) {
+      if (w.pendingSync === 'meta') await FolioCloud.upsertItem(w);
+      else await FolioCloud.saveItemWithPhotos(w);
+      await clearItemPending(w.id);
+    }
+  }
+
+  function remoteTime(value) {
+    const n = Date.parse(value || '');
+    return Number.isFinite(n) ? n : Date.now();
+  }
+
+  async function mapWithConcurrency(list, limit, fn) {
+    const out = new Array(list.length);
+    let cursor = 0;
+    const workers = Array.from({ length: Math.min(limit, list.length) }, async () => {
+      while (true) {
+        const i = cursor++;
+        if (i >= list.length) break;
+        out[i] = await fn(list[i], i);
+      }
+    });
+    await Promise.all(workers);
+    return out;
+  }
+
+  async function applyRemoteLibrary(remote) {
+    const existing = new Map((await WatchDB.getAll('watches')).map(w => [w.id, w]));
+    const photosByItem = new Map();
+    for (const row of remote.photos || []) {
+      if (!photosByItem.has(row.item_id)) photosByItem.set(row.item_id, []);
+      photosByItem.get(row.item_id).push(row);
+    }
+    for (const rows of photosByItem.values()) rows.sort((a,b) => (a.sort_order || 0) - (b.sort_order || 0));
+
+    const localItems = await mapWithConcurrency(remote.items || [], 4, async row => {
+      const rows = photosByItem.get(row.id) || [];
+      const old = existing.get(row.id);
+      const updatedAt = remoteTime(row.updated_at);
+      let photos = null;
+      if (old && !old.pendingSync && Math.abs((Number(old.updatedAt) || 0) - updatedAt) < 1000 && (old.photos || []).length === rows.length) {
+        photos = old.photos || [];
+      } else {
+        try {
+          photos = await mapWithConcurrency(rows, 4, r => FolioCloud.downloadPhoto(r.storage_path));
+        } catch (err) {
+          console.warn('Folio: certaines photos n’ont pas pu être téléchargées', err);
+          photos = old?.photos || [];
+        }
+      }
+      return {
+        id: row.id,
+        folderId: row.folder_id,
+        name: row.name || '',
+        description: row.description || '',
+        buyPrice: row.purchase_price === null ? null : Number(row.purchase_price),
+        sellPrice: row.sale_price === null ? null : Number(row.sale_price),
+        fees: row.fees === null ? 0 : Number(row.fees),
+        order: Number(row.sort_order) || 0,
+        photos,
+        createdAt: remoteTime(row.created_at),
+        updatedAt,
+        pendingSync: false
+      };
+    });
+
+    const localFolders = (remote.folders || []).map(row => ({
+      id: row.id,
+      name: row.name || '',
+      order: Number(row.sort_order) || 0,
+      createdAt: remoteTime(row.created_at),
+      updatedAt: remoteTime(row.updated_at),
+      pendingSync: false
+    }));
+
+    await WatchDB.clear('watches');
+    await WatchDB.clear('folders');
+    for (const f of localFolders) await WatchDB.put('folders', f);
+    for (const w of localItems) await WatchDB.put('watches', w);
+    await loadData();
+  }
+
+  async function syncNow({ silent=false } = {}) {
+    if (!FolioCloud.isSignedIn()) {
+      setSyncStatus('local');
+      if (!silent) showLoginSheet();
+      return false;
+    }
+    if (state.syncBusy) return false;
+    state.syncBusy = true;
+    setSyncStatus('syncing');
+    try {
+      await normalizeLocalIds();
+      await loadData();
+      await processDeleteQueue();
+
+      let remote = await FolioCloud.fetchLibrary();
+      const remoteHasData = (remote.folders?.length || 0) + (remote.items?.length || 0) > 0;
+      if (remoteHasData) await reconcileLocalFoldersWithRemote(remote);
+
+      if (remoteHasData && defaultFolderNamesOnly()) {
+        // Sur un nouvel appareil, ne pousse pas trois dossiers locaux vides devant une bibliothèque existante.
+        await applyRemoteLibrary(remote);
+      } else {
+        if (!remoteHasData) await markAllPendingFull();
+        await pushPending();
+        remote = await FolioCloud.fetchLibrary();
+        if ((remote.folders?.length || 0) + (remote.items?.length || 0) > 0) await applyRemoteLibrary(remote);
+      }
+
+      if (!state.folders.length) {
+        await initDefaults();
+        await loadData();
+        await pushPending();
+      }
+
+      setSyncStatus('synced');
+      render();
+      if (!silent) toast('Folio synchronisé');
+      return true;
+    } catch (err) {
+      console.error(err);
+      setSyncStatus('error', err.message);
+      if (!silent) alert(`Synchronisation impossible : ${err.message}`);
+      return false;
+    } finally {
+      state.syncBusy = false;
+    }
+  }
+
+  function showLoginSheet() {
+    openSheet(`
+      <h2 class="sheet-title">Connexion Folio</h2>
+      <form id="loginForm" class="form">
+        <div class="login-note">Connecte ton Mac et ton téléphone avec le même compte pour retrouver automatiquement la même bibliothèque.</div>
+        <div class="field"><label>Adresse e-mail</label><input id="loginEmail" type="email" autocomplete="username" required></div>
+        <div class="field"><label>Mot de passe</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+        <div class="form-actions"><button type="button" class="btn secondary" data-close>Plus tard</button><button class="btn primary">Se connecter</button></div>
+      </form>`);
+    els.sheetContent.querySelector('[data-close]').addEventListener('click', closeSheet);
+    els.sheetContent.querySelector('#loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const button = e.currentTarget.querySelector('.btn.primary');
+      button.disabled = true;
+      button.textContent = 'Connexion…';
+      try {
+        const email = els.sheetContent.querySelector('#loginEmail').value.trim();
+        const password = els.sheetContent.querySelector('#loginPassword').value;
+        await FolioCloud.signIn(email, password);
+        closeSheet();
+        await syncNow({ silent:false });
+      } catch (err) {
+        console.error(err);
+        alert(`Connexion impossible : ${err.message}`);
+        button.disabled = false;
+        button.textContent = 'Se connecter';
+      }
+    });
+  }
+
+  function showSyncMenu() {
+    if (!FolioCloud.isSignedIn()) return showLoginSheet();
+    const user = FolioCloud.getUser();
+    openSheet(`
+      <h2 class="sheet-title">Synchronisation</h2>
+      <div class="account-card">Compte Folio :<br><strong>${esc(user?.email || 'Utilisateur connecté')}</strong></div>
+      <div class="sheet-list" style="margin-top:10px;">
+        <button class="sheet-action" data-sync="now"><strong>Synchroniser maintenant</strong><small>Récupère les changements faits sur tes autres appareils.</small></button>
+        <button class="sheet-action" data-sync="logout"><strong>Se déconnecter</strong><small>Les données déjà téléchargées restent disponibles localement sur cet appareil.</small></button>
+      </div>`);
+    els.sheetContent.querySelector('[data-sync="now"]').addEventListener('click', async () => { closeSheet(); await syncNow({ silent:false }); });
+    els.sheetContent.querySelector('[data-sync="logout"]').addEventListener('click', async () => {
+      await FolioCloud.signOut();
+      closeSheet();
+      setSyncStatus('local');
+      toast('Synchronisation déconnectée');
+    });
+  }
+
+  async function syncImportedLibrary() {
+    if (!FolioCloud.isSignedIn()) return;
+    await normalizeLocalIds();
+    await markAllPendingFull();
+    await loadData();
+    syncNow({ silent:true });
+  }
 
   function cleanupObjectUrls() {
     for (const url of state.objectUrls) URL.revokeObjectURL(url);
@@ -81,7 +469,14 @@
     const now = Date.now();
     const defaults = ['En vente', 'Vendus', 'Collection'];
     for (let i = 0; i < defaults.length; i++) {
-      await WatchDB.put('folders', { id: uid('folder'), name: defaults[i], createdAt: now + i, updatedAt: now + i });
+      await WatchDB.put('folders', {
+        id: newUuid(),
+        name: defaults[i],
+        order: i,
+        createdAt: now + i,
+        updatedAt: now + i,
+        pendingSync: true
+      });
     }
   }
 
@@ -201,12 +596,19 @@
   async function persistWatchOrder(folderId, orderedIds) {
     const now = Date.now();
     const byId = new Map(state.watches.filter(w => w.folderId === folderId).map(w => [w.id, w]));
+    const changed = [];
     for (let i = 0; i < orderedIds.length; i++) {
       const w = byId.get(orderedIds[i]);
       if (!w) continue;
-      await WatchDB.put('watches', { ...w, order: i, updatedAt: now + i });
+      const next = { ...w, order: i, updatedAt: now + i, pendingSync: 'meta' };
+      await WatchDB.put('watches', next);
+      changed.push(next);
     }
     await loadData();
+    if (FolioCloud.isSignedIn()) {
+      for (const w of changed) await syncItemRecord(w, { full:false, quiet:true });
+      await loadData();
+    }
   }
 
   async function moveWatchInFolder(folderId, fromId, toId) {
@@ -407,8 +809,11 @@
       e.preventDefault();
       const name = els.sheetContent.querySelector('#folderName').value.trim();
       if (!name) return;
-      await WatchDB.put('folders', { id: uid('folder'), name, createdAt: Date.now(), updatedAt: Date.now() });
+      const now = Date.now();
+      const folder = { id: newUuid(), name, order: state.folders.length, createdAt: now, updatedAt: now, pendingSync: true };
+      await WatchDB.put('folders', folder);
       await loadData(); closeSheet(); render(); toast('Dossier créé');
+      syncFolderRecord(folder, { quiet:true });
     });
   }
 
@@ -437,8 +842,10 @@
       e.preventDefault();
       const name = els.sheetContent.querySelector('#renameFolderName').value.trim();
       if (!name) return;
-      await WatchDB.put('folders', { ...folder, name, updatedAt: Date.now() });
+      const next = { ...folder, name, updatedAt: Date.now(), pendingSync: true };
+      await WatchDB.put('folders', next);
       await loadData(); closeSheet(); render(); toast('Dossier renommé');
+      syncFolderRecord(next, { quiet:true });
     });
   }
 
@@ -450,6 +857,12 @@
     }
     if (!confirm(`Supprimer le dossier « ${folder.name} » ?`)) return;
     await WatchDB.del('folders', folder.id);
+    if (FolioCloud.isSignedIn()) {
+      try { await FolioCloud.deleteFolder(folder.id); setSyncStatus('synced'); }
+      catch (err) { console.error(err); await enqueueDelete('delete-folder', folder.id); setSyncStatus('error', err.message); }
+    } else {
+      await enqueueDelete('delete-folder', folder.id);
+    }
     await loadData(); closeSheet(); setView('home'); toast('Dossier supprimé');
   }
 
@@ -657,7 +1070,7 @@
     const q = s => els.sheetContent.querySelector(s);
     const old = state.editingWatchId ? state.watches.find(x => x.id === state.editingWatchId) : null;
     const data = {
-      id: old?.id || uid('watch'),
+      id: old?.id || newUuid(),
       name: q('#watchName').value.trim(),
       folderId: q('#watchFolder').value,
       description: q('#watchDescription').value.trim(),
@@ -667,7 +1080,8 @@
       photos: [...state.draftPhotos],
       order: old && old.folderId === q('#watchFolder').value ? old.order : topOrderForFolder(q('#watchFolder').value, old?.id || null),
       createdAt: old?.createdAt || Date.now(),
-      updatedAt: Date.now()
+      updatedAt: Date.now(),
+      pendingSync: 'full'
     };
     await WatchDB.put('watches', data);
     await loadData();
@@ -675,6 +1089,7 @@
     closeSheet();
     setView('watch', id);
     toast(old ? 'Objet modifié' : 'Objet ajouté');
+    syncItemRecord(data, { full:true, quiet:true }).then(loadData).catch(console.error);
   }
 
   async function deleteCurrentWatch() {
@@ -683,22 +1098,31 @@
     if (!confirm(`Supprimer « ${w.name || 'cet objet'} » ?`)) return;
     const folderId = w.folderId;
     await WatchDB.del('watches', w.id);
+    if (FolioCloud.isSignedIn()) {
+      try { await FolioCloud.deleteItem(w.id); setSyncStatus('synced'); }
+      catch (err) { console.error(err); await enqueueDelete('delete-item', w.id); setSyncStatus('error', err.message); }
+    } else {
+      await enqueueDelete('delete-item', w.id);
+    }
     await loadData();
     setView('folder', folderId);
     toast('Objet supprimé');
   }
 
   function showMainMenu() {
+    const connected = FolioCloud.isSignedIn();
     openSheet(`
       <h2 class="sheet-title">Menu</h2>
       <div class="sheet-list">
+        <button class="sheet-action" data-menu="sync"><strong>${connected ? 'Synchroniser Folio' : 'Activer la synchronisation'}</strong><small>${connected ? 'Récupère les changements faits sur le Mac ou le téléphone.' : 'Connecte cette installation à ta bibliothèque privée.'}</small></button>
         <button class="sheet-action" data-menu="export">Exporter Folio</button>
         <button class="sheet-action" data-menu="import">Importer sur cet appareil</button>
         <button class="sheet-action" data-menu="new-folder">Créer un dossier</button>
       </div>
       <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-top:14px;">
-        L’export contient les dossiers, les fiches, les prix, les descriptions et toutes les photos.
+        Les données sont conservées localement et, une fois connecté, synchronisées avec ton espace privé Supabase. L’export .folio reste une sauvegarde indépendante.
       </div>`);
+    els.sheetContent.querySelector('[data-menu="sync"]').addEventListener('click', showSyncMenu);
     els.sheetContent.querySelector('[data-menu="export"]').addEventListener('click', exportBackup);
     els.sheetContent.querySelector('[data-menu="import"]').addEventListener('click', () => { closeSheet(); els.backupFile.click(); });
     els.sheetContent.querySelector('[data-menu="new-folder"]').addEventListener('click', showNewFolder);
@@ -886,6 +1310,7 @@
       closeSheet();
       setView('home');
       toast(`${addedItems} nouvel${addedItems > 1 ? 's' : ''} objet${addedItems > 1 ? 's' : ''} importé${addedItems > 1 ? 's' : ''}`);
+      syncImportedLibrary();
     } catch (err) {
       console.error(err);
       alert('Impossible d’importer uniquement les nouveaux objets.');
@@ -951,6 +1376,7 @@
       closeSheet();
       setView('home');
       toast(`Fusion terminée · ${addedItems} ajouté${addedItems > 1 ? 's' : ''}, ${updatedItems} mis à jour`);
+      syncImportedLibrary();
     } catch (err) {
       console.error(err);
       alert('Impossible de fusionner cette sauvegarde.');
@@ -982,6 +1408,7 @@
       closeSheet();
       setView('home');
       toast('Collection remplacée');
+      syncImportedLibrary();
     } catch (err) {
       console.error(err);
       alert('Impossible de remplacer la collection. Les données locales n’ont pas été modifiées volontairement après l’erreur.');
@@ -1011,6 +1438,7 @@
     } else setView('home');
   });
   els.menuBtn.addEventListener('click', showMainMenu);
+  els.syncBadge?.addEventListener('click', showSyncMenu);
   els.fab.addEventListener('click', () => showWatchForm());
   els.sheetBackdrop.addEventListener('click', closeSheet);
   els.backupFile.addEventListener('change', e => {
@@ -1025,8 +1453,32 @@
 
   (async () => {
     await WatchDB.open();
-    await initDefaults();
+    await normalizeLocalIds();
     await loadData();
-    render();
+
+    const restored = await FolioCloud.restoreSession();
+    if (restored) {
+      setSyncStatus('syncing');
+      if (!state.folders.length) await initDefaults();
+      await loadData();
+      render();
+      await syncNow({ silent:true });
+    } else {
+      if (!state.folders.length) await initDefaults();
+      await loadData();
+      setSyncStatus('local');
+      render();
+      setTimeout(() => showLoginSheet(), 350);
+    }
   })();
+
+  window.addEventListener('online', () => {
+    if (FolioCloud.isSignedIn()) syncNow({ silent:true });
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible' && FolioCloud.isSignedIn()) syncNow({ silent:true });
+  });
+  setInterval(() => {
+    if (document.visibilityState === 'visible' && navigator.onLine && FolioCloud.isSignedIn()) syncNow({ silent:true });
+  }, 60000);
 })();

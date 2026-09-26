@@ -1,6 +1,6 @@
 const WatchDB = (() => {
   const DB_NAME = 'mes-montres-db';
-  const DB_VERSION = 1;
+  const DB_VERSION = 2;
   let dbPromise;
 
   function open() {
@@ -16,6 +16,10 @@ const WatchDB = (() => {
         if (!db.objectStoreNames.contains('watches')) {
           const store = db.createObjectStore('watches', { keyPath: 'id' });
           store.createIndex('folderId', 'folderId');
+          store.createIndex('createdAt', 'createdAt');
+        }
+        if (!db.objectStoreNames.contains('syncQueue')) {
+          const store = db.createObjectStore('syncQueue', { keyPath: 'id' });
           store.createIndex('createdAt', 'createdAt');
         }
       };
