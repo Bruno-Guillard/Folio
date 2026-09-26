@@ -19,7 +19,8 @@
     view: { type: 'home', id: null },
     objectUrls: new Set(),
     editingWatchId: null,
-    draftPhotos: []
+    draftPhotos: [],
+    suppressWatchClickUntil: 0
   };
 
   const uid = (prefix='id') => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
@@ -89,6 +90,28 @@
     state.watches = (await WatchDB.getAll('watches')).sort((a,b) => b.createdAt - a.createdAt);
   }
 
+  function folderWatches(folderId) {
+    return state.watches
+      .filter(w => w.folderId === folderId)
+      .sort((a, b) => {
+        const ao = Number(a.order);
+        const bo = Number(b.order);
+        const ah = Number.isFinite(ao);
+        const bh = Number.isFinite(bo);
+        if (ah && bh && ao !== bo) return ao - bo;
+        if (ah !== bh) return ah ? -1 : 1;
+        return (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0);
+      });
+  }
+
+  function topOrderForFolder(folderId, excludeId = null) {
+    const orders = state.watches
+      .filter(w => w.folderId === folderId && w.id !== excludeId)
+      .map(w => Number(w.order))
+      .filter(Number.isFinite);
+    return orders.length ? Math.min(...orders) - 1 : -1;
+  }
+
   function setView(type, id=null) {
     closeSheet();
     state.view = { type, id };
@@ -140,7 +163,7 @@
   function renderFolder(folderId) {
     const folder = state.folders.find(f => f.id === folderId);
     if (!folder) return setView('home');
-    const watches = state.watches.filter(w => w.folderId === folderId);
+    const watches = folderWatches(folderId);
     els.subtitle.textContent = folder.name;
     const t = totals(watches);
     let html = summaryHtml(t, folder.name);
@@ -148,10 +171,12 @@
     if (!watches.length) {
       html += `<div class="empty"><span class="big">⌚</span>Aucun objet dans ce dossier.<br>Appuie sur ＋ pour en ajouter un.</div>`;
     } else {
-      html += `<div class="watch-grid">${watches.map(watchCardHtml).join('')}</div>`;
+      html += `<div class="watch-order-hint">Glisse un objet pour changer sa place. Sur téléphone : appui prolongé puis déplace-le.</div>`;
+      html += `<div class="watch-grid" data-watch-grid>${watches.map(watchCardHtml).join('')}</div>`;
     }
     els.main.innerHTML = html;
     bindCommon();
+    bindWatchSorting(folderId);
   }
 
   function watchCardHtml(w) {
@@ -159,7 +184,8 @@
     const first = Array.isArray(w.photos) && w.photos.length ? w.photos[0] : null;
     const photo = first ? `<img class="watch-photo" src="${blobUrl(first)}" alt="${esc(w.name)}">` : `<div class="photo-placeholder">⌚</div>`;
     return `
-      <button class="watch-card" data-watch-id="${w.id}">
+      <div class="watch-card" data-watch-id="${w.id}" draggable="true" role="button" tabindex="0" aria-label="Ouvrir ${esc(w.name || 'Sans nom')}">
+        <div class="watch-drag-handle" aria-hidden="true">≡</div>
         ${photo}
         <div class="watch-body">
           <div class="watch-name">${esc(w.name || 'Sans nom')}</div>
@@ -169,7 +195,125 @@
             <div><span>Bénéf.</span><strong class="${p === null ? '' : profitClass(p)}">${p === null ? '—' : euro(p)}</strong></div>
           </div>
         </div>
-      </button>`;
+      </div>`;
+  }
+
+  async function persistWatchOrder(folderId, orderedIds) {
+    const now = Date.now();
+    const byId = new Map(state.watches.filter(w => w.folderId === folderId).map(w => [w.id, w]));
+    for (let i = 0; i < orderedIds.length; i++) {
+      const w = byId.get(orderedIds[i]);
+      if (!w) continue;
+      await WatchDB.put('watches', { ...w, order: i, updatedAt: now + i });
+    }
+    await loadData();
+  }
+
+  async function moveWatchInFolder(folderId, fromId, toId) {
+    if (!fromId || !toId || fromId === toId) return;
+    const ids = folderWatches(folderId).map(w => w.id);
+    const from = ids.indexOf(fromId);
+    const to = ids.indexOf(toId);
+    if (from < 0 || to < 0) return;
+    const [moved] = ids.splice(from, 1);
+    ids.splice(to, 0, moved);
+    await persistWatchOrder(folderId, ids);
+  }
+
+  function bindWatchSorting(folderId) {
+    const root = document.querySelector('[data-watch-grid]');
+    if (!root) return;
+    let draggedId = null;
+
+    root.querySelectorAll('.watch-card').forEach(card => {
+      card.addEventListener('dragstart', e => {
+        draggedId = card.dataset.watchId;
+        state.suppressWatchClickUntil = Date.now() + 600;
+        card.classList.add('is-dragging');
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = 'move';
+          try { e.dataTransfer.setData('text/plain', draggedId); } catch (_) {}
+        }
+      });
+      card.addEventListener('dragover', e => {
+        e.preventDefault();
+        if (draggedId && draggedId !== card.dataset.watchId) card.classList.add('drag-target');
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+      });
+      card.addEventListener('dragleave', () => card.classList.remove('drag-target'));
+      card.addEventListener('drop', async e => {
+        e.preventDefault();
+        e.stopPropagation();
+        const fromId = draggedId || e.dataTransfer?.getData('text/plain');
+        const toId = card.dataset.watchId;
+        state.suppressWatchClickUntil = Date.now() + 700;
+        await moveWatchInFolder(folderId, fromId, toId);
+        renderFolder(folderId);
+        toast('Ordre enregistré');
+      });
+      card.addEventListener('dragend', () => {
+        draggedId = null;
+        root.querySelectorAll('.watch-card').forEach(el => el.classList.remove('is-dragging','drag-target'));
+      });
+    });
+
+    let pressTimer = null;
+    let sortingCard = null;
+    let pointerId = null;
+    let orderChanged = false;
+
+    const stopSort = () => {
+      clearTimeout(pressTimer);
+      pressTimer = null;
+      sortingCard?.classList.remove('is-touch-sorting');
+      sortingCard = null;
+      pointerId = null;
+      root.classList.remove('is-sorting');
+    };
+
+    root.querySelectorAll('.watch-card').forEach(card => {
+      card.addEventListener('pointerdown', e => {
+        if (e.pointerType === 'mouse') return;
+        pointerId = e.pointerId;
+        orderChanged = false;
+        pressTimer = setTimeout(() => {
+          sortingCard = card;
+          sortingCard.classList.add('is-touch-sorting');
+          root.classList.add('is-sorting');
+          state.suppressWatchClickUntil = Date.now() + 1200;
+          try { card.setPointerCapture(pointerId); } catch (_) {}
+          if (navigator.vibrate) navigator.vibrate(20);
+        }, 300);
+      });
+
+      card.addEventListener('pointermove', e => {
+        if (!sortingCard || e.pointerId !== pointerId) return;
+        e.preventDefault();
+        const target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.watch-card');
+        if (!target || !root.contains(target) || target === sortingCard) return;
+        const cards = [...root.querySelectorAll('.watch-card')];
+        const from = cards.indexOf(sortingCard);
+        const to = cards.indexOf(target);
+        if (from < 0 || to < 0) return;
+        if (from < to) target.after(sortingCard);
+        else target.before(sortingCard);
+        orderChanged = true;
+      });
+
+      ['pointerup','pointercancel'].forEach(type => card.addEventListener(type, async e => {
+        if (e.pointerId !== pointerId) return;
+        const changed = orderChanged && !!sortingCard;
+        const ids = changed ? [...root.querySelectorAll('.watch-card')].map(el => el.dataset.watchId) : [];
+        if (!sortingCard) clearTimeout(pressTimer);
+        stopSort();
+        if (changed) {
+          state.suppressWatchClickUntil = Date.now() + 800;
+          await persistWatchOrder(folderId, ids);
+          renderFolder(folderId);
+          toast('Ordre enregistré');
+        }
+      }));
+    });
   }
 
   function renderWatch(watchId) {
@@ -217,7 +361,18 @@
 
   function bindCommon() {
     document.querySelectorAll('[data-folder-id]').forEach(el => el.addEventListener('click', () => setView('folder', el.dataset.folderId)));
-    document.querySelectorAll('[data-watch-id]').forEach(el => el.addEventListener('click', () => setView('watch', el.dataset.watchId)));
+    document.querySelectorAll('[data-watch-id]').forEach(el => {
+      el.addEventListener('click', () => {
+        if (Date.now() < state.suppressWatchClickUntil) return;
+        setView('watch', el.dataset.watchId);
+      });
+      el.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setView('watch', el.dataset.watchId);
+        }
+      });
+    });
     document.querySelectorAll('[data-action="new-folder"]').forEach(el => el.addEventListener('click', showNewFolder));
     document.querySelectorAll('[data-action="folder-menu"]').forEach(el => el.addEventListener('click', showFolderMenu));
     document.querySelectorAll('[data-action="edit-watch"]').forEach(el => el.addEventListener('click', () => showWatchForm(state.view.id)));
@@ -510,6 +665,7 @@
       fees: num(q('#fees').value),
       sellPrice: num(q('#sellPrice').value),
       photos: [...state.draftPhotos],
+      order: old && old.folderId === q('#watchFolder').value ? old.order : topOrderForFolder(q('#watchFolder').value, old?.id || null),
       createdAt: old?.createdAt || Date.now(),
       updatedAt: Date.now()
     };
@@ -580,7 +736,7 @@
     }
     return {
       format: 'folio-backup',
-      version: 2,
+      version: 3,
       app: 'Folio',
       exportedAt: new Date().toISOString(),
       folders: state.folders,
@@ -638,21 +794,102 @@
 
   function showImportChoice(data, filename) {
     const dateText = data.exportedAt ? new Date(data.exportedAt).toLocaleString('fr-FR') : 'date inconnue';
+    const localIds = new Set(state.watches.map(w => w.id));
+    const newCount = data.items.filter(w => !localIds.has(w.id)).length;
     openSheet(`
       <h2 class="sheet-title">Importer Folio</h2>
       <div class="import-summary">
         <strong>${esc(filename || 'Sauvegarde Folio')}</strong>
         <span>${data.folders.length} dossier${data.folders.length > 1 ? 's' : ''} · ${data.items.length} objet${data.items.length > 1 ? 's' : ''}</span>
+        <span>${newCount} nouvel${newCount > 1 ? 's' : ''} objet${newCount > 1 ? 's' : ''} absent${newCount > 1 ? 's' : ''} de cet appareil</span>
         <span>Sauvegarde : ${esc(dateText)}</span>
       </div>
       <div class="sheet-list">
-        <button class="sheet-action" data-import="merge"><strong>Fusionner</strong><small>Ajoute le contenu et conserve les éléments déjà présents.</small></button>
+        <button class="sheet-action import-primary" data-import="new-only"><strong>Nouveaux uniquement</strong><small>Ajoute seulement les objets absents. Aucun objet déjà présent n’est modifié.</small></button>
+        <button class="sheet-action" data-import="merge"><strong>Fusionner</strong><small>Ajoute les nouveaux objets et met à jour les objets existants si la sauvegarde est plus récente.</small></button>
         <button class="sheet-action danger" data-import="replace"><strong>Remplacer la collection</strong><small>Une sauvegarde de sécurité de cet appareil sera exportée avant le remplacement.</small></button>
         <button class="sheet-action" data-import="cancel">Annuler</button>
       </div>`);
+    els.sheetContent.querySelector('[data-import="new-only"]').addEventListener('click', () => importNewOnly(data));
     els.sheetContent.querySelector('[data-import="merge"]').addEventListener('click', () => mergeBackup(data));
     els.sheetContent.querySelector('[data-import="replace"]').addEventListener('click', () => replaceBackup(data));
     els.sheetContent.querySelector('[data-import="cancel"]').addEventListener('click', closeSheet);
+  }
+
+  async function importNewOnly(data) {
+    try {
+      const localFolders = await WatchDB.getAll('folders');
+      const localItems = await WatchDB.getAll('watches');
+      const localIds = new Set(localItems.map(w => w.id));
+      const newItems = data.items.filter(w => !localIds.has(w.id));
+
+      if (!newItems.length) {
+        closeSheet();
+        toast('Aucun nouvel objet à importer');
+        return;
+      }
+
+      const neededFolderIds = new Set(newItems.map(w => w.folderId).filter(Boolean));
+      const foldersById = new Map(localFolders.map(f => [f.id, f]));
+      const foldersByName = new Map(localFolders.map(f => [String(f.name).trim().toLocaleLowerCase('fr'), f]));
+      const incomingFoldersById = new Map(data.folders.map(f => [f.id, f]));
+      const folderIdMap = new Map();
+      let addedFolders = 0;
+
+      for (const incomingId of neededFolderIds) {
+        const incoming = incomingFoldersById.get(incomingId);
+        if (!incoming) continue;
+        const sameId = foldersById.get(incoming.id);
+        const sameName = foldersByName.get(String(incoming.name).trim().toLocaleLowerCase('fr'));
+        if (sameId) {
+          folderIdMap.set(incoming.id, sameId.id);
+        } else if (sameName) {
+          folderIdMap.set(incoming.id, sameName.id);
+        } else {
+          const next = {
+            ...incoming,
+            createdAt: Number(incoming.createdAt) || Date.now(),
+            updatedAt: Number(incoming.updatedAt) || Number(incoming.createdAt) || Date.now()
+          };
+          await WatchDB.put('folders', next);
+          folderIdMap.set(incoming.id, next.id);
+          foldersById.set(next.id, next);
+          foldersByName.set(String(next.name).trim().toLocaleLowerCase('fr'), next);
+          addedFolders++;
+        }
+      }
+
+      // Dans un dossier déjà présent, les nouveaux objets sont ajoutés à la fin
+      // afin de ne pas modifier l’ordre des fiches existantes.
+      const nextOrderByFolder = new Map();
+      for (const f of localFolders) {
+        const existing = localItems.filter(w => w.folderId === f.id);
+        const maxOrder = existing.map(w => Number(w.order)).filter(Number.isFinite);
+        nextOrderByFolder.set(f.id, maxOrder.length ? Math.max(...maxOrder) + 1 : existing.length);
+      }
+
+      let addedItems = 0;
+      for (const incoming of newItems) {
+        const next = await hydrateImportedItem(incoming, folderIdMap);
+        if (!next.folderId || !foldersById.has(next.folderId)) continue;
+        const existingFolderWasLocal = localFolders.some(f => f.id === next.folderId);
+        if (existingFolderWasLocal) {
+          const order = nextOrderByFolder.get(next.folderId) ?? 0;
+          next.order = order;
+          nextOrderByFolder.set(next.folderId, order + 1);
+        }
+        await WatchDB.put('watches', next);
+        addedItems++;
+      }
+
+      await loadData();
+      closeSheet();
+      setView('home');
+      toast(`${addedItems} nouvel${addedItems > 1 ? 's' : ''} objet${addedItems > 1 ? 's' : ''} importé${addedItems > 1 ? 's' : ''}`);
+    } catch (err) {
+      console.error(err);
+      alert('Impossible d’importer uniquement les nouveaux objets.');
+    }
   }
 
   async function mergeBackup(data) {

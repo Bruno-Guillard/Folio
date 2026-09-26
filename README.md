@@ -26,8 +26,9 @@ Dans **Menu → Exporter Folio**, l'application crée un fichier `.folio` conten
 
 Ce fichier peut être envoyé par AirDrop, Messages, e-mail, Drive, etc., puis importé dans Folio sur un autre appareil.
 
-À l'import, deux choix sont proposés :
+À l'import, trois choix sont proposés :
 
+- **Nouveaux uniquement** : ajoute seulement les objets dont l’identifiant interne n’existe pas encore sur l’appareil. Les fiches déjà présentes ne sont jamais modifiées. Les dossiers existants de même nom sont réutilisés.
 - **Fusionner** : conserve les données locales et ajoute les nouveaux éléments. Pour un même objet déjà connu par son identifiant interne, la version la plus récemment modifiée est conservée. Les dossiers portant le même nom sont rapprochés afin d'éviter les doublons courants.
 - **Remplacer la collection** : remplace les données de l'appareil par celles du fichier. Avant le remplacement, Folio déclenche automatiquement le téléchargement d'une sauvegarde de sécurité de l'état actuel.
 
@@ -55,3 +56,11 @@ Le fichier `.folio` est une sauvegarde locale complète. Comme il contient les p
 - Sur Mac/PC, les vignettes peuvent être glissées pour changer leur ordre.
 - Sur mobile, un appui prolongé puis un déplacement permet de réordonner les photos.
 - La première photo est toujours utilisée comme photo principale / vignette de l’objet.
+
+## Ordre des objets dans un dossier
+
+- Sur Mac/PC, un objet peut être glissé vers une autre position dans son dossier.
+- Sur téléphone, un appui prolongé puis un déplacement permet de le réordonner.
+- L’ordre est enregistré dans la fiche et inclus dans les exports `.folio`.
+- Un nouvel objet créé dans Folio apparaît en tête de son dossier.
+- Avec l’import **Nouveaux uniquement**, les objets déjà présents conservent leur ordre ; les nouveaux sont ajoutés sans modifier les fiches existantes.
