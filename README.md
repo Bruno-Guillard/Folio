@@ -60,7 +60,7 @@ L'export/import `.folio` reste disponible comme sauvegarde indépendante du clou
 
 Remplacer les fichiers de la version précédente par le contenu de ce dossier dans **le même dépôt et le même chemin GitHub Pages**.
 
-Le Service Worker utilise maintenant le cache `folio-v5-sync`. Une PWA déjà installée recevra donc la nouvelle version sans devoir être supprimée/réinstallée. Une fermeture/réouverture ou une actualisation peut être nécessaire juste après la publication.
+Le Service Worker utilise maintenant un cache dédié à la version V6.1. Une PWA déjà installée recevra donc la nouvelle version sans devoir être supprimée/réinstallée. Une fermeture/réouverture ou une actualisation peut être nécessaire juste après la publication.
 
 ## Fichiers principaux
 
@@ -83,3 +83,10 @@ Calcul utilisé :
 La case **Frais divers** est un montant global libre. Elle est enregistrée localement, incluse dans les sauvegardes `.folio` et synchronisée entre les appareils via Supabase.
 
 Pour un projet Supabase déjà configuré avec Folio V5, exécuter une seule fois le fichier `SUPABASE-V6-TRESORERIE.sql` dans **Supabase > SQL Editor** avant de modifier les frais divers.
+
+
+## V6.1 — disposition de l’accueil
+
+- Première ligne : Achat · Recette · Bénéfice.
+- Deuxième ligne, plus discrète : Frais divers · Trésorerie.
+- Aucun changement de données ni de schéma Supabase par rapport à V6.

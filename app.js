@@ -525,17 +525,22 @@
     return `
       <section class="summary home-summary">
         <div class="summary-title">Total général</div>
-        <div class="summary-grid summary-grid-home">
+        <div class="summary-grid summary-grid-home-primary">
           <div class="metric"><div class="metric-label">Achat</div><div class="metric-value">${euro(t.buy)}</div></div>
           <div class="metric"><div class="metric-label">Recette</div><div class="metric-value">${euro(t.sell)}</div></div>
-          <div class="metric"><div class="metric-label">Trésorerie</div><div class="metric-value ${profitClass(treasury)}">${euro(treasury)}</div></div>
           <div class="metric"><div class="metric-label">Bénéfice</div><div class="metric-value ${profitClass(t.profit)}">${euro(t.profit)}</div></div>
         </div>
-        <div class="misc-expense-row">
-          <label for="miscExpensesInput">Frais divers</label>
-          <div class="misc-expense-input-wrap">
-            <input id="miscExpensesInput" type="number" min="0" step="0.01" inputmode="decimal" value="${esc(String(misc))}" aria-label="Frais divers">
-            <span>€</span>
+        <div class="home-secondary-row">
+          <div class="secondary-metric misc-expense-block">
+            <label class="secondary-label" for="miscExpensesInput">Frais divers</label>
+            <div class="misc-expense-input-wrap">
+              <input id="miscExpensesInput" type="number" min="0" step="0.01" inputmode="decimal" value="${esc(String(misc))}" aria-label="Frais divers">
+              <span>€</span>
+            </div>
+          </div>
+          <div class="secondary-metric treasury-block">
+            <div class="secondary-label">Trésorerie</div>
+            <div class="secondary-value ${profitClass(treasury)}">${euro(treasury)}</div>
           </div>
         </div>
         <div class="treasury-hint">Trésorerie = recettes − achats − frais des fiches − frais divers</div>
