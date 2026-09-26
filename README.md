@@ -47,3 +47,11 @@ Les anciennes sauvegardes JSON de la première version restent importables.
 Le code de Folio peut être public sur GitHub Pages, mais **les fiches, prix, descriptions et photos restent dans IndexedDB sur l'appareil**. Elles ne sont pas envoyées automatiquement sur GitHub.
 
 Le fichier `.folio` est une sauvegarde locale complète. Comme il contient les photos et les données de collection, il doit être conservé comme un fichier personnel.
+
+## Photos : ajout et ordre
+
+- Sur Mac/PC, les photos peuvent être ajoutées par glisser-déposer depuis le Finder vers la zone Photos.
+- Sur téléphone, le bouton « Ajouter des photos » ouvre la photothèque / le sélecteur d’images.
+- Sur Mac/PC, les vignettes peuvent être glissées pour changer leur ordre.
+- Sur mobile, un appui prolongé puis un déplacement permet de réordonner les photos.
+- La première photo est toujours utilisée comme photo principale / vignette de l’objet.

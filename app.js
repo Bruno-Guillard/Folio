@@ -309,10 +309,11 @@
       <form id="watchForm" class="form">
         <div class="field"><label>Nom / modèle</label><input id="watchName" value="${esc(w?.name || '')}" placeholder="Ex. Seiko Lord Matic" required></div>
         <div class="field"><label>Dossier</label><select id="watchFolder">${state.folders.map(f=>`<option value="${f.id}" ${f.id===folderId?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div>
-        <div class="photo-input-wrap">
+        <div id="photoDropZone" class="photo-input-wrap" tabindex="0">
           <label class="btn secondary" style="display:inline-block;">Ajouter des photos<input id="watchPhotos" type="file" accept="image/*" multiple hidden></label>
-          <div style="font-size:11px;color:var(--muted);margin-top:8px;">La première photo sera utilisée comme vignette.</div>
-          <div id="photoPreview" class="photo-preview-grid"></div>
+          <div class="drop-hint">Sur Mac/PC, tu peux aussi glisser tes photos ici.</div>
+          <div class="photo-order-hint">Fais glisser les photos pour changer leur ordre. La première est la photo principale.</div>
+          <div id="photoPreview" class="photo-preview-grid" aria-label="Photos de l’objet"></div>
         </div>
         <div class="field"><label>Description</label><textarea id="watchDescription" placeholder="État, référence, calibre, mesures, notes…">${esc(w?.description || '')}</textarea></div>
         <div class="money-grid">
@@ -326,16 +327,46 @@
 
     const q = s => els.sheetContent.querySelector(s);
     q('[data-close]').addEventListener('click', closeSheet);
-    q('#watchPhotos').addEventListener('change', e => {
-      const files = [...e.target.files].filter(f => f.type.startsWith('image/'));
-      state.draftPhotos.push(...files);
+    const addImageFiles = files => {
+      const images = [...files].filter(f => {
+        if (!f) return false;
+        if (f.type?.startsWith('image/')) return true;
+        return /\.(jpe?g|png|webp|gif|heic|heif|avif)$/i.test(f.name || '');
+      });
+      if (!images.length) return;
+      state.draftPhotos.push(...images);
       renderPhotoPreview();
+    };
+
+    q('#watchPhotos').addEventListener('change', e => {
+      addImageFiles(e.target.files || []);
       e.target.value = '';
     });
+
+    const dropZone = q('#photoDropZone');
+    ['dragenter','dragover'].forEach(type => dropZone.addEventListener(type, e => {
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+      dropZone.classList.add('drag-over');
+    }));
+    ['dragleave','drop'].forEach(type => dropZone.addEventListener(type, e => {
+      e.preventDefault();
+      dropZone.classList.remove('drag-over');
+    }));
+    dropZone.addEventListener('drop', e => addImageFiles(e.dataTransfer?.files || []));
+
     ['#buyPrice','#fees','#sellPrice'].forEach(s => q(s).addEventListener('input', updateProfitPreview));
     q('#watchForm').addEventListener('submit', saveWatchForm);
     renderPhotoPreview();
     updateProfitPreview();
+  }
+
+  function moveDraftPhoto(from, to) {
+    from = Number(from); to = Number(to);
+    if (!Number.isInteger(from) || !Number.isInteger(to) || from === to) return;
+    if (from < 0 || to < 0 || from >= state.draftPhotos.length || to >= state.draftPhotos.length) return;
+    const [photo] = state.draftPhotos.splice(from, 1);
+    state.draftPhotos.splice(to, 0, photo);
   }
 
   function renderPhotoPreview() {
@@ -345,12 +376,112 @@
     old.forEach(img => URL.revokeObjectURL(img.dataset.previewUrl));
     root.innerHTML = state.draftPhotos.map((blob,i) => {
       const url = URL.createObjectURL(blob);
-      return `<div class="preview-item"><img src="${url}" data-preview-url="${url}" alt="Photo"><button type="button" class="remove-photo" data-remove-photo="${i}">×</button>${i===0?'<div class="primary-photo-label">Principale</div>':''}</div>`;
+      return `<div class="preview-item" draggable="true" data-photo-item="${i}" aria-label="Photo ${i+1}${i===0?', principale':''}">
+        <img src="${url}" data-preview-url="${url}" alt="Photo ${i+1}" draggable="false">
+        <button type="button" class="remove-photo" data-remove-photo="${i}" aria-label="Supprimer la photo ${i+1}">×</button>
+        <div class="photo-drag-handle" aria-hidden="true">≡</div>
+        ${i===0?'<div class="primary-photo-label">Principale</div>':''}
+      </div>`;
     }).join('');
-    root.querySelectorAll('[data-remove-photo]').forEach(btn => btn.addEventListener('click', () => {
+
+    root.querySelectorAll('[data-remove-photo]').forEach(btn => btn.addEventListener('click', e => {
+      e.stopPropagation();
       state.draftPhotos.splice(Number(btn.dataset.removePhoto), 1);
       renderPhotoPreview();
     }));
+
+    let draggedIndex = null;
+    root.querySelectorAll('.preview-item').forEach(item => {
+      item.addEventListener('dragstart', e => {
+        draggedIndex = Number(item.dataset.photoItem);
+        item.classList.add('is-dragging');
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = 'move';
+          try { e.dataTransfer.setData('text/plain', String(draggedIndex)); } catch (_) {}
+        }
+      });
+      item.addEventListener('dragover', e => {
+        e.preventDefault();
+        item.classList.add('drag-target');
+        if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+      });
+      item.addEventListener('dragleave', () => item.classList.remove('drag-target'));
+      item.addEventListener('drop', e => {
+        // Un fichier venant du Finder doit être traité par la zone d’ajout parente.
+        if (e.dataTransfer?.files?.length) return;
+        e.preventDefault();
+        e.stopPropagation();
+        const to = Number(item.dataset.photoItem);
+        const fromText = e.dataTransfer?.getData('text/plain');
+        const from = draggedIndex ?? (fromText === '' ? NaN : Number(fromText));
+        moveDraftPhoto(from, to);
+        renderPhotoPreview();
+      });
+      item.addEventListener('dragend', () => {
+        draggedIndex = null;
+        root.querySelectorAll('.preview-item').forEach(el => el.classList.remove('is-dragging','drag-target'));
+      });
+    });
+
+    // Réorganisation tactile : appui prolongé puis déplacement sur une autre photo.
+    let pressTimer = null;
+    let sortingItem = null;
+    let sortingIndex = null;
+    let pointerId = null;
+    let touchOrderChanged = false;
+
+    const stopTouchSort = () => {
+      clearTimeout(pressTimer);
+      pressTimer = null;
+      sortingItem?.classList.remove('is-touch-sorting');
+      sortingItem = null;
+      sortingIndex = null;
+      pointerId = null;
+      root.classList.remove('is-sorting');
+    };
+
+    root.querySelectorAll('.preview-item').forEach(item => {
+      item.addEventListener('pointerdown', e => {
+        if (e.pointerType === 'mouse' || e.target.closest('.remove-photo')) return;
+        pointerId = e.pointerId;
+        sortingIndex = Number(item.dataset.photoItem);
+        pressTimer = setTimeout(() => {
+          sortingItem = item;
+          sortingItem.classList.add('is-touch-sorting');
+          root.classList.add('is-sorting');
+          try { item.setPointerCapture(pointerId); } catch (_) {}
+          if (navigator.vibrate) navigator.vibrate(20);
+        }, 260);
+      });
+
+      item.addEventListener('pointermove', e => {
+        if (!sortingItem || e.pointerId !== pointerId) return;
+        e.preventDefault();
+        const target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.preview-item');
+        if (!target || !root.contains(target)) return;
+        const targetIndex = Number(target.dataset.photoItem);
+        if (!Number.isInteger(targetIndex) || targetIndex === sortingIndex) return;
+        moveDraftPhoto(sortingIndex, targetIndex);
+
+        if (sortingIndex < targetIndex) target.after(sortingItem);
+        else target.before(sortingItem);
+
+        [...root.querySelectorAll('.preview-item')].forEach((el, index) => {
+          el.dataset.photoItem = String(index);
+        });
+        sortingIndex = targetIndex;
+        touchOrderChanged = true;
+      });
+
+      ['pointerup','pointercancel'].forEach(type => item.addEventListener(type, e => {
+        if (e.pointerId !== pointerId) return;
+        const changed = touchOrderChanged;
+        touchOrderChanged = false;
+        if (!sortingItem) clearTimeout(pressTimer);
+        stopTouchSort();
+        if (changed) renderPhotoPreview();
+      }));
+    });
   }
 
   function updateProfitPreview() {
