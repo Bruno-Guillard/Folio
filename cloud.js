@@ -202,6 +202,14 @@ const FolioCloud = (() => {
     };
   }
 
+  function settingsPayload(settings) {
+    return {
+      user_id: requireUserId(),
+      misc_expenses: settings?.miscExpenses === '' || settings?.miscExpenses === null || settings?.miscExpenses === undefined ? 0 : Number(settings.miscExpenses),
+      updated_at: toIso(settings?.updatedAt || Date.now())
+    };
+  }
+
   async function upsertFolder(folder) {
     await jsonRequest('/rest/v1/folio_folders?on_conflict=id', {
       method: 'POST',
@@ -215,6 +223,14 @@ const FolioCloud = (() => {
       method: 'POST',
       headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify([itemPayload(item)])
+    });
+  }
+
+  async function upsertSettings(settings) {
+    await jsonRequest('/rest/v1/folio_settings?on_conflict=user_id', {
+      method: 'POST',
+      headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify([settingsPayload(settings)])
     });
   }
 
@@ -316,13 +332,25 @@ const FolioCloud = (() => {
     await jsonRequest(`/rest/v1/folio_folders?id=eq.${encodeURIComponent(folderId)}`, { method: 'DELETE' });
   }
 
+  async function fetchSettings() {
+    try {
+      const rows = await jsonRequest('/rest/v1/folio_settings?select=*&limit=1');
+      return Array.isArray(rows) && rows.length ? rows[0] : null;
+    } catch (err) {
+      // Permet à Folio de continuer à fonctionner si la migration V6 n'a pas encore été exécutée.
+      console.warn('Folio: paramètres cloud indisponibles', err);
+      return null;
+    }
+  }
+
   async function fetchLibrary() {
-    const [folders, items, photos] = await Promise.all([
+    const [folders, items, photos, settings] = await Promise.all([
       jsonRequest('/rest/v1/folio_folders?select=*&order=sort_order.asc,created_at.asc'),
       jsonRequest('/rest/v1/folio_items?select=*&order=folder_id.asc,sort_order.asc,created_at.asc'),
-      jsonRequest('/rest/v1/folio_photos?select=*&order=item_id.asc,sort_order.asc,created_at.asc')
+      jsonRequest('/rest/v1/folio_photos?select=*&order=item_id.asc,sort_order.asc,created_at.asc'),
+      fetchSettings()
     ]);
-    return { folders: folders || [], items: items || [], photos: photos || [] };
+    return { folders: folders || [], items: items || [], photos: photos || [], settings };
   }
 
   async function downloadPhoto(path) {
@@ -340,6 +368,7 @@ const FolioCloud = (() => {
     getUser: () => session?.user || null,
     upsertFolder,
     upsertItem,
+    upsertSettings,
     saveItemWithPhotos,
     replaceItemPhotos,
     deleteItem,

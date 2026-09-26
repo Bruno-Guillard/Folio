@@ -71,3 +71,15 @@ Le Service Worker utilise maintenant le cache `folio-v5-sync`. Une PWA déjà in
 - `app.js` — logique de Folio
 - `sw.js` — cache PWA
 - `manifest.webmanifest` — installation mobile
+
+## V6 — Trésorerie et frais divers
+
+La page d’accueil affiche maintenant **Trésorerie** après **Recette**.
+
+Calcul utilisé :
+
+`Trésorerie = recettes − achats − frais des fiches − frais divers`
+
+La case **Frais divers** est un montant global libre. Elle est enregistrée localement, incluse dans les sauvegardes `.folio` et synchronisée entre les appareils via Supabase.
+
+Pour un projet Supabase déjà configuré avec Folio V5, exécuter une seule fois le fichier `SUPABASE-V6-TRESORERIE.sql` dans **Supabase > SQL Editor** avant de modifier les frais divers.

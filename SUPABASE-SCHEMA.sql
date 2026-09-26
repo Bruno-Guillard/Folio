@@ -69,3 +69,18 @@ with check (bucket_id = 'folio-photos' and (storage.foldername(name))[1] = auth.
 
 create policy "folio_storage_delete_own" on storage.objects for delete to authenticated
 using (bucket_id = 'folio-photos' and (storage.foldername(name))[1] = auth.uid()::text);
+
+-- FOLIO V6 — paramètres synchronisés (trésorerie / frais divers)
+create table if not exists public.folio_settings (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  misc_expenses numeric(12,2) not null default 0,
+  updated_at timestamptz not null default now()
+);
+
+alter table public.folio_settings enable row level security;
+grant select, insert, update, delete on public.folio_settings to authenticated;
+
+create policy "settings_select_own" on public.folio_settings for select to authenticated using (auth.uid() = user_id);
+create policy "settings_insert_own" on public.folio_settings for insert to authenticated with check (auth.uid() = user_id);
+create policy "settings_update_own" on public.folio_settings for update to authenticated using (auth.uid() = user_id) with check (auth.uid() = user_id);
+create policy "settings_delete_own" on public.folio_settings for delete to authenticated using (auth.uid() = user_id);

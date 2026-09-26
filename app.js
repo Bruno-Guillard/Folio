@@ -24,7 +24,10 @@
     suppressWatchClickUntil: 0,
     syncStatus: 'local',
     syncBusy: false,
-    lastSyncError: ''
+    lastSyncError: '',
+    miscExpenses: 0,
+    miscExpensesUpdatedAt: 0,
+    miscExpensesPendingSync: false
   };
 
   const uid = (prefix='id') => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
@@ -138,6 +141,43 @@
     await WatchDB.put('watches', { ...current, pendingSync: false });
   }
 
+  async function saveLocalSettings({ miscExpenses = state.miscExpenses, updatedAt = Date.now(), pendingSync = true } = {}) {
+    const next = {
+      id: 'main',
+      miscExpenses: Math.max(0, Number(miscExpenses) || 0),
+      updatedAt: Number(updatedAt) || Date.now(),
+      pendingSync: !!pendingSync
+    };
+    await WatchDB.put('settings', next);
+    state.miscExpenses = next.miscExpenses;
+    state.miscExpensesUpdatedAt = next.updatedAt;
+    state.miscExpensesPendingSync = next.pendingSync;
+    return next;
+  }
+
+  async function clearSettingsPending() {
+    const current = await WatchDB.get('settings', 'main');
+    if (!current) return;
+    await WatchDB.put('settings', { ...current, pendingSync: false });
+    state.miscExpensesPendingSync = false;
+  }
+
+  async function syncSettingsRecord(settings, { quiet=false } = {}) {
+    if (!FolioCloud.isSignedIn()) return false;
+    try {
+      setSyncStatus('syncing');
+      await FolioCloud.upsertSettings(settings);
+      await clearSettingsPending();
+      setSyncStatus('synced');
+      return true;
+    } catch (err) {
+      console.error(err);
+      setSyncStatus('error', err.message);
+      if (!quiet) toast('Frais divers enregistrés localement · synchronisation en attente');
+      return false;
+    }
+  }
+
   async function syncFolderRecord(folder, { quiet=false } = {}) {
     if (!FolioCloud.isSignedIn()) return false;
     try {
@@ -181,6 +221,8 @@
     const watches = await WatchDB.getAll('watches');
     for (const f of folders) await WatchDB.put('folders', { ...f, pendingSync: true });
     for (const w of watches) await WatchDB.put('watches', { ...w, pendingSync: 'full' });
+    const settings = await WatchDB.get('settings', 'main');
+    if (settings) await WatchDB.put('settings', { ...settings, pendingSync: true });
   }
 
 
@@ -233,6 +275,11 @@
       if (w.pendingSync === 'meta') await FolioCloud.upsertItem(w);
       else await FolioCloud.saveItemWithPhotos(w);
       await clearItemPending(w.id);
+    }
+    const settings = await WatchDB.get('settings', 'main');
+    if (settings?.pendingSync) {
+      await FolioCloud.upsertSettings(settings);
+      await clearSettingsPending();
     }
   }
 
@@ -308,6 +355,14 @@
     await WatchDB.clear('folders');
     for (const f of localFolders) await WatchDB.put('folders', f);
     for (const w of localItems) await WatchDB.put('watches', w);
+    if (remote.settings) {
+      await WatchDB.put('settings', {
+        id: 'main',
+        miscExpenses: Number(remote.settings.misc_expenses) || 0,
+        updatedAt: remoteTime(remote.settings.updated_at),
+        pendingSync: false
+      });
+    }
     await loadData();
   }
 
@@ -435,14 +490,15 @@
   }
 
   function totals(watches) {
-    let buy = 0, sell = 0, profit = 0;
+    let buy = 0, sell = 0, fees = 0, profit = 0;
     for (const w of watches) {
       buy += num(w.buyPrice) || 0;
+      fees += num(w.fees) || 0;
       if (num(w.sellPrice) !== null) sell += num(w.sellPrice) || 0;
       const p = watchProfit(w);
       if (p !== null) profit += p;
     }
-    return { buy, sell, profit };
+    return { buy, sell, fees, profit };
   }
 
   function profitClass(value) {
@@ -460,6 +516,29 @@
           <div class="metric"><div class="metric-label">Vente</div><div class="metric-value">${euro(t.sell)}</div></div>
           <div class="metric"><div class="metric-label">Bénéfice</div><div class="metric-value ${profitClass(t.profit)}">${euro(t.profit)}</div></div>
         </div>
+      </section>`;
+  }
+
+  function homeSummaryHtml(t) {
+    const misc = Number(state.miscExpenses) || 0;
+    const treasury = t.sell - t.buy - t.fees - misc;
+    return `
+      <section class="summary home-summary">
+        <div class="summary-title">Total général</div>
+        <div class="summary-grid summary-grid-home">
+          <div class="metric"><div class="metric-label">Achat</div><div class="metric-value">${euro(t.buy)}</div></div>
+          <div class="metric"><div class="metric-label">Recette</div><div class="metric-value">${euro(t.sell)}</div></div>
+          <div class="metric"><div class="metric-label">Trésorerie</div><div class="metric-value ${profitClass(treasury)}">${euro(treasury)}</div></div>
+          <div class="metric"><div class="metric-label">Bénéfice</div><div class="metric-value ${profitClass(t.profit)}">${euro(t.profit)}</div></div>
+        </div>
+        <div class="misc-expense-row">
+          <label for="miscExpensesInput">Frais divers</label>
+          <div class="misc-expense-input-wrap">
+            <input id="miscExpensesInput" type="number" min="0" step="0.01" inputmode="decimal" value="${esc(String(misc))}" aria-label="Frais divers">
+            <span>€</span>
+          </div>
+        </div>
+        <div class="treasury-hint">Trésorerie = recettes − achats − frais des fiches − frais divers</div>
       </section>`;
   }
 
@@ -483,6 +562,10 @@
   async function loadData() {
     state.folders = (await WatchDB.getAll('folders')).sort((a,b) => a.createdAt - b.createdAt);
     state.watches = (await WatchDB.getAll('watches')).sort((a,b) => b.createdAt - a.createdAt);
+    const settings = await WatchDB.get('settings', 'main');
+    state.miscExpenses = Number(settings?.miscExpenses) || 0;
+    state.miscExpensesUpdatedAt = Number(settings?.updatedAt) || 0;
+    state.miscExpensesPendingSync = !!settings?.pendingSync;
   }
 
   function folderWatches(folderId) {
@@ -529,7 +612,7 @@
     els.subtitle.textContent = `${state.watches.length} objet${state.watches.length > 1 ? 's' : ''}`;
     els.fab.setAttribute('aria-label', 'Ajouter un objet');
     const t = totals(state.watches);
-    let html = summaryHtml(t);
+    let html = homeSummaryHtml(t);
     html += `<div class="section-head"><div class="section-title">Dossiers</div><button class="text-btn" data-action="new-folder">＋ Nouveau</button></div>`;
 
     if (!state.folders.length) {
@@ -779,6 +862,18 @@
     document.querySelectorAll('[data-action="folder-menu"]').forEach(el => el.addEventListener('click', showFolderMenu));
     document.querySelectorAll('[data-action="edit-watch"]').forEach(el => el.addEventListener('click', () => showWatchForm(state.view.id)));
     document.querySelectorAll('[data-action="delete-watch"]').forEach(el => el.addEventListener('click', deleteCurrentWatch));
+    const miscInput = document.getElementById('miscExpensesInput');
+    if (miscInput) {
+      const commitMiscExpenses = async () => {
+        const value = Math.max(0, Number(String(miscInput.value).replace(',', '.')) || 0);
+        if (Math.abs(value - (Number(state.miscExpenses) || 0)) < 0.005) return;
+        const settings = await saveLocalSettings({ miscExpenses: value, updatedAt: Date.now(), pendingSync: true });
+        render();
+        syncSettingsRecord(settings, { quiet:true });
+      };
+      miscInput.addEventListener('change', commitMiscExpenses);
+      miscInput.addEventListener('blur', commitMiscExpenses);
+    }
   }
 
   function openSheet(html) {
@@ -1160,9 +1255,13 @@
     }
     return {
       format: 'folio-backup',
-      version: 3,
+      version: 4,
       app: 'Folio',
       exportedAt: new Date().toISOString(),
+      settings: {
+        miscExpenses: Number(state.miscExpenses) || 0,
+        updatedAt: Number(state.miscExpensesUpdatedAt) || Date.now()
+      },
       folders: state.folders,
       items
     };
@@ -1200,6 +1299,10 @@
     return {
       version: Number(data.version) || 1,
       exportedAt: data.exportedAt || null,
+      settings: data.settings && typeof data.settings === 'object' ? {
+        miscExpenses: Math.max(0, Number(data.settings.miscExpenses) || 0),
+        updatedAt: Number(data.settings.updatedAt) || 0
+      } : null,
       folders: data.folders.filter(f => f && f.id && typeof f.name === 'string'),
       items: items.filter(w => w && w.id)
     };
@@ -1372,6 +1475,14 @@
         }
       }
 
+      if (data.settings) {
+        const localSettings = await WatchDB.get('settings', 'main');
+        const localTime = Number(localSettings?.updatedAt) || 0;
+        const incomingTime = Number(data.settings.updatedAt) || 0;
+        if (!localSettings || incomingTime > localTime) {
+          await saveLocalSettings({ miscExpenses: data.settings.miscExpenses, updatedAt: incomingTime || Date.now(), pendingSync: true });
+        }
+      }
       await loadData();
       closeSheet();
       setView('home');
@@ -1393,6 +1504,7 @@
 
       await WatchDB.clear('watches');
       await WatchDB.clear('folders');
+      await WatchDB.clear('settings');
       const folderIds = new Set();
       for (const f of data.folders) {
         const next = { ...f, createdAt: Number(f.createdAt) || Date.now(), updatedAt: Number(f.updatedAt) || Number(f.createdAt) || Date.now() };
@@ -1403,6 +1515,11 @@
         const next = await hydrateImportedItem(w);
         if (folderIds.has(next.folderId)) await WatchDB.put('watches', next);
       }
+      await saveLocalSettings({
+        miscExpenses: data.settings?.miscExpenses || 0,
+        updatedAt: data.settings?.updatedAt || Date.now(),
+        pendingSync: true
+      });
 
       await loadData();
       closeSheet();
