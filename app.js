@@ -254,6 +254,7 @@
           id: match.id,
           name: match.name || local.name,
           order: Number(match.sort_order) || 0,
+          includeInTotals: match.include_in_totals !== false,
           createdAt: remoteTime(match.created_at),
           updatedAt: remoteTime(match.updated_at),
           pendingSync: false
@@ -346,6 +347,7 @@
       id: row.id,
       name: row.name || '',
       order: Number(row.sort_order) || 0,
+      includeInTotals: row.include_in_totals !== false,
       createdAt: remoteTime(row.created_at),
       updatedAt: remoteTime(row.updated_at),
       pendingSync: false
@@ -501,6 +503,15 @@
     return { buy, sell, fees, profit };
   }
 
+  function folderIncludedInTotals(folder) {
+    return !folder || folder.includeInTotals !== false;
+  }
+
+  function watchesIncludedInGeneralTotals() {
+    const folderById = new Map(state.folders.map(f => [f.id, f]));
+    return state.watches.filter(w => folderIncludedInTotals(folderById.get(w.folderId)));
+  }
+
   function profitClass(value) {
     if (value > 0) return 'positive';
     if (value < 0) return 'negative';
@@ -557,6 +568,7 @@
         id: newUuid(),
         name: defaults[i],
         order: i,
+        includeInTotals: true,
         createdAt: now + i,
         updatedAt: now + i,
         pendingSync: true
@@ -616,7 +628,7 @@
   function renderHome() {
     els.subtitle.textContent = `${state.watches.length} objet${state.watches.length > 1 ? 's' : ''}`;
     els.fab.setAttribute('aria-label', 'Ajouter un objet');
-    const t = totals(state.watches);
+    const t = totals(watchesIncludedInGeneralTotals());
     let html = homeSummaryHtml(t);
     html += `<div class="section-head"><div class="section-title">Dossiers</div><button class="text-btn" data-action="new-folder">＋ Nouveau</button></div>`;
 
@@ -628,14 +640,20 @@
         const fw = state.watches.filter(w => w.folderId === f.id);
         const ft = totals(fw);
         html += `
-          <button class="folder-card" data-folder-id="${f.id}">
-            <div class="folder-top"><div class="folder-name">${esc(f.name)}</div><div class="folder-count">${fw.length}</div></div>
-            <div class="folder-stats">
-              <div class="stat-row"><span>Achat</span><strong>${euro(ft.buy)}</strong></div>
-              <div class="stat-row"><span>Vente</span><strong>${euro(ft.sell)}</strong></div>
-              <div class="stat-row"><span>Bénéfice</span><strong class="${profitClass(ft.profit)}">${euro(ft.profit)}</strong></div>
-            </div>
-          </button>`;
+          <div class="folder-card ${f.includeInTotals === false ? 'excluded-from-totals' : ''}">
+            <button class="folder-card-open" data-folder-id="${f.id}">
+              <div class="folder-top"><div class="folder-name">${esc(f.name)}</div><div class="folder-count">${fw.length}</div></div>
+              <div class="folder-stats">
+                <div class="stat-row"><span>Achat</span><strong>${euro(ft.buy)}</strong></div>
+                <div class="stat-row"><span>Vente</span><strong>${euro(ft.sell)}</strong></div>
+                <div class="stat-row"><span>Bénéfice</span><strong class="${profitClass(ft.profit)}">${euro(ft.profit)}</strong></div>
+              </div>
+            </button>
+            <label class="folder-total-toggle">
+              <input type="checkbox" data-folder-total-toggle="${f.id}" ${f.includeInTotals === false ? '' : 'checked'}>
+              <span>Inclure dans les totaux</span>
+            </label>
+          </div>`;
       }
       html += `</div>`;
     }
@@ -849,8 +867,28 @@
     bindCommon();
   }
 
+  async function setFolderIncludedInTotals(folderId, checked, { rerender=true } = {}) {
+    const folder = state.folders.find(f => f.id === folderId);
+    if (!folder) return;
+    const next = {
+      ...folder,
+      includeInTotals: !!checked,
+      updatedAt: Date.now(),
+      pendingSync: true
+    };
+    await WatchDB.put('folders', next);
+    await loadData();
+    if (rerender) render();
+    syncFolderRecord(next, { quiet:true });
+  }
+
   function bindCommon() {
     document.querySelectorAll('[data-folder-id]').forEach(el => el.addEventListener('click', () => setView('folder', el.dataset.folderId)));
+    document.querySelectorAll('[data-folder-total-toggle]').forEach(el => el.addEventListener('change', async e => {
+      e.stopPropagation();
+      await setFolderIncludedInTotals(el.dataset.folderTotalToggle, el.checked);
+      toast(el.checked ? 'Dossier inclus dans les totaux' : 'Dossier exclu des totaux');
+    }));
     document.querySelectorAll('[data-watch-id]').forEach(el => {
       el.addEventListener('click', () => {
         if (Date.now() < state.suppressWatchClickUntil) return;
@@ -910,7 +948,7 @@
       const name = els.sheetContent.querySelector('#folderName').value.trim();
       if (!name) return;
       const now = Date.now();
-      const folder = { id: newUuid(), name, order: state.folders.length, createdAt: now, updatedAt: now, pendingSync: true };
+      const folder = { id: newUuid(), name, order: state.folders.length, includeInTotals: true, createdAt: now, updatedAt: now, pendingSync: true };
       await WatchDB.put('folders', folder);
       await loadData(); closeSheet(); render(); toast('Dossier créé');
       syncFolderRecord(folder, { quiet:true });
@@ -923,9 +961,17 @@
     openSheet(`
       <h2 class="sheet-title">${esc(folder.name)}</h2>
       <div class="sheet-list">
+        <label class="sheet-toggle">
+          <div><strong>Inclure dans les totaux généraux</strong><small>Achat, recette, bénéfice et trésorerie de l’accueil.</small></div>
+          <input type="checkbox" data-act="include-totals" ${folder.includeInTotals === false ? '' : 'checked'}>
+        </label>
         <button class="sheet-action" data-act="rename">Renommer le dossier</button>
         <button class="sheet-action danger" data-act="delete">Supprimer le dossier</button>
       </div>`);
+    els.sheetContent.querySelector('[data-act="include-totals"]').addEventListener('change', async e => {
+      await setFolderIncludedInTotals(folder.id, e.target.checked, { rerender:true });
+      toast(e.target.checked ? 'Dossier inclus dans les totaux' : 'Dossier exclu des totaux');
+    });
     els.sheetContent.querySelector('[data-act="rename"]').addEventListener('click', () => showRenameFolder(folder));
     els.sheetContent.querySelector('[data-act="delete"]').addEventListener('click', () => deleteFolder(folder));
   }
@@ -1260,7 +1306,7 @@
     }
     return {
       format: 'folio-backup',
-      version: 4,
+      version: 5,
       app: 'Folio',
       exportedAt: new Date().toISOString(),
       settings: {
@@ -1308,7 +1354,9 @@
         miscExpenses: Math.max(0, Number(data.settings.miscExpenses) || 0),
         updatedAt: Number(data.settings.updatedAt) || 0
       } : null,
-      folders: data.folders.filter(f => f && f.id && typeof f.name === 'string'),
+      folders: data.folders
+        .filter(f => f && f.id && typeof f.name === 'string')
+        .map(f => ({ ...f, includeInTotals: f.includeInTotals !== false })),
       items: items.filter(w => w && w.id)
     };
   }

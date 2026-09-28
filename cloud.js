@@ -181,6 +181,7 @@ const FolioCloud = (() => {
       user_id: requireUserId(),
       name: folder.name || '',
       sort_order: Number.isFinite(Number(folder.order)) ? Number(folder.order) : 0,
+      include_in_totals: folder.includeInTotals !== false,
       created_at: toIso(folder.createdAt),
       updated_at: toIso(folder.updatedAt || folder.createdAt)
     };

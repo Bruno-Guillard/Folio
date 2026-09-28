@@ -90,3 +90,16 @@ Pour un projet Supabase déjà configuré avec Folio V5, exécuter une seule foi
 - Première ligne : Achat · Recette · Bénéfice.
 - Deuxième ligne, plus discrète : Frais divers · Trésorerie.
 - Aucun changement de données ni de schéma Supabase par rapport à V6.
+
+
+## V6.2 — totaux généraux par dossier
+
+Chaque dossier possède maintenant l'option **Inclure dans les totaux généraux**.
+
+- Les chiffres affichés à l'intérieur d'un dossier sont toujours calculés uniquement avec les objets de ce dossier.
+- Sur l'accueil, Achat, Recette, Bénéfice et Trésorerie utilisent uniquement les dossiers cochés.
+- Décocher un dossier ne masque ni ne supprime aucun objet ; cela l'exclut seulement des totaux généraux.
+- Le réglage est synchronisé entre Mac et téléphone et inclus dans les sauvegardes `.folio`.
+- Les anciens dossiers et anciennes sauvegardes sont considérés comme inclus par défaut.
+
+Avant la première utilisation de V6.2 sur un projet Supabase existant, exécuter une seule fois `SUPABASE-V6.2-TOTAUX-DOSSIERS.sql` dans **Supabase > SQL Editor**.
