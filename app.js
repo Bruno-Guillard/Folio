@@ -1214,17 +1214,32 @@
   async function saveWatchForm(e) {
     e.preventDefault();
     const q = s => els.sheetContent.querySelector(s);
-    const old = state.editingWatchId ? state.watches.find(x => x.id === state.editingWatchId) : null;
+
+    // En mode modification, une fiche existante doit TOUJOURS conserver son identifiant.
+    // On relit directement IndexedDB plutôt que de dépendre uniquement de state.watches,
+    // qui peut être rafraîchi en arrière-plan par une synchronisation pendant que le
+    // formulaire est ouvert. Si la fiche n'est plus trouvée, on bloque l'enregistrement
+    // au lieu de créer silencieusement un nouvel objet (ce qui provoquait un doublon).
+    const editingId = state.editingWatchId;
+    const isEditing = !!editingId;
+    const old = isEditing ? await WatchDB.get('watches', editingId) : null;
+    if (isEditing && !old) {
+      alert('Cette fiche a été actualisée pendant la modification. Ferme cette fenêtre, resynchronise Folio puis réessaie. Aucune copie n’a été créée.');
+      return;
+    }
+
+    const destinationFolderId = q('#watchFolder').value;
+    const movedToAnotherFolder = !!old && old.folderId !== destinationFolderId;
     const data = {
-      id: old?.id || newUuid(),
+      id: old ? old.id : newUuid(),
       name: q('#watchName').value.trim(),
-      folderId: q('#watchFolder').value,
+      folderId: destinationFolderId,
       description: q('#watchDescription').value.trim(),
       buyPrice: num(q('#buyPrice').value),
       fees: num(q('#fees').value),
       sellPrice: num(q('#sellPrice').value),
       photos: [...state.draftPhotos],
-      order: old && old.folderId === q('#watchFolder').value ? old.order : topOrderForFolder(q('#watchFolder').value, old?.id || null),
+      order: old && old.folderId === destinationFolderId ? old.order : topOrderForFolder(destinationFolderId, old?.id || null),
       createdAt: old?.createdAt || Date.now(),
       updatedAt: Date.now(),
       pendingSync: 'full'
@@ -1234,7 +1249,7 @@
     const id = data.id;
     closeSheet();
     setView('watch', id);
-    toast(old ? 'Objet modifié' : 'Objet ajouté');
+    toast(old ? (movedToAnotherFolder ? 'Objet déplacé' : 'Objet modifié') : 'Objet ajouté');
     syncItemRecord(data, { full:true, quiet:true }).then(loadData).catch(console.error);
   }
 

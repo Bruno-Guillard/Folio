@@ -103,3 +103,12 @@ Chaque dossier possède maintenant l'option **Inclure dans les totaux généraux
 - Les anciens dossiers et anciennes sauvegardes sont considérés comme inclus par défaut.
 
 Avant la première utilisation de V6.2 sur un projet Supabase existant, exécuter une seule fois `SUPABASE-V6.2-TOTAUX-DOSSIERS.sql` dans **Supabase > SQL Editor**.
+
+
+## V6.3 — correction du déplacement entre dossiers
+
+- Modifier le dossier d’un objet déplace désormais strictement la fiche existante : son identifiant reste inchangé.
+- En mode modification, Folio relit la fiche directement dans IndexedDB avant l’enregistrement.
+- Si une synchronisation a remplacé/actualisé la fiche pendant que le formulaire était ouvert, Folio bloque l’enregistrement au lieu de créer une nouvelle fiche par erreur.
+- Aucun changement de schéma Supabase n’est nécessaire pour V6.3.
+- Les doublons déjà créés avant cette correction ne sont pas supprimés automatiquement afin d’éviter de supprimer deux objets réellement distincts portant le même nom. Supprimer manuellement la copie indésirable une fois la V6.3 installée.
