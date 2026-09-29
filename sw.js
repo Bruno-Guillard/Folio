@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-5-annonces';
+const CACHE = 'folio-v6-6-photo-order';
 const ASSETS = [
   './',
   './index.html',

@@ -140,3 +140,14 @@ Avant de publier V6.5 sur GitHub Pages, exécuter une fois dans Supabase > SQL E
 `SUPABASE-V6.5-ANNONCES.sql`.
 
 Le script initialise le titre d'annonce des fiches existantes avec leur nom Folio uniquement si ce nouveau champ est vide, afin de ne pas casser la vitrine existante. Après cela, les deux titres sont totalement indépendants.
+
+
+## V6.6 — Réorganisation des photos
+
+- Correction du glisser-déposer des photos dans une fiche.
+- Sur téléphone comme sur ordinateur, saisir la poignée **≡** d'une photo et la faire glisser vers sa nouvelle position.
+- Sur ordinateur, le glisser direct de la vignette reste également disponible.
+- La zone d'ajout de fichiers n'intercepte plus le glisser interne servant au classement.
+- La première photo reste la photo principale.
+- L'ordre est enregistré dans Folio et synchronisé vers Supabase comme auparavant.
+- Aucun changement SQL Supabase n'est nécessaire.

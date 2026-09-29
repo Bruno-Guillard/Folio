@@ -256,11 +256,14 @@ button { -webkit-tap-highlight-color: transparent; }
   color: #fff;
   font-size: 17px;
   line-height: 1;
-  pointer-events: none;
+  pointer-events: auto;
+  touch-action: none;
+  cursor: grab;
+  z-index: 4;
 }
+.photo-drag-handle:active { cursor: grabbing; }
 @media (hover: none) and (pointer: coarse) {
   .drop-hint { display: none; }
-  .photo-order-hint::before { content: "Appui prolongé puis glisse. "; }
 }
 
 /* Folio V4 — ordre des objets dans un dossier */

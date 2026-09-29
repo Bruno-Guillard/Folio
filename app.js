@@ -1202,7 +1202,7 @@
         <div id="photoDropZone" class="photo-input-wrap" tabindex="0">
           <label class="btn secondary" style="display:inline-block;">Ajouter des photos<input id="watchPhotos" type="file" accept="image/*" multiple hidden></label>
           <div class="drop-hint">Sur Mac/PC, tu peux aussi glisser tes photos ici.</div>
-          <div class="photo-order-hint">Fais glisser les photos pour changer leur ordre. La première est la photo principale.</div>
+          <div class="photo-order-hint">Glisse une photo par la poignée ≡ pour changer son ordre. La première est la photo principale.</div>
           <div id="photoPreview" class="photo-preview-grid" aria-label="Photos de l’objet"></div>
         </div>
         <div class="field"><label>Description</label><textarea id="watchDescription" placeholder="État, référence, calibre, mesures, notes…">${esc(w?.description || '')}</textarea></div>
@@ -1234,16 +1234,25 @@
     });
 
     const dropZone = q('#photoDropZone');
+    const isFileDrag = e => !!(e.dataTransfer && Array.from(e.dataTransfer.types || []).includes('Files'));
     ['dragenter','dragover'].forEach(type => dropZone.addEventListener(type, e => {
+      // La zone parente ne doit pas intercepter le glisser interne servant à
+      // réordonner les photos. Elle ne s'active que pour des fichiers venant
+      // du Finder / explorateur de fichiers.
+      if (!isFileDrag(e)) return;
       e.preventDefault();
       if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
       dropZone.classList.add('drag-over');
     }));
-    ['dragleave','drop'].forEach(type => dropZone.addEventListener(type, e => {
+    dropZone.addEventListener('dragleave', e => {
+      if (isFileDrag(e)) dropZone.classList.remove('drag-over');
+    });
+    dropZone.addEventListener('drop', e => {
+      if (!e.dataTransfer?.files?.length) return;
       e.preventDefault();
       dropZone.classList.remove('drag-over');
-    }));
-    dropZone.addEventListener('drop', e => addImageFiles(e.dataTransfer?.files || []));
+      addImageFiles(e.dataTransfer.files);
+    });
 
     ['#buyPrice','#fees','#sellPrice'].forEach(s => q(s).addEventListener('input', updateProfitPreview));
     q('#watchForm').addEventListener('submit', saveWatchForm);
@@ -1280,6 +1289,7 @@
       renderPhotoPreview();
     }));
 
+    // Ordinateur : la vignette entière reste déplaçable avec le glisser-déposer natif.
     let draggedIndex = null;
     root.querySelectorAll('.preview-item').forEach(item => {
       item.addEventListener('dragstart', e => {
@@ -1291,7 +1301,10 @@
         }
       });
       item.addEventListener('dragover', e => {
+        // Empêche la zone d'ajout parente de transformer le curseur en "copie".
+        if (e.dataTransfer?.files?.length) return;
         e.preventDefault();
+        e.stopPropagation();
         item.classList.add('drag-target');
         if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
       });
@@ -1313,64 +1326,75 @@
       });
     });
 
-    // Réorganisation tactile : appui prolongé puis déplacement sur une autre photo.
-    let pressTimer = null;
-    let sortingItem = null;
-    let sortingIndex = null;
-    let pointerId = null;
-    let touchOrderChanged = false;
+    // Téléphone + ordinateur : la poignée ≡ utilise Pointer Events.
+    // Elle démarre immédiatement le déplacement, sans appui prolongé : cela évite
+    // que le navigateur interprète le geste comme un scroll avant que Folio ne
+    // puisse prendre la main.
+    let pointerDrag = null;
 
-    const stopTouchSort = () => {
-      clearTimeout(pressTimer);
-      pressTimer = null;
-      sortingItem?.classList.remove('is-touch-sorting');
-      sortingItem = null;
-      sortingIndex = null;
-      pointerId = null;
+    const reindexPreviewItems = () => {
+      [...root.querySelectorAll('.preview-item')].forEach((el, index) => {
+        el.dataset.photoItem = String(index);
+        const remove = el.querySelector('[data-remove-photo]');
+        if (remove) remove.dataset.removePhoto = String(index);
+      });
+    };
+
+    const finishPointerDrag = (e, handle) => {
+      if (!pointerDrag || (e && e.pointerId !== pointerDrag.pointerId)) return;
+      const current = pointerDrag;
+      pointerDrag = null;
+      try { handle.releasePointerCapture(current.pointerId); } catch (_) {}
+      current.item.classList.remove('is-touch-sorting');
       root.classList.remove('is-sorting');
+      if (current.changed) renderPhotoPreview();
     };
 
     root.querySelectorAll('.preview-item').forEach(item => {
-      item.addEventListener('pointerdown', e => {
-        if (e.pointerType === 'mouse' || e.target.closest('.remove-photo')) return;
-        pointerId = e.pointerId;
-        sortingIndex = Number(item.dataset.photoItem);
-        pressTimer = setTimeout(() => {
-          sortingItem = item;
-          sortingItem.classList.add('is-touch-sorting');
-          root.classList.add('is-sorting');
-          try { item.setPointerCapture(pointerId); } catch (_) {}
-          if (navigator.vibrate) navigator.vibrate(20);
-        }, 260);
-      });
+      const handle = item.querySelector('.photo-drag-handle');
+      if (!handle) return;
 
-      item.addEventListener('pointermove', e => {
-        if (!sortingItem || e.pointerId !== pointerId) return;
+      handle.addEventListener('pointerdown', e => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
         e.preventDefault();
-        const target = document.elementFromPoint(e.clientX, e.clientY)?.closest('.preview-item');
-        if (!target || !root.contains(target)) return;
-        const targetIndex = Number(target.dataset.photoItem);
-        if (!Number.isInteger(targetIndex) || targetIndex === sortingIndex) return;
-        moveDraftPhoto(sortingIndex, targetIndex);
+        e.stopPropagation();
 
-        if (sortingIndex < targetIndex) target.after(sortingItem);
-        else target.before(sortingItem);
-
-        [...root.querySelectorAll('.preview-item')].forEach((el, index) => {
-          el.dataset.photoItem = String(index);
-        });
-        sortingIndex = targetIndex;
-        touchOrderChanged = true;
+        pointerDrag = {
+          pointerId: e.pointerId,
+          item,
+          index: Number(item.dataset.photoItem),
+          changed: false
+        };
+        item.classList.add('is-touch-sorting');
+        root.classList.add('is-sorting');
+        try { handle.setPointerCapture(e.pointerId); } catch (_) {}
+        if (e.pointerType !== 'mouse' && navigator.vibrate) navigator.vibrate(15);
       });
 
-      ['pointerup','pointercancel'].forEach(type => item.addEventListener(type, e => {
-        if (e.pointerId !== pointerId) return;
-        const changed = touchOrderChanged;
-        touchOrderChanged = false;
-        if (!sortingItem) clearTimeout(pressTimer);
-        stopTouchSort();
-        if (changed) renderPhotoPreview();
-      }));
+      handle.addEventListener('pointermove', e => {
+        if (!pointerDrag || e.pointerId !== pointerDrag.pointerId) return;
+        e.preventDefault();
+
+        const underPointer = document.elementFromPoint(e.clientX, e.clientY);
+        const target = underPointer?.closest?.('.preview-item');
+        if (!target || !root.contains(target) || target === pointerDrag.item) return;
+
+        const targetIndex = Number(target.dataset.photoItem);
+        if (!Number.isInteger(targetIndex) || targetIndex === pointerDrag.index) return;
+
+        moveDraftPhoto(pointerDrag.index, targetIndex);
+        if (pointerDrag.index < targetIndex) target.after(pointerDrag.item);
+        else target.before(pointerDrag.item);
+        reindexPreviewItems();
+        pointerDrag.index = targetIndex;
+        pointerDrag.changed = true;
+      });
+
+      handle.addEventListener('pointerup', e => finishPointerDrag(e, handle));
+      handle.addEventListener('pointercancel', e => finishPointerDrag(e, handle));
+      handle.addEventListener('lostpointercapture', e => {
+        if (pointerDrag && e.pointerId === pointerDrag.pointerId) finishPointerDrag(null, handle);
+      });
     });
   }
 
