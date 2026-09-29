@@ -345,3 +345,86 @@ button { -webkit-tap-highlight-color: transparent; }
 @keyframes folio-spin { to { transform: rotate(360deg); } }
 
 .topbar #backBtn.hidden { display: block !important; visibility: hidden; pointer-events: none; }
+
+
+/* Folio V6.4 — dossier spécial Réparation */
+.repair-folder-card {
+  background: linear-gradient(180deg, #fff, #faf8f3);
+}
+.repair-list {
+  grid-template-columns: 1fr !important;
+  gap: 8px;
+}
+.repair-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1.5fr) minmax(260px, 1fr);
+  align-items: center;
+  gap: 18px;
+  padding: 15px 52px 15px 16px;
+  min-height: 76px;
+  overflow: visible;
+}
+.repair-row-name {
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 760;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.repair-row-money {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.repair-row-money div { min-width: 0; }
+.repair-row-money span {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  margin-bottom: 3px;
+}
+.repair-row-money strong {
+  display: block;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.repair-row-money strong.positive { color: var(--profit); }
+.repair-row-money strong.negative { color: var(--loss); }
+.repair-row .watch-drag-handle {
+  top: 50%;
+  transform: translateY(-50%);
+}
+.repair-detail-icon {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  margin: 12px 0 4px;
+  border-radius: 22px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  font-size: 32px;
+}
+.repair-form-note,
+.system-folder-note {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+.system-folder-note {
+  padding: 13px 15px;
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+
+@media (max-width: 620px) {
+  .repair-row {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 14px 48px 14px 14px;
+  }
+  .repair-row-money { gap: 7px; }
+  .repair-row-money strong { font-size: 11px; }
+}

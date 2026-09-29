@@ -60,7 +60,7 @@ L'export/import `.folio` reste disponible comme sauvegarde indépendante du clou
 
 Remplacer les fichiers de la version précédente par le contenu de ce dossier dans **le même dépôt et le même chemin GitHub Pages**.
 
-Le Service Worker utilise maintenant un cache dédié à la version V6.1. Une PWA déjà installée recevra donc la nouvelle version sans devoir être supprimée/réinstallée. Une fermeture/réouverture ou une actualisation peut être nécessaire juste après la publication.
+Le Service Worker utilise un cache versionné afin de forcer la mise à jour de la PWA. Une PWA déjà installée recevra donc la nouvelle version sans devoir être supprimée/réinstallée. Une fermeture/réouverture ou une actualisation peut être nécessaire juste après la publication.
 
 ## Fichiers principaux
 
@@ -112,3 +112,18 @@ Avant la première utilisation de V6.2 sur un projet Supabase existant, exécute
 - Si une synchronisation a remplacé/actualisé la fiche pendant que le formulaire était ouvert, Folio bloque l’enregistrement au lieu de créer une nouvelle fiche par erreur.
 - Aucun changement de schéma Supabase n’est nécessaire pour V6.3.
 - Les doublons déjà créés avant cette correction ne sont pas supprimés automatiquement afin d’éviter de supprimer deux objets réellement distincts portant le même nom. Supprimer manuellement la copie indésirable une fois la V6.3 installée.
+
+## V6.4 — dossier Réparation
+
+Folio ajoute automatiquement un dossier spécial **Réparation** aux bibliothèques existantes et aux nouvelles installations.
+
+- pas de photos : le dossier est affiché sous forme de liste ;
+- chaque ligne contient le nom de la montre, le coût éventuel, le prix de la réparation et le bénéfice ;
+- bénéfice réparation = prix de réparation − coût ;
+- tant qu'aucun prix de réparation n'est renseigné, le coût est compté comme un bénéfice négatif ;
+- le dossier possède la même option **Inclure dans les totaux généraux** que les autres dossiers ;
+- s'il est inclus, le coût alimente les dépenses générales et le prix de réparation les recettes générales ;
+- le dossier Réparation est un dossier système : il n'est ni renommable ni supprimable depuis Folio afin de conserver son fonctionnement spécial ;
+- aucun changement de schéma Supabase n'est nécessaire pour V6.4.
+
+Le Service Worker utilise le cache `folio-v6-4-reparations`.

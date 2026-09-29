@@ -35,6 +35,20 @@
   const num = (v) => v === '' || v === null || v === undefined ? null : Number(v);
   const esc = (s='') => String(s).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
+  const normalizeFolderName = (name='') => String(name)
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
+    .toLocaleLowerCase('fr');
+
+  const isRepairFolder = folder => {
+    const key = normalizeFolderName(folder?.name);
+    return key === 'reparation' || key === 'reparations';
+  };
+
+  const repairFolderForItem = item => state.folders.find(f => f.id === item?.folderId && isRepairFolder(f)) || null;
+  const isRepairItem = item => !!repairFolderForItem(item);
+
 
   const newUuid = () => crypto.randomUUID();
   const isUuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''));
@@ -105,9 +119,9 @@
 
   function defaultFolderNamesOnly() {
     if (state.watches.length) return false;
-    if (!state.folders.length || state.folders.length > 3) return false;
-    const allowed = new Set(['en vente', 'vendus', 'collection']);
-    return state.folders.every(f => allowed.has(String(f.name || '').trim().toLocaleLowerCase('fr')));
+    if (!state.folders.length || state.folders.length > 4) return false;
+    const allowed = new Set(['en vente', 'vendus', 'collection', 'reparation', 'reparations']);
+    return state.folders.every(f => allowed.has(normalizeFolderName(f.name)));
   }
 
   async function enqueueDelete(kind, entityId) {
@@ -402,6 +416,10 @@
         await pushPending();
       }
 
+      // Les bibliothèques créées avant V6.4 reçoivent automatiquement le dossier Réparation.
+      await ensureRepairFolder({ sync:true });
+      await loadData();
+
       setSyncStatus('synced');
       render();
       if (!silent) toast('Folio synchronisé');
@@ -487,6 +505,9 @@
 
   function watchProfit(w) {
     const sell = num(w.sellPrice);
+    // Dans Réparation, le coût est une dépense réelle même avant facturation :
+    // une réparation à 12 € de coût et sans prix renseigné vaut donc -12 €.
+    if (isRepairItem(w)) return (sell || 0) - (num(w.buyPrice) || 0) - (num(w.fees) || 0);
     if (sell === null) return null;
     return sell - (num(w.buyPrice) || 0) - (num(w.fees) || 0);
   }
@@ -518,14 +539,14 @@
     return '';
   }
 
-  function summaryHtml(t, title='Total général') {
+  function summaryHtml(t, title='Total général', labels={ buy:'Achat', sell:'Vente', profit:'Bénéfice' }) {
     return `
       <section class="summary">
         <div class="summary-title">${esc(title)}</div>
         <div class="summary-grid">
-          <div class="metric"><div class="metric-label">Achat</div><div class="metric-value">${euro(t.buy)}</div></div>
-          <div class="metric"><div class="metric-label">Vente</div><div class="metric-value">${euro(t.sell)}</div></div>
-          <div class="metric"><div class="metric-label">Bénéfice</div><div class="metric-value ${profitClass(t.profit)}">${euro(t.profit)}</div></div>
+          <div class="metric"><div class="metric-label">${esc(labels.buy)}</div><div class="metric-value">${euro(t.buy)}</div></div>
+          <div class="metric"><div class="metric-label">${esc(labels.sell)}</div><div class="metric-value">${euro(t.sell)}</div></div>
+          <div class="metric"><div class="metric-label">${esc(labels.profit)}</div><div class="metric-value ${profitClass(t.profit)}">${euro(t.profit)}</div></div>
         </div>
       </section>`;
   }
@@ -562,7 +583,7 @@
     const folders = await WatchDB.getAll('folders');
     if (folders.length) return;
     const now = Date.now();
-    const defaults = ['En vente', 'Vendus', 'Collection'];
+    const defaults = ['En vente', 'Vendus', 'Collection', 'Réparation'];
     for (let i = 0; i < defaults.length; i++) {
       await WatchDB.put('folders', {
         id: newUuid(),
@@ -574,6 +595,26 @@
         pendingSync: true
       });
     }
+  }
+
+  async function ensureRepairFolder({ sync=true } = {}) {
+    const folders = await WatchDB.getAll('folders');
+    const existing = folders.find(isRepairFolder);
+    if (existing) return existing;
+
+    const now = Date.now();
+    const folder = {
+      id: newUuid(),
+      name: 'Réparation',
+      order: folders.length,
+      includeInTotals: true,
+      createdAt: now,
+      updatedAt: now,
+      pendingSync: true
+    };
+    await WatchDB.put('folders', folder);
+    if (sync && FolioCloud.isSignedIn()) await syncFolderRecord(folder, { quiet:true });
+    return folder;
   }
 
   async function loadData() {
@@ -639,13 +680,14 @@
       for (const f of state.folders) {
         const fw = state.watches.filter(w => w.folderId === f.id);
         const ft = totals(fw);
+        const repair = isRepairFolder(f);
         html += `
-          <div class="folder-card ${f.includeInTotals === false ? 'excluded-from-totals' : ''}">
+          <div class="folder-card ${f.includeInTotals === false ? 'excluded-from-totals' : ''} ${repair ? 'repair-folder-card' : ''}">
             <button class="folder-card-open" data-folder-id="${f.id}">
               <div class="folder-top"><div class="folder-name">${esc(f.name)}</div><div class="folder-count">${fw.length}</div></div>
               <div class="folder-stats">
-                <div class="stat-row"><span>Achat</span><strong>${euro(ft.buy)}</strong></div>
-                <div class="stat-row"><span>Vente</span><strong>${euro(ft.sell)}</strong></div>
+                <div class="stat-row"><span>${repair ? 'Coût' : 'Achat'}</span><strong>${euro(ft.buy)}</strong></div>
+                <div class="stat-row"><span>${repair ? 'Réparations' : 'Vente'}</span><strong>${euro(ft.sell)}</strong></div>
                 <div class="stat-row"><span>Bénéfice</span><strong class="${profitClass(ft.profit)}">${euro(ft.profit)}</strong></div>
               </div>
             </button>
@@ -665,19 +707,39 @@
     const folder = state.folders.find(f => f.id === folderId);
     if (!folder) return setView('home');
     const watches = folderWatches(folderId);
+    const repair = isRepairFolder(folder);
     els.subtitle.textContent = folder.name;
+    els.fab.setAttribute('aria-label', repair ? 'Ajouter une réparation' : 'Ajouter un objet');
     const t = totals(watches);
-    let html = summaryHtml(t, folder.name);
-    html += `<div class="section-head"><div class="section-title">${watches.length} objet${watches.length > 1 ? 's' : ''}</div><button class="text-btn" data-action="folder-menu">Gérer</button></div>`;
+    let html = repair
+      ? summaryHtml(t, folder.name, { buy:'Coût', sell:'Réparations', profit:'Bénéfice' })
+      : summaryHtml(t, folder.name);
+    html += `<div class="section-head"><div class="section-title">${watches.length} ${repair ? `réparation${watches.length > 1 ? 's' : ''}` : `objet${watches.length > 1 ? 's' : ''}`}</div><button class="text-btn" data-action="folder-menu">Gérer</button></div>`;
     if (!watches.length) {
-      html += `<div class="empty"><span class="big">⌚</span>Aucun objet dans ce dossier.<br>Appuie sur ＋ pour en ajouter un.</div>`;
+      html += repair
+        ? `<div class="empty"><span class="big">🔧</span>Aucune réparation pour le moment.<br>Appuie sur ＋ pour en ajouter une.</div>`
+        : `<div class="empty"><span class="big">⌚</span>Aucun objet dans ce dossier.<br>Appuie sur ＋ pour en ajouter un.</div>`;
     } else {
-      html += `<div class="watch-order-hint">Glisse un objet pour changer sa place. Sur téléphone : appui prolongé puis déplace-le.</div>`;
-      html += `<div class="watch-grid" data-watch-grid>${watches.map(watchCardHtml).join('')}</div>`;
+      html += `<div class="watch-order-hint">Glisse ${repair ? 'une ligne' : 'un objet'} pour changer sa place. Sur téléphone : appui prolongé puis déplace-${repair ? 'la' : 'le'}.</div>`;
+      html += `<div class="watch-grid ${repair ? 'repair-list' : ''}" data-watch-grid>${watches.map(w => repair ? repairCardHtml(w) : watchCardHtml(w)).join('')}</div>`;
     }
     els.main.innerHTML = html;
     bindCommon();
     bindWatchSorting(folderId);
+  }
+
+  function repairCardHtml(w) {
+    const p = watchProfit(w);
+    return `
+      <div class="watch-card repair-row" data-watch-id="${w.id}" draggable="true" role="button" tabindex="0" aria-label="Ouvrir ${esc(w.name || 'Sans nom')}">
+        <div class="watch-drag-handle" aria-hidden="true">≡</div>
+        <div class="repair-row-name">${esc(w.name || 'Sans nom')}</div>
+        <div class="repair-row-money">
+          <div><span>Coût</span><strong>${euro(num(w.buyPrice) || 0)}</strong></div>
+          <div><span>Réparation</span><strong>${num(w.sellPrice) === null ? '—' : euro(w.sellPrice)}</strong></div>
+          <div><span>Bénéf.</span><strong class="${profitClass(p)}">${euro(p)}</strong></div>
+        </div>
+      </div>`;
   }
 
   function watchCardHtml(w) {
@@ -828,42 +890,63 @@
     const w = state.watches.find(x => x.id === watchId);
     if (!w) return setView('home');
     const folder = state.folders.find(f => f.id === w.folderId);
+    const repair = isRepairFolder(folder);
     els.subtitle.textContent = folder?.name || 'Objet';
     els.fab.classList.add('hidden');
     const p = watchProfit(w);
-    const photos = Array.isArray(w.photos) ? w.photos : [];
-    const urls = photos.map(blobUrl);
     let html = '';
-    if (urls.length) {
-      html += `<div class="detail-hero"><img id="heroPhoto" src="${urls[0]}" alt="${esc(w.name)}"></div>`;
-      if (urls.length > 1) {
-        html += `<div class="photo-strip">${urls.map((u,i)=>`<img class="thumb ${i===0?'active':''}" data-photo-index="${i}" src="${u}" alt="Photo ${i+1}">`).join('')}</div>`;
+
+    if (!repair) {
+      const photos = Array.isArray(w.photos) ? w.photos : [];
+      const urls = photos.map(blobUrl);
+      if (urls.length) {
+        html += `<div class="detail-hero"><img id="heroPhoto" src="${urls[0]}" alt="${esc(w.name)}"></div>`;
+        if (urls.length > 1) {
+          html += `<div class="photo-strip">${urls.map((u,i)=>`<img class="thumb ${i===0?'active':''}" data-photo-index="${i}" src="${u}" alt="Photo ${i+1}">`).join('')}</div>`;
+        }
+      } else {
+        html += `<div class="detail-hero"><div class="photo-placeholder">⌚</div></div>`;
       }
+
+      html += `
+        <h1 class="detail-title">${esc(w.name || 'Sans nom')}</h1>
+        <div class="detail-folder">${esc(folder?.name || 'Sans dossier')}</div>
+        <div class="detail-stats">
+          <div class="detail-stat"><span>Achat</span><strong>${euro(w.buyPrice)}</strong></div>
+          <div class="detail-stat"><span>Vente</span><strong>${num(w.sellPrice) === null ? '—' : euro(w.sellPrice)}</strong></div>
+          <div class="detail-stat"><span>Bénéfice</span><strong class="${p === null ? '' : profitClass(p)}">${p === null ? '—' : euro(p)}</strong></div>
+        </div>
+        ${num(w.fees) ? `<div class="detail-folder">Frais inclus dans le calcul : ${euro(w.fees)}</div>` : ''}
+        ${w.description ? `<div class="detail-description">${esc(w.description)}</div>` : ''}`;
+
+      setTimeout(() => {
+        document.querySelectorAll('.thumb').forEach((el, i) => {
+          el.addEventListener('click', () => {
+            const hero = document.getElementById('heroPhoto');
+            if (hero) hero.src = urls[i];
+            document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
+            el.classList.add('active');
+          });
+        });
+      }, 0);
     } else {
-      html += `<div class="detail-hero"><div class="photo-placeholder">⌚</div></div>`;
+      html += `
+        <div class="repair-detail-icon">🔧</div>
+        <h1 class="detail-title">${esc(w.name || 'Sans nom')}</h1>
+        <div class="detail-folder">Réparation</div>
+        <div class="detail-stats">
+          <div class="detail-stat"><span>Coût</span><strong>${euro(num(w.buyPrice) || 0)}</strong></div>
+          <div class="detail-stat"><span>Prix réparation</span><strong>${num(w.sellPrice) === null ? '—' : euro(w.sellPrice)}</strong></div>
+          <div class="detail-stat"><span>Bénéfice</span><strong class="${profitClass(p)}">${euro(p)}</strong></div>
+        </div>`;
     }
+
     html += `
-      <h1 class="detail-title">${esc(w.name || 'Sans nom')}</h1>
-      <div class="detail-folder">${esc(folder?.name || 'Sans dossier')}</div>
-      <div class="detail-stats">
-        <div class="detail-stat"><span>Achat</span><strong>${euro(w.buyPrice)}</strong></div>
-        <div class="detail-stat"><span>Vente</span><strong>${num(w.sellPrice) === null ? '—' : euro(w.sellPrice)}</strong></div>
-        <div class="detail-stat"><span>Bénéfice</span><strong class="${p === null ? '' : profitClass(p)}">${p === null ? '—' : euro(p)}</strong></div>
-      </div>
-      ${num(w.fees) ? `<div class="detail-folder">Frais inclus dans le calcul : ${euro(w.fees)}</div>` : ''}
-      ${w.description ? `<div class="detail-description">${esc(w.description)}</div>` : ''}
       <div class="detail-actions">
         <button class="btn secondary" data-action="edit-watch">Modifier</button>
         <button class="btn danger" data-action="delete-watch">Supprimer</button>
       </div>`;
     els.main.innerHTML = html;
-    document.querySelectorAll('.thumb').forEach((el, i) => {
-      el.addEventListener('click', () => {
-        document.getElementById('heroPhoto').src = urls[i];
-        document.querySelectorAll('.thumb').forEach(x => x.classList.remove('active'));
-        el.classList.add('active');
-      });
-    });
     bindCommon();
   }
 
@@ -958,22 +1041,27 @@
   function showFolderMenu() {
     const folder = state.folders.find(f => f.id === state.view.id);
     if (!folder) return;
+    const repair = isRepairFolder(folder);
     openSheet(`
       <h2 class="sheet-title">${esc(folder.name)}</h2>
       <div class="sheet-list">
         <label class="sheet-toggle">
-          <div><strong>Inclure dans les totaux généraux</strong><small>Achat, recette, bénéfice et trésorerie de l’accueil.</small></div>
+          <div><strong>Inclure dans les totaux généraux</strong><small>${repair ? 'Coûts, recettes de réparation, bénéfice et trésorerie de l’accueil.' : 'Achat, recette, bénéfice et trésorerie de l’accueil.'}</small></div>
           <input type="checkbox" data-act="include-totals" ${folder.includeInTotals === false ? '' : 'checked'}>
         </label>
-        <button class="sheet-action" data-act="rename">Renommer le dossier</button>
-        <button class="sheet-action danger" data-act="delete">Supprimer le dossier</button>
+        ${repair ? '<div class="system-folder-note">Dossier spécial Folio : affichage en liste, sans photos.</div>' : `
+          <button class="sheet-action" data-act="rename">Renommer le dossier</button>
+          <button class="sheet-action danger" data-act="delete">Supprimer le dossier</button>
+        `}
       </div>`);
     els.sheetContent.querySelector('[data-act="include-totals"]').addEventListener('change', async e => {
       await setFolderIncludedInTotals(folder.id, e.target.checked, { rerender:true });
       toast(e.target.checked ? 'Dossier inclus dans les totaux' : 'Dossier exclu des totaux');
     });
-    els.sheetContent.querySelector('[data-act="rename"]').addEventListener('click', () => showRenameFolder(folder));
-    els.sheetContent.querySelector('[data-act="delete"]').addEventListener('click', () => deleteFolder(folder));
+    if (!repair) {
+      els.sheetContent.querySelector('[data-act="rename"]').addEventListener('click', () => showRenameFolder(folder));
+      els.sheetContent.querySelector('[data-act="delete"]').addEventListener('click', () => deleteFolder(folder));
+    }
   }
 
   function showRenameFolder(folder) {
@@ -1013,6 +1101,87 @@
   }
 
   function showWatchForm(watchId=null) {
+    const existing = watchId ? state.watches.find(x => x.id === watchId) : null;
+    const targetFolder = existing
+      ? state.folders.find(f => f.id === existing.folderId)
+      : (state.view.type === 'folder' ? state.folders.find(f => f.id === state.view.id) : null);
+
+    if (isRepairFolder(targetFolder)) return showRepairForm(watchId);
+    return showStandardWatchForm(watchId);
+  }
+
+  function showRepairForm(watchId=null) {
+    const repairFolder = state.folders.find(isRepairFolder);
+    if (!repairFolder) {
+      ensureRepairFolder().then(() => loadData()).then(() => showRepairForm(watchId));
+      return;
+    }
+
+    const w = watchId ? state.watches.find(x => x.id === watchId) : null;
+    state.editingWatchId = w?.id || null;
+    state.draftPhotos = [];
+    openSheet(`
+      <h2 class="sheet-title">${w ? 'Modifier la réparation' : 'Ajouter une réparation'}</h2>
+      <form id="repairForm" class="form">
+        <div class="field"><label>Nom / modèle de la montre</label><input id="repairName" value="${esc(w?.name || '')}" placeholder="Ex. Seiko 5 7009" autofocus required></div>
+        <div class="money-grid">
+          <div class="field"><label>Coût éventuel (€)</label><input id="repairCost" inputmode="decimal" type="number" step="0.01" min="0" value="${w?.buyPrice ?? ''}" placeholder="0"></div>
+          <div class="field"><label>Prix de la réparation (€)</label><input id="repairPrice" inputmode="decimal" type="number" step="0.01" min="0" value="${w?.sellPrice ?? ''}" placeholder="Laisser vide si pas encore facturée"></div>
+        </div>
+        <div class="profit-preview"><span>Bénéfice calculé</span><strong id="repairProfitPreview">—</strong></div>
+        <div class="repair-form-note">Sans prix de réparation, le coût éventuel est compté comme un bénéfice négatif.</div>
+        <div class="form-actions"><button type="button" class="btn secondary" data-close>Annuler</button><button class="btn primary">${w ? 'Enregistrer' : 'Ajouter'}</button></div>
+      </form>`);
+
+    const q = sel => els.sheetContent.querySelector(sel);
+    q('[data-close]').addEventListener('click', closeSheet);
+
+    const update = () => {
+      const cost = num(q('#repairCost').value) || 0;
+      const price = num(q('#repairPrice').value) || 0;
+      const profit = price - cost;
+      const out = q('#repairProfitPreview');
+      out.textContent = euro(profit);
+      out.className = profitClass(profit);
+    };
+    q('#repairCost').addEventListener('input', update);
+    q('#repairPrice').addEventListener('input', update);
+    update();
+
+    q('#repairForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const editingId = state.editingWatchId;
+      const isEditing = !!editingId;
+      const old = isEditing ? await WatchDB.get('watches', editingId) : null;
+      if (isEditing && !old) {
+        alert('Cette réparation a été actualisée pendant la modification. Resynchronise Folio puis réessaie.');
+        return;
+      }
+
+      const data = {
+        id: old ? old.id : newUuid(),
+        name: q('#repairName').value.trim(),
+        folderId: repairFolder.id,
+        description: old?.description || '',
+        buyPrice: num(q('#repairCost').value),
+        fees: 0,
+        sellPrice: num(q('#repairPrice').value),
+        photos: [],
+        order: old?.order ?? topOrderForFolder(repairFolder.id, old?.id || null),
+        createdAt: old?.createdAt || Date.now(),
+        updatedAt: Date.now(),
+        pendingSync: 'full'
+      };
+      await WatchDB.put('watches', data);
+      await loadData();
+      closeSheet();
+      setView('watch', data.id);
+      toast(old ? 'Réparation modifiée' : 'Réparation ajoutée');
+      syncItemRecord(data, { full:true, quiet:true }).then(loadData).catch(console.error);
+    });
+  }
+
+  function showStandardWatchForm(watchId=null) {
     if (!state.folders.length) { showNewFolder(); return; }
     const w = watchId ? state.watches.find(x => x.id === watchId) : null;
     state.editingWatchId = w?.id || null;
@@ -1022,7 +1191,7 @@
       <h2 class="sheet-title">${w ? 'Modifier l’objet' : 'Ajouter un objet'}</h2>
       <form id="watchForm" class="form">
         <div class="field"><label>Nom / modèle</label><input id="watchName" value="${esc(w?.name || '')}" placeholder="Ex. Seiko Lord Matic" required></div>
-        <div class="field"><label>Dossier</label><select id="watchFolder">${state.folders.map(f=>`<option value="${f.id}" ${f.id===folderId?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div>
+        <div class="field"><label>Dossier</label><select id="watchFolder">${state.folders.filter(f => !isRepairFolder(f)).map(f=>`<option value="${f.id}" ${f.id===folderId?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div>
         <div id="photoDropZone" class="photo-input-wrap" tabindex="0">
           <label class="btn secondary" style="display:inline-block;">Ajouter des photos<input id="watchPhotos" type="file" accept="image/*" multiple hidden></label>
           <div class="drop-hint">Sur Mac/PC, tu peux aussi glisser tes photos ici.</div>
@@ -1650,6 +1819,7 @@
       await syncNow({ silent:true });
     } else {
       if (!state.folders.length) await initDefaults();
+      await ensureRepairFolder({ sync:false });
       await loadData();
       setSyncStatus('local');
       render();
