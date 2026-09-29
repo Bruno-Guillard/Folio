@@ -345,6 +345,8 @@
         id: row.id,
         folderId: row.folder_id,
         name: row.name || '',
+        listingTitle: row.listing_title || '',
+        askingPrice: row.asking_price === null || row.asking_price === undefined ? null : Number(row.asking_price),
         description: row.description || '',
         buyPrice: row.purchase_price === null ? null : Number(row.purchase_price),
         sellPrice: row.sale_price === null ? null : Number(row.sale_price),
@@ -911,6 +913,7 @@
       html += `
         <h1 class="detail-title">${esc(w.name || 'Sans nom')}</h1>
         <div class="detail-folder">${esc(folder?.name || 'Sans dossier')}</div>
+        ${(w.listingTitle || num(w.askingPrice) !== null) ? `<div class="detail-folder"><strong>Annonce :</strong> ${w.listingTitle ? esc(w.listingTitle) : '—'}${num(w.askingPrice) !== null ? ` · <strong>Prix demandé :</strong> ${euro(w.askingPrice)}` : ''}</div>` : ''}
         <div class="detail-stats">
           <div class="detail-stat"><span>Achat</span><strong>${euro(w.buyPrice)}</strong></div>
           <div class="detail-stat"><span>Vente</span><strong>${num(w.sellPrice) === null ? '—' : euro(w.sellPrice)}</strong></div>
@@ -1161,6 +1164,8 @@
       const data = {
         id: old ? old.id : newUuid(),
         name: q('#repairName').value.trim(),
+        listingTitle: old?.listingTitle || '',
+        askingPrice: old?.askingPrice ?? null,
         folderId: repairFolder.id,
         description: old?.description || '',
         buyPrice: num(q('#repairCost').value),
@@ -1191,6 +1196,8 @@
       <h2 class="sheet-title">${w ? 'Modifier l’objet' : 'Ajouter un objet'}</h2>
       <form id="watchForm" class="form">
         <div class="field"><label>Nom / modèle</label><input id="watchName" value="${esc(w?.name || '')}" placeholder="Ex. Seiko Lord Matic" required></div>
+        <div class="field"><label>Titre de l’annonce</label><input id="listingTitle" value="${esc(w?.listingTitle ?? w?.name ?? '')}" placeholder="Ex. Seiko automatique vintage – cadran bleu"></div>
+        <div class="field"><label>Prix demandé (€)</label><input id="askingPrice" inputmode="decimal" type="number" step="0.01" min="0" value="${w?.askingPrice ?? ''}" placeholder="Ex. 120"></div>
         <div class="field"><label>Dossier</label><select id="watchFolder">${state.folders.filter(f => !isRepairFolder(f)).map(f=>`<option value="${f.id}" ${f.id===folderId?'selected':''}>${esc(f.name)}</option>`).join('')}</select></div>
         <div id="photoDropZone" class="photo-input-wrap" tabindex="0">
           <label class="btn secondary" style="display:inline-block;">Ajouter des photos<input id="watchPhotos" type="file" accept="image/*" multiple hidden></label>
@@ -1402,6 +1409,8 @@
     const data = {
       id: old ? old.id : newUuid(),
       name: q('#watchName').value.trim(),
+      listingTitle: q('#listingTitle').value.trim(),
+      askingPrice: num(q('#askingPrice').value),
       folderId: destinationFolderId,
       description: q('#watchDescription').value.trim(),
       buyPrice: num(q('#buyPrice').value),
@@ -1490,7 +1499,7 @@
     }
     return {
       format: 'folio-backup',
-      version: 5,
+      version: 6,
       app: 'Folio',
       exportedAt: new Date().toISOString(),
       settings: {

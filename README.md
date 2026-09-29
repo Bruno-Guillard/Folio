@@ -127,3 +127,16 @@ Folio ajoute automatiquement un dossier spécial **Réparation** aux bibliothèq
 - aucun changement de schéma Supabase n'est nécessaire pour V6.4.
 
 Le Service Worker utilise le cache `folio-v6-4-reparations`.
+
+## V6.5 — Annonce / Showcase
+
+Cette version ajoute deux champs indépendants aux fiches standard :
+- **Titre de l’annonce** (`listing_title`)
+- **Prix demandé** (`asking_price`)
+
+Ces champs n'entrent jamais dans les calculs Achat / Vente / Bénéfice / Trésorerie.
+
+Avant de publier V6.5 sur GitHub Pages, exécuter une fois dans Supabase > SQL Editor :
+`SUPABASE-V6.5-ANNONCES.sql`.
+
+Le script initialise le titre d'annonce des fiches existantes avec leur nom Folio uniquement si ce nouveau champ est vide, afin de ne pas casser la vitrine existante. Après cela, les deux titres sont totalement indépendants.
