@@ -563,3 +563,42 @@ button { -webkit-tap-highlight-color: transparent; }
   .history-detail-card.expert .history-detail-image-wrap { min-height: 100%; aspect-ratio: auto; }
   .history-detail-card.expert .history-detail-copy { padding: 24px; }
 }
+
+/* V6.10 — Histoire expert : photo de la montre persistante pendant la lecture */
+.history-detail-card.expert {
+  /* Le sticky doit être contraint par la fiche elle-même, pas par un conteneur overflow. */
+  overflow: visible;
+}
+
+.history-detail-card.expert .history-detail-image-wrap {
+  position: sticky;
+  top: 78px;
+  z-index: 8;
+  border-radius: 23px 23px 0 0;
+  box-shadow: 0 8px 22px rgba(0,0,0,.08);
+}
+
+/* Le texte passe derrière la photo lorsqu'elle est épinglée. */
+.history-detail-card.expert .history-detail-copy {
+  position: relative;
+  z-index: 1;
+  background: var(--surface);
+  border-radius: 0 0 23px 23px;
+}
+
+@media (min-width: 800px) {
+  .history-detail-card.expert {
+    align-items: start;
+  }
+  .history-detail-card.expert .history-detail-image-wrap {
+    top: 90px;
+    align-self: start;
+    min-height: 0;
+    height: min(620px, calc(100vh - 112px));
+    aspect-ratio: auto;
+    border-radius: 23px 0 0 23px;
+  }
+  .history-detail-card.expert .history-detail-copy {
+    border-radius: 0 23px 23px 0;
+  }
+}
