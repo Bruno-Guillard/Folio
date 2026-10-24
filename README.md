@@ -1,3 +1,9 @@
+# Folio V6.12 — Bulle photo agrandie
+
+Cette version agrandit la bulle photo flottante des pages Histoire sur mobile d’environ ×1,75 en largeur et en hauteur (soit environ ×3 en surface). Son comportement reste identique : elle reste visible pendant la lecture et change automatiquement à la montre suivante.
+
+Aucune modification Supabase n’est nécessaire.
+
 ## V6.9 — Histoire niveau expert
 
 Les pages par époque ont été réécrites pour une lecture horlogère détaillée : affichage, mouvement, cadran, index, aiguilles, boîtier, cornes, proportions, fonction et position chronologique. Une attention particulière distingue les survivances de la période précédente des codes réellement dominants et des signes qui annoncent la suivante. Aucune migration Supabase n’est nécessaire.
