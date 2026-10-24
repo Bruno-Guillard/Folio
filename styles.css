@@ -537,3 +537,29 @@ button { -webkit-tap-highlight-color: transparent; }
   .history-detail-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .history-detail-image-wrap { min-height: 300px; }
 }
+
+/* V6.9 — Histoire, niveau expert */
+.history-expert-banner { margin: 16px 0 3px; padding: 13px 14px; display: grid; gap: 4px; border-radius: 16px; background: #171715; color: #f8f6f2; }
+.history-expert-banner strong { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; }
+.history-expert-banner span { font-size: 11px; line-height: 1.55; color: rgba(255,255,255,.72); }
+.history-detail-card.expert .history-detail-copy { padding: 18px; }
+.history-expert-verdict { margin: 4px 0 16px; padding: 14px 15px; border-radius: 16px; background: #f0ede7; border: 1px solid #ded9d0; }
+.history-expert-kicker { margin-bottom: 5px; font-size: 9px; font-weight: 900; letter-spacing: .11em; text-transform: uppercase; color: #5a554e; }
+.history-expert-verdict p { margin: 0; font-size: 13px; line-height: 1.62; color: #25231f; }
+.history-expert-observations { display: grid; gap: 0; margin: 0 0 18px; border-top: 1px solid var(--line); }
+.history-expert-row { padding: 13px 0; border-bottom: 1px solid var(--line); }
+.history-expert-label { margin-bottom: 5px; font-size: 10px; font-weight: 850; letter-spacing: .045em; color: #24211d; }
+.history-expert-row p { margin: 0; color: #5c5750; font-size: 12px; line-height: 1.66; }
+.history-chronology-title { margin: 18px 0 9px; font-size: 10px; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; color: #4d4943; }
+.history-analysis-block.current { background: #f3f1ec; border-color: #dedad2; }
+.history-analysis-block.current .history-analysis-label { color: #27231e; }
+.history-detail-card.expert .history-analysis-block p { font-size: 12px; line-height: 1.66; }
+.history-expert-caution { margin-top: 14px; padding: 12px 13px; border: 1px dashed #c9c3b8; border-radius: 14px; background: #faf9f6; }
+.history-expert-caution strong { display: block; margin-bottom: 4px; font-size: 9px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; color: #615c55; }
+.history-expert-caution p { margin: 0; font-size: 10.5px; line-height: 1.55; color: #706a62; }
+@media (min-width: 800px) {
+  .history-detail-grid { grid-template-columns: 1fr; max-width: 980px; }
+  .history-detail-card.expert { display: grid; grid-template-columns: minmax(320px, 42%) 1fr; align-items: stretch; }
+  .history-detail-card.expert .history-detail-image-wrap { min-height: 100%; aspect-ratio: auto; }
+  .history-detail-card.expert .history-detail-copy { padding: 24px; }
+}

@@ -1,3 +1,7 @@
+## V6.9 — Histoire niveau expert
+
+Les pages par époque ont été réécrites pour une lecture horlogère détaillée : affichage, mouvement, cadran, index, aiguilles, boîtier, cornes, proportions, fonction et position chronologique. Une attention particulière distingue les survivances de la période précédente des codes réellement dominants et des signes qui annoncent la suivante. Aucune migration Supabase n’est nécessaire.
+
 # Folio V5 — bibliothèque synchronisée
 
 Folio est une PWA personnelle pour gérer une collection et suivre achats, ventes et bénéfices.

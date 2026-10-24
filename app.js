@@ -874,6 +874,319 @@
   ]
 };
 
+  // Lecture experte : les codes de style se chevauchent entre décennies.
+  // Une datation solide croise toujours esthétique, référence de boîte, calibre,
+  // numéro de série, marquages de cadran et cohérence des composants.
+  const HISTORY_ERA_EXPERT = {
+    '1940': {
+      display: "La petite seconde reste extrêmement courante parce qu’elle découle directement de l’architecture traditionnelle du rouage : la quatrième roue porte naturellement la seconde à 6 h. La seconde centrale existe déjà, notamment sur des montres militaires et techniques, mais elle n’est pas encore devenue la présentation banale qu’elle sera ensuite.",
+      case: "Les diamètres masculins restent généralement contenus. Les boîtiers sont ronds, relativement fins, avec des cornes encore assez individualisées : droites, goutte, ogive ou légèrement arquées. Le plexiglas bombé permet une lunette fine mais donne beaucoup de volume visuel au cadran.",
+      dial: "Sur les montres militaires, chiffres arabes, chemin de fer et matière luminescente dominent. Sur les civiles, on rencontre encore volontiers chiffres mixtes, cadrans deux tons, aiguilles feuille ou seringue et petite seconde. Les index appliqués commencent néanmoins à alléger le cadran.",
+      movement: "Le remontage manuel domine largement. Les protections antichoc se diffusent mais ne sont pas universelles. La précision et la facilité d’entretien priment souvent sur la minceur ou la complication.",
+      transition: "Vers la fin de la décennie, l’étanchéité, l’automatique et la seconde centrale déplacent progressivement la montre masculine de la logique 'petite montre habillée' vers celle de la montre quotidienne polyvalente des années 1950."
+    },
+    '1950': {
+      display: "La seconde centrale devient progressivement la lecture moderne par défaut, particulièrement sur les automatiques, mais la petite seconde reste parfaitement normale sur de nombreux calibres manuels hérités des années 1930–40. La présence d’une petite seconde ne suffit donc absolument pas à dater une montre des années 1940.",
+      case: "Les boîtiers ronds de 33 à 36 mm sont fréquents. Les cornes deviennent un terrain de style : facettées, lyre, 'bombe', droites ou très effilées. Une lunette étroite et un plexi fortement bombé donnent souvent un grand cadran pour un diamètre pourtant modeste.",
+      dial: "C’est l’âge des cadrans argentés, crème ou champagne, des index appliqués et des aiguilles dauphine. Les chiffres arabes complets reculent sur la montre habillée au profit d’un graphisme plus léger. Les guichets de date se diffusent mais restent encore une vraie information de design.",
+      movement: "L’automatique passe du statut de spécialité à celui de proposition majeure. Les systèmes bumper coexistent avec les rotors à rotation complète. Les familles manuelles éprouvées restent toutefois omniprésentes, surtout dans les montres fines et simples.",
+      transition: "À la fin des années 1950, les index bâtons se rectifient, les cornes se tendent, l’acier progresse et les fonctions 'outil' deviennent plus lisibles : on entre visuellement dans le vocabulaire des années 1960."
+    },
+    '1960': {
+      display: "La seconde centrale est désormais dominante sur la montre quotidienne automatique et sur de nombreuses montres-outils. Une petite seconde sur une trois-aiguilles du début des années 1960 est donc souvent un héritage technique d’un calibre manuel plus ancien plutôt qu’un signe stylistique spécifiquement 'sixties'. Les chronographes, eux, conservent naturellement leurs compteurs subsidiaires.",
+      case: "Le début de décennie reste très rond et mesuré, mais les cornes sont souvent plus tendues et géométriques qu’au début des années 1950. En avançant vers 1967–69, tonneau, coussin, carrures épaissies et premiers dessins bracelet-boîtier plus continus annoncent déjà les années 1970.",
+      dial: "Index bâtons, cadrans argentés soleillés ou mats, aiguilles droites et typographie plus rationnelle dominent la montre civile. Sur les montres-outils, contraste, lunette fonctionnelle, échelles et matière lumineuse prennent le pas sur la décoration.",
+      movement: "Le rotor automatique à rotation complète est devenu banal, mais le manuel reste très présent. Les calibres électriques à diapason puis le quartz arrivent comme ruptures techniques majeures. La fréquence et la précision deviennent des arguments commerciaux de premier plan.",
+      transition: "La fin de la décennie est cruciale : chronographe automatique, électronique, quartz, boîtiers plus épais et bracelets intégrés apparaissent avant 1970. Beaucoup de montres de 1968–69 ont donc déjà l’air 'années 70'."
+    },
+    '1970': {
+      display: "Jour-date, seconde centrale, chronographes automatiques et quartz analogiques coexistent avec LED puis LCD. Le changement n’est pas seulement esthétique : l’affichage lui-même devient un terrain d’innovation, et le saut d’une seconde des quartz finira par devenir un signe immédiatement reconnaissable.",
+      case: "Coussin, tonneau, TV case et carrure monobloc gagnent du terrain. Les surfaces brossées deviennent importantes et les arêtes séparent souvent plusieurs plans de finition. Le bracelet commence fréquemment à prolonger le boîtier au lieu d’être un simple accessoire fixé entre deux cornes isolées.",
+      dial: "Couleurs fumées, dégradés, bleu, brun, vert, orange et typographies épaisses apparaissent beaucoup plus franchement. Les index peuvent être larges, les réhauts plus présents, et la date/jour-date s’intègre au graphisme général.",
+      movement: "Le mécanique ne disparaît pas : automatique et chronographe automatique progressent encore au début de la décennie. Mais la miniaturisation du quartz, puis l’industrialisation du LCD, changent brutalement le rapport précision/coût/épaisseur.",
+      transition: "En fin de décennie, la recherche de finesse et de simplification électronique prépare les années 1980 : boîtiers quartz plus minces, bracelets métalliques intégrés, écrans LCD permanents et production de masse."
+    },
+    '1980': {
+      display: "Le quartz analogique est devenu ordinaire et le LCD n’est plus une curiosité. Chronomètre, alarme, calculatrice et fonctions mémoire transforment la montre digitale en petit instrument électronique porté au poignet.",
+      case: "Deux directions coexistent : ultra-fin et habillé d’un côté, résine protectrice et volume fonctionnel de l’autre. Le métal doré, le bicolore et les bracelets intégrés donnent aussi une signature très identifiable aux quartz habillées.",
+      dial: "Le cadran peut devenir extrêmement minimal ou, au contraire, disparaître derrière un écran. Swatch fait du cadran, du bracelet et de la couleur un seul objet graphique, alors que G-Shock fait du boîtier de protection une partie visible du design.",
+      movement: "Le coût et la fiabilité du quartz changent l’économie de la montre. La construction peut être pensée pour l’assemblage automatisé, avec moins de pièces et moins d’opérations manuelles. Le mécanique devient beaucoup moins central dans l’entrée et le milieu de gamme.",
+      transition: "À la fin des années 1980, le quartz est acquis. La décennie suivante va donc chercher autre chose : retour du mécanique comme objet de désir, design plus sobre et premiers discours patrimoniaux."
+    },
+    '1990': {
+      display: "Le quartz reste massif mais cesse d’être l’unique symbole de modernité. Le mécanique réapparaît comme signe de tradition et de valeur, tandis que le radio-pilotage et l’Autoquartz montrent que l’innovation électronique continue.",
+      case: "Les proportions sont souvent plus sages que dans les années 2000 : 34–39 mm reste très courant. Les boîtiers acier simples, les lunettes polies et les bracelets métalliques à maillons fins donnent un aspect plus neutre et quotidien.",
+      dial: "Minimalisme, noir, blanc, bleu sombre et typographies nettes remplacent en partie l’exubérance seventies/eighties. Les chronographes restent cependant très présents, notamment dans le sport.",
+      movement: "La décennie juxtapose quartz mûr, mécanique relancé, systèmes hybrides et radio-pilotage. Cette pluralité est importante : une montre des années 1990 ne se date plus seulement par sa technologie.",
+      transition: "Le retour du prestige mécanique et la montée du sport de luxe préparent directement les années 2000, où diamètre, épaisseur, complications visibles et identité de marque vont fortement augmenter."
+    },
+    '2000': {
+      display: "La lisibilité devient souvent spectaculaire : grandes aiguilles, grands chiffres, écrans techniques ou cadrans multicouches. Le chronographe et la plongeuse sont des archétypes très visibles de la décennie.",
+      case: "Le diamètre augmente nettement et 40–44 mm devient banal dans de nombreuses familles masculines. L’épaisseur est assumée ; protège-couronnes, lunettes massives, poussoirs et caoutchouc donnent un aspect instrumental.",
+      dial: "Les cadrans gagnent en relief : index appliqués épais, réhauts, sous-compteurs creusés, textures et Super-LumiNova abondante. Le design cherche souvent l’impact immédiat plutôt que la discrétion.",
+      movement: "Quartz sophistiqué, radio-pilotage, solaire, tactile et mécanique haut de gamme coexistent. Côté mécanique, le fond transparent et la communication sur le calibre deviennent beaucoup plus fréquents.",
+      transition: "À la fin des années 2000, deux réactions se préparent : la smartwatch transforme la fonction de l’objet, tandis que la montre mécanique commence à revenir vers des proportions et codes plus historiques."
+    },
+    '2010': {
+      display: "L’écran connecté devient un type de montre à part entière, mais le cadran analogique connaît simultanément un retour aux codes historiques. Les deux univers évoluent en parallèle plutôt que l’un remplaçant complètement l’autre.",
+      case: "Après les très grands diamètres des années 2000, le marché mécanique revient progressivement vers 36–40 mm. Les cornes plus courtes, les boîtiers inspirés d’archives et les rééditions exactes deviennent des choix conscients de design.",
+      dial: "Le néo-vintage remet en avant cadrans sectoriels, teintes crème, aiguilles anciennes et typographies historiques, tandis que le minimalisme contemporain simplifie à l’extrême index et textes. Les smartwatches rendent, à l’inverse, le cadran entièrement logiciel.",
+      movement: "Silicium, longues réserves de marche, anti-magnétisme, mouvements manufacture et production automatisée progressent. Dans le connecté, capteurs, processeur, écran et logiciel remplacent complètement l’architecture horlogère traditionnelle.",
+      transition: "La période actuelle n’a pas encore de 'style final' : elle se définit précisément par la coexistence de la montre connectée, du néo-vintage, de la micro-marque et d’une forte revalorisation du mécanique."
+    }
+  };
+
+  const HISTORY_EXPERT_OVERRIDES = {
+    '1950|Omega Seamaster': {
+      verdict: "Une pièce charnière : visuellement encore très 1950, mais déjà pensée comme montre quotidienne robuste. La petite seconde, si présente sur cet exemplaire, n’est pas un signe d’avant-garde ; elle vient de l’architecture des grandes familles manuelles Omega de 30 mm.",
+      observations: [
+        ['Petite seconde à 6 h', "C’est un héritage direct des mouvements manuels traditionnels, où la quatrième roue entraîne naturellement une seconde décentrée. Chez Omega, les branches 26x à petite seconde restent en production jusqu’au début des années 1960. À cette date, la seconde centrale existe depuis longtemps : la petite seconde doit donc être lue comme une continuité technique et esthétique, pas comme une nouveauté de 1960."],
+        ['Proportions', "Environ 35 mm : c’est déjà une présence confortable pour une montre civile de la fin des années 1950, sans atteindre les volumes des montres-outils ou des boîtiers coussin ultérieurs. Le rapport grand cadran / lunette fine est très mid-century."],
+        ['Cadran et index', "Cadran clair, index appliqués allongés et faible quantité de texte : on quitte les cadrans à chiffres complets des décennies précédentes pour une lecture plus abstraite. Cette simplification devient dominante au tournant des années 1960."],
+        ['Aiguilles et verre', "Les aiguilles fines de type dauphine/feuille et le plexiglas bombé appartiennent encore au vocabulaire raffiné des années 1950. Le plexi n’est cependant pas un marqueur chronologique suffisant : il restera courant longtemps après."],
+        ['Cornes', "Les cornes sont encore nettement séparées de la carrure, mais plus tendues et moins décoratives que beaucoup de cornes goutte, lyre ou fortement bombées des années 1940–50. C’est précisément ce resserrement géométrique qui fait transition vers les boîtiers plus rationnels des années 1960."],
+        ['Ce que le nom Seamaster signifie ici', "Il faut éviter de projeter l’image moderne de la Seamaster plongeuse. La famille née en 1948 est d’abord une montre civile robuste et mieux protégée contre l’humidité. Une Seamaster de ce type peut donc être très habillée sans être incohérente avec son nom."]
+      ],
+      heritage: "La petite seconde, les aiguilles effilées, le plexiglas bombé, le cuir et l’absence de date placent cette montre dans la continuité directe des trois-aiguilles manuelles des années 1940–50. Même vers 1960, cette grammaire reste totalement actuelle chez Omega.",
+      typical: "Ce qui la place au tournant des années 1960 est moins la petite seconde que la rationalisation générale : 35 mm, index bâtons appliqués, cadran très dégagé, carrure acier propre et cornes plus rectilignes. On obtient une montre quotidiennement robuste sans l’apparence d’un instrument professionnel.",
+      next: "Elle n’annonce les années 1970 que discrètement. Ce sont surtout l’acier, les index plus rectilignes et la simplification du cadran qui préparent la suite. Il manque encore les signatures réellement seventies : date/jour-date plus envahissante, carrure coussin ou tonneau, surfaces brossées larges et bracelet beaucoup plus intégré.",
+      caution: "Sans référence intérieure de fond et sans calibre visible, on ne doit pas attribuer un numéro de calibre précis à partir de la photo seule. Pour dater à quelques années près, il faut croiser référence de boîte, numéro de mouvement et configuration du cadran."
+    },
+    '1960|Omega Seamaster': {
+      verdict: "Cette Seamaster est surtout intéressante parce qu’elle montre qu’une montre fabriquée vers 1960 peut porter plusieurs générations de codes à la fois. Sa petite seconde est plutôt un héritage des années 1940–50 ; ses index, ses proportions et sa carrure appartiennent pleinement au passage vers les années 1960.",
+      observations: [
+        ['Petite seconde : plutôt avant que pendant', "Sur une trois-aiguilles manuelle vers 1960, la petite seconde ne doit pas être qualifiée de 'typique des années 60'. Elle vient d’une architecture de mouvement plus ancienne. Chez Omega, les 30 mm de la branche 26x (266/267/268/269 notamment) utilisent la petite seconde et restent produits jusqu’au début des années 1960, tandis que la branche 28x propose déjà la seconde centrale. C’est donc un code survivant, pas une nouveauté."],
+        ['Pourquoi la seconde centrale gagne', "La seconde centrale donne une lecture plus immédiate et une impression plus dynamique, très adaptée à la montre automatique et à la montre-outil. Dans les années 1950 puis 1960, elle devient progressivement la norme visuelle de la trois-aiguilles moderne. La petite seconde subsiste surtout sur des familles manuelles éprouvées et sur certaines montres volontairement plus classiques."],
+        ['Diamètre ≈ 35 mm', "Le fichier Wikimedia décrit cette Seamaster comme une montre d’environ 35 mm, manuelle, à petite seconde. 35 mm est déjà généreux par rapport à beaucoup de dress watches antérieures de 32–34 mm, mais reste totalement dans les proportions élégantes du début des années 1960. Il ne faut pas appliquer les standards actuels de taille."],
+        ['Index bâtons appliqués', "Ils sont beaucoup plus révélateurs du tournant 1955–65 que la petite seconde. Les index se réduisent à des volumes métalliques simples, supprimant presque entièrement les chiffres arabes. Le cadran devient une composition de traits, ce qui renforce la modernité et la lisibilité."],
+        ['Aiguilles', "Les aiguilles effilées de type dauphine restent un héritage fort des années 1950. Au cours des années 1960, les aiguilles bâtons et droites deviennent plus fréquentes, surtout avec les cadrans plus fonctionnels. La présence de dauphines situe donc volontiers cette montre dans le début de décennie ou dans un registre conservateur."],
+        ['Cornes', "Les cornes restent séparées du boîtier et clairement dessinées : on est encore très loin du bracelet intégré et des carrures monoblocs des années 1970. En revanche, elles sont plus droites, plus tendues et plus anguleuses que les cornes décoratives/goutte ou très galbées des années 1940–50. C’est un bon indice de transition."],
+        ['Lunette fine + plexi bombé', "La lunette très mince agrandit visuellement le cadran, tandis que le plexiglas bombé maintient un profil doux. Le plexi est encore parfaitement normal en 1960 ; il ne permet pas à lui seul de dater une montre, car il restera courant durant les décennies suivantes."],
+        ['Pas de date', "L’absence de date renforce le caractère classique. La date n’est pas rare en 1960, loin de là, mais elle devient de plus en plus banale sur la montre quotidienne au cours des années 1960 puis presque attendue sur beaucoup de modèles des années 1970. Une trois-aiguilles sans date peut donc paraître plus conservatrice."],
+        ['Seamaster ≠ forcément plongeuse', "Le nom Seamaster naît en 1948 autour d’une montre civile robuste et mieux protégée contre l’humidité. Cette pièce n’a donc pas besoin d’une lunette de plongée pour être cohérente avec la collection. La branche professionnelle de plongée constitue un autre développement de la famille."],
+        ['Ce qui permettrait de dater réellement', "Le style donne une fenêtre, pas une année. Pour passer d’un 'vers 1960' à une datation précise, il faut la référence à l’intérieur du fond, le calibre, le numéro de mouvement, le type de couronne, les marquages du cadran et vérifier que cadran/aiguilles correspondent bien à la référence."]
+      ],
+      heritage: "La petite seconde, le remontage manuel, les aiguilles effilées, le cuir et le plexi bombé prolongent directement la montre habillée robuste des années 1950. Ici, la petite seconde est même l’un des meilleurs exemples d’un code technique qui traverse la frontière des décennies sans disparaître immédiatement.",
+      typical: "Le cœur '1960' se lit dans la simplification : index bâtons, cadran dégagé, acier, diamètre autour de 35 mm et cornes plus tendues. Le boîtier reste élégant, mais sa géométrie est plus rationnelle et moins décorative que beaucoup de pièces des années 1950.",
+      next: "Pour aller franchement vers 1970, on attendrait davantage de masse et de continuité boîtier-bracelet : coussin/tonneau, surfaces brossées, jour-date, cadrans plus graphiques ou colorés. Cette Seamaster n’en est pas encore là ; elle appartient plutôt au premier versant des années 1960.",
+      caution: "La photo Commons ne donne pas la référence ni le calibre. Les familles Omega 30 mm comportent plusieurs variantes très proches ; toute attribution précise doit être confirmée mouvement ouvert et fond lu."
+    },
+    '1960|Enicar Ultrasonic « Cioccolatone »': {
+      verdict: "Cette Enicar est intéressante parce que sa boîte carrée/coussin anticipe visuellement les années 1970 alors que son traitement de cadran et sa finition dorée restent très ancrés dans l’élégance des années 1950–début 1960.",
+      observations: [
+        ['Carrure', "Le boîtier n’est plus un simple cercle muni de quatre cornes : la carrure devient elle-même le dessin. Cette logique de masse continue autour du cadran préfigure directement les coussins, tonneaux et TV cases qui seront beaucoup plus fréquents dix ans plus tard."],
+        ['Cornes', "Elles sont visuellement absorbées par la carrure. C’est un contraste important avec les dress watches des années 1950 où la corne est souvent un élément décoratif autonome."],
+        ['Cadran', "Le cadran reste très classique : index appliqués, faible contraste, hiérarchie sobre. Cette retenue évite encore la couleur et les gros réhauts des années 1970."],
+        ['Finition dorée', "Le doré n’est pas en soi un marqueur de décennie. Ici il rattache surtout la montre au registre habillé d’après-guerre, alors que la forme de boîte est nettement plus prospective."],
+        ['Lecture de transition', "C’est exactement le type de pièce qu’il faut éviter de dater sur un seul indice : cadran = plutôt conservateur ; boîte = nettement en avance. L’association des deux est typique des expérimentations du début des années 1960."]
+      ]
+    },
+    '1960|Tissot Visodate': {
+      verdict: "La Visodate montre comment la date devient une fonction quotidienne intégrée à une montre encore très habillée. Son intérêt chronologique est moins spectaculaire que celui d’une plongeuse, mais beaucoup plus représentatif de ce que les hommes portent réellement dans les années 1960.",
+      observations: [
+        ['Date', "Le guichet de date ne constitue plus une complication exotique : il s’intègre au cadran comme information de tous les jours. Cette banalisation prépare le jour-date très courant des années 1970."],
+        ['Index', "Les bâtons appliqués et la faible quantité de chiffres donnent une structure très rationnelle au cadran, caractéristique de la modernisation graphique de la fin des années 1950 et des années 1960."],
+        ['Boîtier', "Le rond classique demeure, avec une lunette contenue et des cornes nettes. C’est le cœur du design sixties civil, bien avant l’explosion coussin/tonneau de la décennie suivante."],
+        ['Automatique / usage', "Visodate est à comprendre dans l’évolution vers la montre qu’on porte tous les jours : remontage automatique, date, meilleure résistance aux agressions quotidiennes, tout en conservant une apparence de dress watch."],
+        ['Transition', "Ce sont la fonction date et la rectification des lignes, plus que le volume, qui annoncent 1970. Le bracelet reste encore visuellement séparé de la boîte."]
+      ]
+    },
+    '1960|Tissot Seastar Visodate': {
+      verdict: "La Seastar Visodate fusionne deux tendances essentielles : l’habillé suisse des années 1950 et la montre quotidienne plus étanche, automatique et fonctionnelle des années 1960.",
+      observations: [
+        ['Seastar', "Le nom renvoie chez Tissot à une génération de montres étanches enregistrée dès 1952. Dans les années 1960, l’étanchéité cesse d’imposer forcément un aspect militaire ou plongeur : elle peut être intégrée à une montre de ville."],
+        ['Date + automatique', "Le couple remontage automatique / date devient l’une des architectures les plus représentatives de la montre masculine quotidienne de la décennie."],
+        ['Dessin', "Index fins, cadran clair et boîtier rond conservent le vocabulaire habillé de l’après-guerre. Les lignes sont toutefois plus nettes et moins décoratives."],
+        ['Vers 1970', "La logique de robustesse polyvalente ouvrira la voie aux séries sport-chic et aux boîtiers/bracelets beaucoup plus intégrés. Ici, la transition reste fonctionnelle avant d’être formelle."]
+      ]
+    },
+    '1960|Bulova Accutron 214': {
+      verdict: "L’Accutron est une vraie rupture technique habillée dans une esthétique encore familière. C’est précisément ce contraste qui la rend fondamentale pour comprendre les années 1960.",
+      observations: [
+        ['Diapason', "Le calibre 214 remplace l’organe réglant mécanique traditionnel par un diapason entretenu électriquement. La fréquence très supérieure au balancier mécanique améliore la stabilité et produit le fameux bourdonnement continu."],
+        ['Seconde', "La trotteuse très fluide est un indice fonctionnel important : elle contraste à la fois avec le battement mécanique visible et, plus tard, avec le saut d’une seconde qui deviendra emblématique du quartz."],
+        ['Cadran', "L’affichage reste analogique et très classique. L’innovation est donc cachée sous une apparence de montre suisse/américaine conventionnelle : une stratégie fréquente lors des premières ruptures technologiques."],
+        ['Couronne / architecture', "Sur beaucoup d’Accutron 214, la mise à l’heure se fait par le fond plutôt que par une couronne traditionnelle à 3 h, ce qui participe à l’identité technique du modèle."],
+        ['Vers le quartz', "L’Accutron montre que l’industrie cherche déjà à dépasser le balancier mécanique avant 1969. Le quartz ne surgit donc pas dans un vide technologique ; il est l’étape suivante d’une décennie d’électronisation."]
+      ]
+    },
+    '1960|Seiko Astron 35A': {
+      verdict: "L’Astron est techniquement en avance sur sa décennie mais esthétiquement volontairement prudente. C’est l’un des meilleurs exemples d’une innovation radicale dissimulée dans un langage de montre habillée classique.",
+      observations: [
+        ['Quartz', "Commercialisée le 25 décembre 1969, l’Astron est la première montre-bracelet à quartz commercialisée. Le calibre 35A utilise un oscillateur électronique et un moteur pas à pas ; la précision annoncée se situe à un ordre de grandeur totalement différent du mécanique courant."],
+        ['Seconde sautante', "Le moteur pas à pas impose la progression seconde par seconde qui deviendra, paradoxalement, l’un des signes visuels les plus ordinaires de la montre quartz des décennies suivantes."],
+        ['Boîtier en or', "La technologie coûte extrêmement cher au lancement ; Seiko la présente donc dans un boîtier précieux et un registre haut de gamme, pas dans une montre électronique bon marché."],
+        ['Cadran conservateur', "Index appliqués, aiguilles conventionnelles et absence d’esthétique futuriste agressive : extérieurement, l’Astron reste très proche d’une dress watch de luxe de 1969."],
+        ['Ce qu’elle annonce', "Elle annonce bien davantage que le style des années 1970 : elle annonce une nouvelle économie industrielle de la montre, où précision, miniaturisation électronique et production en volume vont bouleverser le marché mondial."]
+      ]
+    },
+    '1940|Waltham Type A-11': {
+      verdict: "L’A-11 est un excellent exemple de design dicté par une spécification militaire plutôt que par la mode : la fonction produit une esthétique qui influencera durablement la field watch.",
+      observations: [
+        ['Cadran', "Chiffres arabes complets, contraste maximal et minuterie périphérique : chaque élément sert la lecture rapide, y compris dans des conditions difficiles."],
+        ['Seconde centrale', "La seconde centrale est importante ici car elle facilite la synchronisation visuelle. C’est un bon rappel que la petite seconde reste courante dans les années 1940 sans être universelle."],
+        ['Hacking', "Sur les variantes conformes à la spécification A-11, l’arrêt de seconde permet la synchronisation à la seconde près, fonction directement liée à l’usage militaire."],
+        ['Boîtier', "Petit diamètre selon nos standards actuels, cornes simples et construction utilitaire. La perception moderne d’une 'petite montre' fausse facilement la lecture : ces dimensions étaient normales et fonctionnelles."],
+        ['Héritage', "La lisibilité militaire vient des montres de service de l’entre-deux-guerres ; elle annonce les field watches d’après-guerre et, plus largement, la montre-outil moderne."]
+      ]
+    },
+    '1970|Pulsar P4 Time Computer': {
+      verdict: "La Pulsar ne se contente pas d’adopter une nouvelle technologie : elle supprime cadran, aiguilles et index. C’est une rupture de l’interface horlogère elle-même.",
+      observations: [
+        ['LED', "Les diodes rouges consomment trop pour rester allumées en permanence : l’heure est appelée à la demande. Cette contrainte technique explique directement l’ergonomie et l’esthétique du produit."],
+        ['Boîtier', "La face sombre vitrée devient une surface continue, presque sans hiérarchie entre 'verre' et 'cadran'. Le boîtier est dessiné autour d’un module électronique plutôt qu’autour d’un mouvement rond traditionnel."],
+        ['Absence d’aiguilles', "C’est une vraie rupture culturelle : pour la première fois à grande échelle, lire l’heure ne signifie plus interpréter la position d’aiguilles."],
+        ['Vers LCD', "Le LED spectaculaire sera rapidement concurrencé par le LCD, beaucoup moins énergivore et capable d’affichage permanent. Le P4 appartient donc à une phase brève mais essentielle du milieu des années 1970."]
+      ]
+    },
+    '1970|Tissot PR 516 GL': {
+      verdict: "La PR 516 relie directement le sport mécanique des années 1960 au sport-chic intégré des années 1970.",
+      observations: [
+        ['Origine fonctionnelle', "La famille PR 516 naît au milieu des années 1960 autour de l’idée de robustesse, avec mouvement protégé et communication automobile. Ce socle technique est antérieur à l’esthétique seventies."],
+        ['Boîtier/bracelet', "La continuité visuelle entre carrure et bracelet devient beaucoup plus forte : on ne lit plus quatre cornes isolées plus un bracelet, mais un objet continu. C’est l’un des marqueurs les plus solides du passage vers les années 1970."],
+        ['Finitions', "Les surfaces brossées et les arêtes larges prennent davantage d’importance que le poli intégral des dress watches 1950–60."],
+        ['Sport-chic', "Elle préfigure le langage qui fera de la montre acier à bracelet intégré un objet à la fois sportif et statutaire durant les années 1970."]
+      ]
+    },
+    '1980|Swatch GB101': {
+      verdict: "La première génération Swatch n’est pas seulement 'colorée' : elle repense la construction industrielle de la montre suisse.",
+      observations: [
+        ['Construction', "Le projet Swatch réduit drastiquement le nombre de composants et intègre des fonctions structurelles dans le boîtier lui-même, ce qui permet un assemblage automatisé et un prix beaucoup plus bas."],
+        ['Plastique', "Le plastique n’est pas un simple habillage économique : il autorise légèreté, couleur, moulage rapide et renouvellement fréquent du design."],
+        ['Quartz', "Le quartz n’est plus présenté comme technologie futuriste prestigieuse comme en 1969 ; il devient une infrastructure fiable et bon marché sur laquelle on construit un objet de mode."],
+        ['Montre comme accessoire', "La Swatch transforme la logique d’achat : on peut posséder plusieurs montres selon la tenue ou l’humeur. C’est un basculement culturel autant qu’industriel."],
+        ['Héritage', "Le cadran à aiguilles reste extrêmement traditionnel. Le changement radical est dans le produit, la fabrication, le matériau et le marketing, pas dans la manière de lire l’heure."]
+      ]
+    },
+    '1980|Casio TC500': {
+      verdict: "Le TC-500 pousse la logique digitale jusqu’à transformer le verre en interface de saisie : il annonce directement des usages que l’on associera beaucoup plus tard aux objets connectés.",
+      observations: [
+        ['Écran', "Le grand LCD occupe la majeure partie de la face : le rapport entre boîtier et affichage devient celui d’un appareil électronique plutôt que d’une montre traditionnelle."],
+        ['Tactile', "Les touches de calculatrice apparaissent sur le verre et sont activées au doigt. La surface transparente cesse d’être seulement une protection ; elle devient une interface."],
+        ['Fonctions', "Calculatrice, heure et fonctions électroniques coexistent. La montre devient terminal de poche miniature, tendance très forte chez Casio durant la décennie."],
+        ['Ce qui annonce la suite', "La logique écran + interface + logiciel est conceptuellement beaucoup plus proche d’une smartwatch que d’une montre mécanique, même si les capacités restent évidemment limitées par l’électronique de l’époque."]
+      ]
+    },
+    '1980|Tissot RockWatch': {
+      verdict: "La RockWatch est un exemple parfait de la manière dont les années 1980 déplacent la valeur de la montre du mécanisme vers le matériau, le concept et l’image.",
+      observations: [
+        ['Boîtier en pierre', "La pierre naturelle devient directement la carrure et le cadran. Les variations de texture rendent chaque exemplaire visuellement unique."],
+        ['Quartz', "Le quartz très compact permet cette liberté : le mouvement n’impose plus la même architecture de boîte qu’un calibre mécanique traditionnel."],
+        ['Minimalisme', "Deux aiguilles et très peu d’index laissent le matériau parler. C’est presque l’inverse de la montre-outil chargée des décennies précédentes."],
+        ['Années 1980', "Le produit associe technologie industrielle fiable et objet-concept fortement marketé : combinaison très représentative de la décennie."]
+      ]
+    },
+    '1990|Junghans MEGA 1': {
+      verdict: "La MEGA 1 montre que le quartz des années 1990 ne se contente plus d’être précis : il cherche à être automatiquement exact grâce à une référence horaire extérieure.",
+      observations: [
+        ['Radio-pilotage', "La montre reçoit un signal horaire radio et corrige automatiquement son affichage. La notion de précision se déplace : il ne s’agit plus seulement d’un bon oscillateur interne, mais d’une synchronisation externe."],
+        ['Design', "Le boîtier et l’affichage assument l’électronique, sans chercher à imiter une montre mécanique."],
+        ['Héritage', "Elle prolonge quinze ans d’expérimentation digitale et quartz, mais remplace l’accumulation de fonctions par une fonction centrale : l’heure exacte sans réglage manuel."],
+        ['Vers le connecté', "L’idée qu’une montre reçoit une information extérieure et se corrige elle-même prépare conceptuellement GPS, Bluetooth et smartwatch."]
+      ]
+    },
+    '1990|Casio F-91W': {
+      verdict: "Le F-91W est moins intéressant par l’innovation pure que par la maturité : il condense les acquis de la montre digitale des années 1980 dans un produit extrêmement simple, fin et industrialisé.",
+      observations: [
+        ['Boîtier résine', "Petit, léger, rectangulaire, peu coûteux : la résine n’est plus un manifeste comme au début de G-Shock mais une solution parfaitement banalisée."],
+        ['LCD', "Affichage permanent, jour/date et indications secondaires : l’interface digitale est devenue un langage standard que l’utilisateur comprend immédiatement."],
+        ['Fonctions', "Alarme, chronographe et éclairage représentent désormais un socle fonctionnel accessible, là où des fonctions comparables étaient spectaculaires une décennie plus tôt."],
+        ['Datation', "Son dessin peut sembler 'années 80' parce qu’il conserve cette grammaire. C’est justement un bon exemple de survivance stylistique : une décennie n’efface jamais brutalement la précédente."]
+      ]
+    },
+    '2000|Omega Planet Ocean': {
+      verdict: "La Planet Ocean concentre plusieurs signatures des années 2000 : retour patrimonial, diamètre important, épaisseur assumée et langage de plongeuse rendu plus luxueux et plus démonstratif.",
+      observations: [
+        ['Proportions', "Le boîtier dépasse nettement les dimensions des Seamaster civiles des années 1950–60. La présence au poignet devient une valeur esthétique en soi."],
+        ['Lunette et étanchéité', "Les codes historiques de la plongeuse — lunette tournante, grands index lumineux, forte étanchéité — sont amplifiés plutôt que simplement reproduits."],
+        ['Cadran', "Index volumineux, aiguilles larges et matière lumineuse abondante donnent une lecture immédiatement sportive, même hors contexte de plongée."],
+        ['Patrimoine', "Le design évoque les plongeuses Omega historiques mais ne cherche pas encore la reproduction fidèle qui deviendra très courante dans le néo-vintage des années 2010."],
+        ['Mouvement', "La communication autour du calibre et de l’échappement co-axial illustre également le retour du mouvement mécanique au centre du discours de marque."]
+      ]
+    },
+    '2000|Tissot T-Touch': {
+      verdict: "La T-Touch est un jalon important parce qu’elle ajoute une interface tactile au verre tout en conservant de vraies aiguilles : elle fusionne montre analogique et instrument électronique.",
+      observations: [
+        ['Verre tactile', "Le verre devient une surface de commande permettant d’appeler des fonctions. Comme sur le Casio TC-500 plus tôt, la protection devient interface, mais ici dans une montre analogique suisse hautement instrumentée."],
+        ['Aiguilles multifonctions', "Les aiguilles ne servent pas uniquement à l’heure : elles participent à l’indication de certaines fonctions, reliant mécaniquement la lecture traditionnelle à l’électronique."],
+        ['Capteurs', "Altimètre, baromètre, thermomètre ou boussole selon version transforment la montre en outil outdoor."],
+        ['Vers la smartwatch', "Elle n’est pas connectée au sens moderne, mais elle prépare l’idée d’une montre-interface dotée de capteurs et de plusieurs modes d’utilisation."]
+      ]
+    },
+    '2010|Apple Watch': {
+      verdict: "Avec l’Apple Watch, le cadran cesse d’être un composant matériel fixe : il devient une interface logicielle. C’est une rupture aussi profonde, pour l’usage, que le passage aux affichages digitaux des années 1970.",
+      observations: [
+        ['Écran', "L’affichage est reconfigurable : cadran, complication, notification et application partagent la même surface. La notion même de 'design du cadran' devient logicielle."],
+        ['Boîtier', "La forme rectangulaire aux angles très arrondis optimise la surface d’écran et le toucher plutôt qu’elle ne dérive d’un mouvement rond."],
+        ['Couronne', "La Digital Crown réinterprète un organe historique de la montre comme contrôleur d’interface, mélange volontaire de référence horlogère et interaction numérique."],
+        ['Capteurs', "La montre mesure et communique ; l’heure n’est plus sa fonction dominante. Cela change la hiérarchie fonctionnelle traditionnelle de l’objet."],
+        ['Effet sur l’horlogerie mécanique', "Paradoxalement, l’essor de la smartwatch renforce aussi la distinction de la montre mécanique comme objet culturel, artisanal ou patrimonial plutôt que simple outil horaire."]
+      ]
+    },
+    '2010|Nomos Metro': {
+      verdict: "La Metro montre une autre direction des années 2010 : revenir à des proportions raisonnables et à une mécanique très lisible tout en évitant le pastiche vintage.",
+      observations: [
+        ['Proportions', "La boîte reste relativement contenue et fine, à rebours de la course aux très grands diamètres des années 2000."],
+        ['Cornes', "Les cornes filiformes donnent une présence graphique forte sans ajouter de masse. Elles ne copient pas directement une forme historique précise : c’est un modernisme contemporain."],
+        ['Cadran', "Grande respiration, typographie claire, petite seconde et touches de couleur : la petite seconde revient ici comme choix esthétique et architectural, non comme survivance d’un calibre ancien."],
+        ['Mouvement', "Le regain d’intérêt pour les calibres manufacture, leur finition et leur architecture est au cœur de la valeur perçue de nombreuses montres mécaniques de la période."],
+        ['Lecture chronologique', "C’est un bon rappel qu’un détail ancien peut revenir avec un sens nouveau : petite seconde en 1960 = souvent héritage ; petite seconde chez Nomos = décision de design contemporaine assumée."]
+      ]
+    }
+  };
+
+  function historyExpertFor(item, eraKey) {
+    const era = HISTORY_ERA_EXPERT[eraKey] || {};
+    const key = `${eraKey}|${item.name}`;
+    const override = HISTORY_EXPERT_OVERRIDES[key] || {};
+    const hay = `${item.name} ${item.file} ${item.typical} ${item.heritage} ${item.next}`.toLocaleLowerCase('fr');
+    const observations = override.observations ? [...override.observations] : [];
+
+    const add = (label, text) => {
+      if (!observations.some(([l]) => l === label)) observations.push([label, text]);
+    };
+
+    if (/chronograph|chrono|tri-compax|premier|buran/.test(hay)) {
+      add('Architecture du cadran', "Les compteurs subsidiaires ne doivent pas être confondus avec une simple petite seconde de montre trois-aiguilles : ils découlent de la fonction chronographe. Leur nombre, leur diamètre, l’échelle périphérique et la position des poussoirs sont souvent plus utiles pour dater une pièce que la présence même de sous-compteurs.");
+    } else if (/digital|lcd|led|computron|timecommand|piratron|casio|pulsar|smartwatch|apple watch|pebble/.test(hay)) {
+      add('Mode d’affichage', "Ici l’affichage est un élément technique autant qu’esthétique. Il faut observer s’il est LED à activation ponctuelle, LCD permanent, analogique-quartz ou écran logiciel : ces solutions ne se succèdent pas proprement, elles se chevauchent et donnent des fenêtres de datation différentes.");
+    } else {
+      add('Affichage des secondes', era.display || "La position et le mode d’affichage de la seconde sont un indice important, mais jamais suffisant seuls pour dater une montre.");
+    }
+
+    if (/automatic|automatique|autoquarz/.test(hay)) {
+      add('Architecture de mouvement', "La mention ou l’architecture automatique doit être replacée dans sa génération : bumper, rotor complet, hybride ou système électronique n’ont pas le même sens chronologique. Un automatique n’est pas en soi un marqueur des années 1960 : la diffusion est déjà forte dans les années 1950.");
+    } else if (/quartz|astron|accutron|mega|rockwatch/.test(hay)) {
+      add('Technologie', "La technologie du mouvement est ici un marqueur plus solide que la seule forme du boîtier. Il faut toutefois distinguer date de l’invention, date de commercialisation et moment où la technologie devient réellement banale sur le marché.");
+    } else {
+      add('Mouvement', era.movement || "Le type de mouvement permet souvent de resserrer fortement la datation lorsqu’on connaît le calibre exact.");
+    }
+
+    if (/coussin|cioccolatone|rectang|computron|tv|timecommand|rockwatch|t-touch|apple|pebble/.test(hay)) {
+      add('Boîtier et géométrie', "La carrure ne sert plus seulement à entourer un mouvement rond : sa forme devient un choix de design autonome. Il faut regarder la continuité entre carrure, cornes et bracelet, ainsi que la répartition poli/brossé, plutôt que de se limiter à 'rond ou carré'.");
+    } else {
+      add('Boîtier et cornes', era.case || "Les cornes, la lunette et la carrure sont des indices de datation majeurs lorsqu’on les lit ensemble.");
+    }
+
+    add('Cadran, index et aiguilles', era.dial || "La typographie, la construction des index et la forme des aiguilles évoluent souvent plus progressivement que les mouvements ; elles sont donc particulièrement utiles pour repérer les pièces de transition.");
+
+    if (/amphibia|aquadive|planet ocean|superocean|seastar|seamaster|military|militaire|a-11|atp|flieger/.test(hay)) {
+      add('Fonction et construction', "Sur une montre à vocation militaire, étanche ou sportive, la fonction peut expliquer des choix qui seraient atypiques sur une dress watch de la même année : grosse couronne, contraste, matière lumineuse, lunette, fond plus robuste ou carrure plus épaisse. Il faut toujours comparer avec la bonne famille d’usage.");
+    }
+
+    add('Lecture de transition', era.transition || "Une pièce de transition mélange souvent plusieurs générations de codes ; c’est précisément ce mélange qui permet de comprendre son époque.");
+
+    return {
+      verdict: override.verdict || `Cette pièce doit se lire comme un faisceau d’indices, pas comme une somme de clichés de décennie. ${item.typical}`,
+      observations,
+      heritage: override.heritage || `${item.heritage} ${eraKey !== '1940' ? 'Ce point doit être lu comme une continuité : un code ancien peut rester en production plusieurs années après l’apparition d’une solution plus moderne.' : ''}`,
+      typical: override.typical || `${item.typical} Ce qui compte ici est la combinaison de plusieurs indices concordants : proportions, géométrie de boîte, affichage, typographie, mouvement et fonction.` ,
+      next: override.next || `${item.next} Il s’agit d’un signe de transition, pas nécessairement d’un élément déjà dominant au moment où cette montre est fabriquée.`,
+      caution: override.caution || "Datation stylistique ≠ datation absolue. Pour confirmer une période à quelques années près, il faut croiser la référence de boîte, le calibre, le numéro de série, les marquages du cadran, le type de couronne et la cohérence des composants."
+    };
+  }
+
+
   const HISTORY_TIMELINE = [
     ['XVIe siècle', 'Les premières montres portatives à ressort apparaissent en Europe. Elles sont encore portées en pendentif ou dans la poche.'],
     ['1810', 'Breguet reçoit la commande documentée d’une montre conçue pour être portée au poignet pour Caroline Murat, reine de Naples.'],
@@ -1584,10 +1897,11 @@
       </article>`;
   }
 
-  function historyDetailCard(item, index) {
+  function historyDetailCard(item, index, eraKey) {
     const source = commonsSource(item.file);
+    const expert = historyExpertFor(item, eraKey);
     return `
-      <article class="history-detail-card">
+      <article class="history-detail-card expert">
         <div class="history-detail-image-wrap">
           <img class="history-detail-image" src="${commonsFile(item.file)}" alt="${esc(item.name)}" loading="lazy" referrerpolicy="no-referrer">
           <div class="history-detail-image-fallback" aria-hidden="true">⌚</div>
@@ -1597,18 +1911,39 @@
           <div class="history-detail-period">${esc(item.period || '')}</div>
           <h2>${esc(item.name)}</h2>
           ${item.note ? `<p class="history-detail-note">${esc(item.note)}</p>` : ''}
-          <div class="history-analysis-block">
-            <div class="history-analysis-label">Typique de l’époque</div>
-            <p>${esc(item.typical)}</p>
+
+          <div class="history-expert-verdict">
+            <div class="history-expert-kicker">Lecture d’horloger</div>
+            <p>${esc(expert.verdict)}</p>
           </div>
+
+          <div class="history-expert-observations">
+            ${expert.observations.map(([label, text]) => `
+              <div class="history-expert-row">
+                <div class="history-expert-label">${esc(label)}</div>
+                <p>${esc(text)}</p>
+              </div>`).join('')}
+          </div>
+
+          <div class="history-chronology-title">Position dans la chronologie</div>
           <div class="history-analysis-block previous">
-            <div class="history-analysis-label">Héritage de l’époque précédente</div>
-            <p>${esc(item.heritage)}</p>
+            <div class="history-analysis-label">← Héritage de la période précédente</div>
+            <p>${esc(expert.heritage)}</p>
+          </div>
+          <div class="history-analysis-block current">
+            <div class="history-analysis-label">● Ce qui appartient réellement à l’époque</div>
+            <p>${esc(expert.typical)}</p>
           </div>
           <div class="history-analysis-block next">
-            <div class="history-analysis-label">Ce qui annonce la suite</div>
-            <p>${esc(item.next)}</p>
+            <div class="history-analysis-label">Ce qui annonce la suite →</div>
+            <p>${esc(expert.next)}</p>
           </div>
+
+          <div class="history-expert-caution">
+            <strong>Pour dater plus précisément</strong>
+            <p>${esc(expert.caution)}</p>
+          </div>
+
           <a class="history-credit" href="${source}" target="_blank" rel="noopener noreferrer">Source photo · Wikimedia Commons ↗</a>
         </div>
       </article>`;
@@ -1626,14 +1961,14 @@
         <h1>${esc(era.title)}</h1>
         <p>${esc(era.intro)}</p>
         <div class="history-tags">${era.recognize.map(x => `<span>${esc(x)}</span>`).join('')}</div>
-        <div class="history-detail-count">${items.length} montres à observer</div>
+        <div class="history-expert-banner"><strong>Niveau expert</strong><span>Ici, aucun détail n’est daté isolément : on distingue les survivances de la décennie précédente, les codes réellement dominants et les signes encore minoritaires qui annoncent la suivante.</span></div><div class="history-detail-count">${items.length} montres à analyser</div>
       </section>
       <section class="history-detail-grid">
-        ${items.map(historyDetailCard).join('')}
+        ${items.map((item, index) => historyDetailCard(item, index, eraKey)).join('')}
       </section>
       <section class="history-sources history-detail-sources">
         <strong>Comment lire ces exemples</strong>
-        <p>Chaque montre est utilisée comme repère visuel : certains modèles sont datés précisément, d’autres représentent une famille de design dont les codes se prolongent sur plusieurs années. L’analyse distingue volontairement ce qui appartient à la décennie, ce qui vient de la précédente et ce qui prépare la suivante.</p>
+        <p>Ces fiches sont conçues comme des lectures morphologiques et techniques. Un détail isolé ne date jamais une montre : petite seconde, cornes, diamètre, index ou type de verre peuvent survivre longtemps. La datation devient solide quand plusieurs indices convergent et qu’ils sont confirmés par la référence de boîte et le calibre.</p>
         <p class="history-online-note">Les photographies sont chargées depuis Wikimedia Commons et peuvent nécessiter une connexion Internet.</p>
       </section>`;
     bindCommon();
