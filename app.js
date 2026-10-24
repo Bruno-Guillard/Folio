@@ -49,6 +49,109 @@
   const repairFolderForItem = item => state.folders.find(f => f.id === item?.folderId && isRepairFolder(f)) || null;
   const isRepairItem = item => !!repairFolderForItem(item);
 
+  const commonsFile = name => `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(name)}?width=960`;
+
+  const HISTORY_ERAS = [
+    {
+      key: '1940', label: '1940', title: 'Années 1940 — utilitaire, militaire et élégance sobre',
+      image: commonsFile("Lanco dress watch, anni '40.jpg"),
+      photoLabel: "Montre habillée Lanco, années 1940",
+      credit: 'Clyde94 · CC BY-SA 4.0',
+      source: "https://commons.wikimedia.org/wiki/File:Lanco_dress_watch,_anni_'40.jpg",
+      intro: "La montre-bracelet est désormais installée. La guerre renforce la recherche de lisibilité, de robustesse et de synchronisation, tandis que le civil conserve de petites montres habillées très sobres.",
+      recognize: ['30–36 mm souvent', 'Chiffres arabes lisibles', 'Petite seconde fréquente', 'Remontage manuel', 'Plexi et boîtiers fins'],
+      examples: ['A-11 américaine', 'WWW britannique', 'Montres habillées à petite seconde']
+    },
+    {
+      key: '1950', label: '1950', title: 'Années 1950 — élégance d’après-guerre et automatique',
+      image: commonsFile("Jaeger-LeCoultre men's dress watch ca. 1950s.jpg"),
+      photoLabel: "Jaeger-LeCoultre habillée, années 1950",
+      credit: 'Kjetil Ree · CC BY-SA 3.0',
+      source: "https://commons.wikimedia.org/wiki/File:Jaeger-LeCoultre_men's_dress_watch_ca._1950s.jpg",
+      intro: "Les cadrans deviennent plus épurés, les index appliqués et les boîtiers plus élégants. Le remontage automatique se diffuse fortement et la montre-outil moderne commence à se structurer.",
+      recognize: ['Cadrans crème / argent', 'Index appliqués', 'Boîtiers or ou acier', 'Automatique en essor', 'Diamètres encore contenus'],
+      examples: ['Dress watches suisses', 'Premières plongeuses modernes', 'Date et réserve de marche']
+    },
+    {
+      key: '1960', label: '1960', title: 'Années 1960 — âge d’or de la montre-outil',
+      image: commonsFile('Jaeger-LeCoultre Memovox model E855 with calibre K825 (2).JPG'),
+      photoLabel: 'Jaeger-LeCoultre Memovox automatique, années 1960',
+      credit: 'Ghilt · CC BY-SA 3.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Jaeger-LeCoultre_Memovox_model_E855_with_calibre_K825_(2).JPG',
+      intro: "Plongée, aviation, chronographe, alarme et exploration donnent naissance à des designs très fonctionnels. En fin de décennie, l’électronique et le quartz annoncent une rupture majeure.",
+      recognize: ['Acier très présent', 'Lunettes tournantes', 'Chronographes', 'Automatiques robustes', 'Cadrans très lisibles'],
+      examples: ['Montres de plongée', 'Chronographes de sport', 'Montres à alarme', 'Quartz Astron en 1969']
+    },
+    {
+      key: '1970', label: '1970', title: 'Années 1970 — quartz, formes audacieuses et affichage digital',
+      image: commonsFile('Pulsar P4 Time Computer 3215-2 LED display watch circa 1975.png'),
+      photoLabel: 'Pulsar P4 LED, vers 1975',
+      credit: 'Jonathan Mauer · CC BY 4.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Pulsar_P4_Time_Computer_3215-2_LED_display_watch_circa_1975.png',
+      intro: "Le quartz bouleverse l’industrie. LED puis LCD côtoient encore les mécaniques automatiques. Les designers expérimentent : boîtiers TV, tonneau, coussin, bracelets intégrés et cadrans colorés.",
+      recognize: ['Boîtiers TV / tonneau', 'Bracelets intégrés', 'Couleurs fortes', 'LED et LCD', 'Jour-date très courant'],
+      examples: ['Pulsar LED', 'Seiko 6139', 'Quartz analogique', 'Montres TV']
+    },
+    {
+      key: '1980', label: '1980', title: 'Années 1980 — quartz démocratique, plastique et fun',
+      image: commonsFile('Odyssey Quartz Panther digital watch c 1982 (front date).jpg'),
+      photoLabel: 'Montre digitale quartz économique, vers 1982',
+      credit: 'Multicherry · CC BY-SA 4.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Odyssey_Quartz_Panther_digital_watch_c_1982_(front_date).jpg',
+      intro: "Le quartz devient le standard du quotidien. Les digitales bon marché se multiplient, le plastique assume la couleur et le design devient un terrain de jeu. Swatch apparaît en 1983 et G-Shock la même année.",
+      recognize: ['LCD omniprésent', 'Résine / plastique', 'Boîtiers très fins ou sportifs', 'Couleurs', 'Fonctions alarme / chrono'],
+      examples: ['Digitales LCD', 'Swatch', 'Premières G-Shock', 'Quartz habillées fines']
+    },
+    {
+      key: '1990', label: '1990', title: 'Années 1990 — retour du mécanique et néo-vintage',
+      image: commonsFile('Before-and-after comparison of photo retouche on Poljot Buran chronograph wristwatch from about 1990.jpg'),
+      photoLabel: 'Chronographe mécanique Poljot Buran, vers 1990',
+      credit: 'Pittigrilli · CC BY-SA 4.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Before-and-after_comparison_of_photo_retouche_on_Poljot_Buran_chronograph_wristwatch_from_about_1990.jpg',
+      intro: "Le quartz reste dominant, mais la montre mécanique redevient désirable chez les amateurs. Les maisons remettent en avant complications, chronographes et héritage, tandis que le sport reste très présent.",
+      recognize: ['Quartz toujours majoritaire', 'Retour mécanique', 'Chronographes', 'Sport / tool watches', 'Premiers codes néo-vintage'],
+      examples: ['Chronographes mécaniques', 'Montres de plongée', 'Quartz sport', 'Rééditions patrimoniales']
+    },
+    {
+      key: '2000', label: '2000', title: 'Années 2000 — grandes tailles et montre comme objet de style',
+      image: commonsFile('2006090201 Casio-G-shock.Mod.3017-GW-056E 2006.jpg'),
+      photoLabel: 'Casio G-Shock GW-056E, 2006',
+      credit: 'VSchagow · CC BY-SA 4.0',
+      source: 'https://commons.wikimedia.org/wiki/File:2006090201_Casio-G-shock.Mod.3017-GW-056E_2006.jpg',
+      intro: "Les diamètres augmentent nettement. Les montres sportives et techniques deviennent massives, tandis que le haut de gamme mécanique connaît une forte croissance et remet les complications au premier plan.",
+      recognize: ['40 mm et plus fréquent', 'Boîtiers épais', 'Sport très marqué', 'Acier / caoutchouc', 'Complications visibles'],
+      examples: ['G-Shock techniques', 'Chronographes XXL', 'Plongeuses imposantes', 'Haute horlogerie mécanique']
+    },
+    {
+      key: '2010', label: '2010 →', title: '2010 à aujourd’hui — smartwatch, micro-marques et retour aux proportions vintage',
+      image: commonsFile('Apple Watch.jpg'),
+      photoLabel: 'Apple Watch, 2015',
+      credit: 'raneko · CC BY 2.0',
+      source: 'https://commons.wikimedia.org/wiki/File:Apple_Watch.jpg',
+      intro: "La montre connectée crée une nouvelle branche du marché. En parallèle, les micro-marques se multiplient et l’horlogerie mécanique redécouvre progressivement des diamètres plus contenus, le néo-vintage et les rééditions historiques.",
+      recognize: ['Smartwatches', 'Micro-marques', 'Néo-vintage', 'Retour 36–39 mm', 'Bracelets intégrés et rééditions'],
+      examples: ['Montres connectées', 'Rééditions patrimoniales', 'Micro-marques', 'Petits diamètres en retour']
+    }
+  ];
+
+  const HISTORY_TIMELINE = [
+    ['XVIe siècle', 'Les premières montres portatives à ressort apparaissent en Europe. Elles sont encore portées en pendentif ou dans la poche.'],
+    ['1810', 'Breguet reçoit la commande documentée d’une montre conçue pour être portée au poignet pour Caroline Murat, reine de Naples.'],
+    ['1868', 'Patek Philippe réalise une montre-bracelet suisse pour la comtesse Koscowicz : le bracelet est désormais pensé avec le boîtier.'],
+    ['1904', 'Louis Cartier conçoit pour l’aviateur Alberto Santos-Dumont une montre permettant de lire l’heure sans lâcher les commandes : un jalon majeur de la montre-bracelet masculine.'],
+    ['1914–1918', 'La Première Guerre mondiale accélère fortement l’usage de la montre au poignet chez les hommes : lire l’heure rapidement devient une nécessité opérationnelle.'],
+    ['1926', 'Rolex présente l’Oyster, montre-bracelet étanche à l’eau et à la poussière grâce à un boîtier hermétique.'],
+    ['1931', 'Le rotor Perpetual de Rolex popularise le remontage automatique à rotor libre, principe devenu central dans la montre automatique moderne.'],
+    ['1940s', 'La lisibilité et la robustesse militaires influencent durablement la montre de terrain ; le civil reste dominé par les petites montres habillées.'],
+    ['1950s', 'L’automatique se généralise, la date progresse et les grandes familles de montres-outils — plongée, exploration, aviation — prennent forme.'],
+    ['1960s', 'Chronographes, plongeuses, alarmes et montres électriques se développent. Le 25 décembre 1969, Seiko commercialise l’Astron 35SQ, première montre-bracelet à quartz commercialisée.'],
+    ['1970s', 'Quartz, LED et LCD transforment le marché. En 1973, Seiko commercialise une montre LCD à affichage continu six chiffres ; les formes deviennent beaucoup plus libres.'],
+    ['1980s', 'Le quartz devient massif et accessible. Swatch naît en 1983 ; les digitales et les montres sport en résine deviennent des objets populaires.'],
+    ['1990s', 'Le quartz reste roi du volume, mais la mécanique connaît un renouveau culturel et commercial, notamment dans le luxe et chez les collectionneurs.'],
+    ['2000s', 'Les montres grossissent, la montre mécanique haut de gamme devient un marqueur de style, et le marché des sportives techniques explose.'],
+    ['2010s–2020s', 'Smartwatches, micro-marques, ventes en ligne et réseaux sociaux élargissent l’univers. En parallèle, le vintage inspire un retour progressif aux formats plus contenus.']
+  ];
+
 
   const newUuid = () => crypto.randomUUID();
   const isUuid = value => /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(String(value || ''));
@@ -666,6 +769,7 @@
     if (type === 'home') return renderHome();
     if (type === 'folder') return renderFolder(id);
     if (type === 'watch') return renderWatch(id);
+    if (type === 'history') return renderHistory();
   }
 
   function renderHome() {
@@ -701,8 +805,96 @@
       }
       html += `</div>`;
     }
+
+    html += `
+      <section class="history-entry-wrap">
+        <button class="history-entry" data-action="open-history">
+          <div class="history-entry-icon">⌚</div>
+          <div class="history-entry-copy">
+            <strong>Histoire</strong>
+            <span>Repères, grandes époques, innovations et styles de montres.</span>
+          </div>
+          <div class="history-entry-arrow">›</div>
+        </button>
+      </section>`;
+
     els.main.innerHTML = html;
     bindCommon();
+  }
+
+  function historyEraCard(era) {
+    return `
+      <article id="era-${era.key}" class="history-era-card">
+        <div class="history-era-photo-wrap">
+          <img class="history-era-photo" src="${era.image}" alt="${esc(era.photoLabel)}" loading="lazy" referrerpolicy="no-referrer">
+          <div class="history-era-photo-fallback" aria-hidden="true">⌚</div>
+        </div>
+        <div class="history-era-content">
+          <div class="history-era-kicker">${esc(era.label)}</div>
+          <h2>${esc(era.title)}</h2>
+          <p>${esc(era.intro)}</p>
+          <div class="history-subtitle">À reconnaître</div>
+          <div class="history-tags">${era.recognize.map(x => `<span>${esc(x)}</span>`).join('')}</div>
+          <div class="history-subtitle">Exemples repères</div>
+          <div class="history-examples">${era.examples.map(x => `<span>• ${esc(x)}</span>`).join('')}</div>
+          <a class="history-credit" href="${era.source}" target="_blank" rel="noopener noreferrer">Photo : ${esc(era.credit)} · Wikimedia Commons ↗</a>
+        </div>
+      </article>`;
+  }
+
+  function renderHistory() {
+    els.subtitle.textContent = 'Histoire de l’horlogerie';
+    els.fab.classList.add('hidden');
+    const eraNav = HISTORY_ERAS.map(era => `
+      <button class="history-era-pill" data-era-target="${era.key}">
+        <span class="history-pill-image"><img src="${era.image}" alt="" loading="lazy" referrerpolicy="no-referrer"></span>
+        <span>${esc(era.label)}</span>
+      </button>`).join('');
+
+    const timeline = HISTORY_TIMELINE.map(([date, text]) => `
+      <div class="history-timeline-row">
+        <div class="history-timeline-date">${esc(date)}</div>
+        <div class="history-timeline-dot" aria-hidden="true"></div>
+        <div class="history-timeline-text">${esc(text)}</div>
+      </div>`).join('');
+
+    els.main.innerHTML = `
+      <section class="history-intro">
+        <div class="history-eyebrow">FOLIO · HISTOIRE</div>
+        <h1>Une petite histoire de la montre</h1>
+        <p>Des premières montres portatives au quartz, puis aux montres connectées : des repères simples pour situer un style, une technologie et une époque. Les frontières entre décennies restent naturellement progressives.</p>
+      </section>
+
+      <section class="history-era-nav-wrap">
+        <div class="history-nav-title">Grandes époques</div>
+        <div class="history-era-nav">${eraNav}</div>
+      </section>
+
+      <section class="history-era-list">
+        ${HISTORY_ERAS.map(historyEraCard).join('')}
+      </section>
+
+      <section class="history-timeline-section">
+        <div class="history-section-head">
+          <div class="history-eyebrow">REPÈRES</div>
+          <h2>De l’invention aux grands courants</h2>
+        </div>
+        <div class="history-timeline">${timeline}</div>
+      </section>
+
+      <section class="history-sources">
+        <strong>Sources historiques principales</strong>
+        <p>Breguet (1810), Patek Philippe (1868), Cartier (1904), Rolex (Oyster 1926 / rotor Perpetual 1931), Seiko (Astron 1969 / LCD 1973) et Swatch Group (Swatch 1983). Les photographies d’époque illustratives proviennent de Wikimedia Commons sous les licences indiquées.</p>
+        <p class="history-online-note">Les images d’exemple sont chargées depuis Wikimedia Commons lorsqu’une connexion Internet est disponible.</p>
+      </section>`;
+
+    bindCommon();
+    document.querySelectorAll('[data-era-target]').forEach(btn => btn.addEventListener('click', () => {
+      document.getElementById(`era-${btn.dataset.eraTarget}`)?.scrollIntoView({ behavior:'smooth', block:'start' });
+    }));
+    document.querySelectorAll('.history-era-photo, .history-pill-image img').forEach(img => {
+      img.addEventListener('error', () => img.classList.add('image-error'));
+    });
   }
 
   function renderFolder(folderId) {
@@ -988,6 +1180,7 @@
       });
     });
     document.querySelectorAll('[data-action="new-folder"]').forEach(el => el.addEventListener('click', showNewFolder));
+    document.querySelectorAll('[data-action="open-history"]').forEach(el => el.addEventListener('click', () => setView('history')));
     document.querySelectorAll('[data-action="folder-menu"]').forEach(el => el.addEventListener('click', showFolderMenu));
     document.querySelectorAll('[data-action="edit-watch"]').forEach(el => el.addEventListener('click', () => showWatchForm(state.view.id)));
     document.querySelectorAll('[data-action="delete-watch"]').forEach(el => el.addEventListener('click', deleteCurrentWatch));

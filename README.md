@@ -142,7 +142,7 @@ Avant de publier V6.5 sur GitHub Pages, exécuter une fois dans Supabase > SQL E
 Le script initialise le titre d'annonce des fiches existantes avec leur nom Folio uniquement si ce nouveau champ est vide, afin de ne pas casser la vitrine existante. Après cela, les deux titres sont totalement indépendants.
 
 
-## V6.6 — Réorganisation des photos
+## V6.7 — Réorganisation des photos
 
 - Correction du glisser-déposer des photos dans une fiche.
 - Sur téléphone comme sur ordinateur, saisir la poignée **≡** d'une photo et la faire glisser vers sa nouvelle position.
@@ -151,3 +151,13 @@ Le script initialise le titre d'annonce des fiches existantes avec leur nom Foli
 - La première photo reste la photo principale.
 - L'ordre est enregistré dans Folio et synchronisé vers Supabase comme auparavant.
 - Aucun changement SQL Supabase n'est nécessaire.
+
+
+## V6.7 — Histoire
+
+- Une bulle **Histoire** est ajoutée sous les dossiers de l’accueil.
+- Navigation visuelle par grandes époques de 1940 à aujourd’hui.
+- Une photo illustrative, des repères de style et des exemples pour chaque époque.
+- Une frise générale remonte aux premières montres portatives, puis aux jalons 1810, 1868, 1904, 1926, 1931, quartz, digital, etc.
+- Aucun changement Supabase : ce module est statique et indépendant de la collection.
+- Les photos d’exemple sont chargées depuis Wikimedia Commons et créditées dans la page.
