@@ -170,8 +170,12 @@ Le script initialise le titre d'annonce des fiches existantes avec leur nom Foli
 ## V6.8 — Histoire détaillée par époque
 Chaque carte d’époque comporte désormais un bouton **En savoir plus** ouvrant une page dédiée avec 10 montres à observer. Chaque exemple distingue les codes typiques de la décennie, l’héritage de la période précédente et les éléments qui annoncent la suivante.
 
-## V6.10 — Photo persistante dans Histoire
+## V6.11 — Photo persistante dans Histoire
 
 Dans les pages détaillées par époque, la photo de chaque montre reste désormais épinglée en haut pendant la lecture de son analyse. Elle est contrainte à la fiche courante : lorsque la montre suivante arrive, sa photo remplace naturellement la précédente. Sur ordinateur, l’image reste dans la colonne de gauche ; sur mobile, elle reste juste sous la barre Folio.
 
 Aucune modification Supabase n’est nécessaire.
+
+
+## V6.11 — photo flottante mobile
+Sur téléphone, pendant la lecture détaillée d’une montre dans Histoire, une bulle photo reste fixée sous la barre Folio. Elle change automatiquement au passage à la montre suivante. Sur ordinateur, la photo reste sticky dans la colonne de gauche.

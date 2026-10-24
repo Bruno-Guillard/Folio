@@ -1949,6 +1949,83 @@
       </article>`;
   }
 
+  function setupHistoryMobilePhotoBubble() {
+    // Nettoie l'écouteur de la page précédente si l'utilisateur change de vue.
+    if (window.__folioHistoryBubbleCleanup) {
+      window.__folioHistoryBubbleCleanup();
+      window.__folioHistoryBubbleCleanup = null;
+    }
+
+    const cards = Array.from(document.querySelectorAll('.history-detail-card.expert'));
+    if (!cards.length) return;
+
+    const bubble = document.createElement('div');
+    bubble.className = 'history-mobile-photo-bubble';
+    bubble.setAttribute('aria-hidden', 'true');
+    bubble.innerHTML = '<img alt=""><span class="bubble-number"></span>';
+    document.body.appendChild(bubble);
+
+    const bubbleImg = bubble.querySelector('img');
+    const bubbleNumber = bubble.querySelector('.bubble-number');
+    let currentCard = null;
+    let raf = 0;
+
+    function update() {
+      raf = 0;
+      if (window.innerWidth >= 800 || state.view.type !== 'history-era') {
+        bubble.classList.remove('visible');
+        currentCard = null;
+        return;
+      }
+
+      // La topbar fait environ 78 px. Dès que le début d'une fiche passe dessous,
+      // sa photo prend la place dans la bulle. La fiche suivante la remplace naturellement.
+      const triggerY = Math.max(82, 78 + (window.visualViewport?.offsetTop || 0));
+      let active = null;
+      for (const card of cards) {
+        const rect = card.getBoundingClientRect();
+        if (rect.top <= triggerY && rect.bottom > triggerY + 8) active = card;
+      }
+
+      if (!active) {
+        bubble.classList.remove('visible');
+        currentCard = null;
+        return;
+      }
+
+      if (active !== currentCard) {
+        const sourceImg = active.querySelector('.history-detail-image');
+        const num = active.querySelector('.history-detail-number')?.textContent || '';
+        if (sourceImg?.src) {
+          bubbleImg.src = sourceImg.src;
+          bubbleImg.alt = sourceImg.alt || '';
+          bubbleNumber.textContent = num;
+          currentCard = active;
+        }
+      }
+      bubble.classList.add('visible');
+    }
+
+    function requestUpdate() {
+      if (!raf) raf = requestAnimationFrame(update);
+    }
+
+    window.addEventListener('scroll', requestUpdate, { passive: true });
+    window.addEventListener('resize', requestUpdate, { passive: true });
+    window.visualViewport?.addEventListener('resize', requestUpdate, { passive: true });
+    window.visualViewport?.addEventListener('scroll', requestUpdate, { passive: true });
+    update();
+
+    window.__folioHistoryBubbleCleanup = () => {
+      window.removeEventListener('scroll', requestUpdate);
+      window.removeEventListener('resize', requestUpdate);
+      window.visualViewport?.removeEventListener('resize', requestUpdate);
+      window.visualViewport?.removeEventListener('scroll', requestUpdate);
+      if (raf) cancelAnimationFrame(raf);
+      bubble.remove();
+    };
+  }
+
   function renderHistoryEraDetail(eraKey) {
     const era = HISTORY_ERAS.find(x => x.key === eraKey);
     if (!era) return setView('history');
@@ -1975,6 +2052,7 @@
     document.querySelectorAll('.history-detail-image').forEach(img => {
       img.addEventListener('error', () => img.classList.add('image-error'));
     });
+    setupHistoryMobilePhotoBubble();
   }
 
   function renderHistory() {
