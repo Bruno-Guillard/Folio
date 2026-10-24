@@ -587,32 +587,33 @@ button { -webkit-tap-highlight-color: transparent; }
 .history-mobile-photo-bubble {
   position: fixed;
   top: calc(env(safe-area-inset-top) + 86px);
-  right: 12px;
+  left: 50%;
+  right: auto;
   z-index: 19;
-  width: 203px;
-  height: 161px;
-  padding: 7px;
+  width: min(90vw, 355px);
+  height: min(72vw, 282px);
+  padding: 8px;
   border: 1px solid rgba(0,0,0,.10);
-  border-radius: 25px;
+  border-radius: 28px;
   background: rgba(255,255,255,.94);
   box-shadow: 0 10px 28px rgba(0,0,0,.18);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
   opacity: 0;
-  transform: translateY(-8px) scale(.96);
+  transform: translate(-50%, -8px) scale(.96);
   pointer-events: none;
   transition: opacity .18s ease, transform .18s ease;
 }
 .history-mobile-photo-bubble.visible {
   opacity: 1;
-  transform: translateY(0) scale(1);
+  transform: translate(-50%, 0) scale(1);
 }
 .history-mobile-photo-bubble img {
   width: 100%;
   height: 100%;
   display: block;
   object-fit: contain;
-  border-radius: 19px;
+  border-radius: 21px;
   background: #f3f1ec;
 }
 .history-mobile-photo-bubble .bubble-number {

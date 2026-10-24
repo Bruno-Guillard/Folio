@@ -1,3 +1,11 @@
+# Folio V6.13 — Photos Histoire corrigées + bulle XL
+
+- La bulle photo mobile est maintenant réellement beaucoup plus grande : jusqu’à 90 % de la largeur de l’écran (environ 355 × 282 px sur un téléphone courant).
+- Deux exemples des années 1950 qui montraient surtout des mouvements (Tissot 15.3 et Tissot 871) ont été remplacés par des photographies de montres complètes afin que l’analyse de cadran, cornes, boîtier et proportions corresponde réellement à l’image.
+- Les analyses Tissot ont été réécrites au niveau expert, notamment sur la petite seconde, les cornes, le plexi, les index et la transition 1950 → 1960.
+
+Aucune modification Supabase n’est nécessaire.
+
 # Folio V6.12 — Bulle photo agrandie
 
 Cette version agrandit la bulle photo flottante des pages Histoire sur mobile d’environ ×1,75 en largeur et en hauteur (soit environ ×3 en surface). Son comportement reste identique : elle reste visible pendant la lecture et change automatiquement à la montre suivante.

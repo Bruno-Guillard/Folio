@@ -275,22 +275,22 @@
       "note": ""
     },
     {
-      "name": "Tissot 15.3",
-      "file": "Tissot 15.3, primi anni '50.jpg",
-      "period": "début des années 1950",
-      "typical": "Petite montre ronde, cadran clair et typographie fine : la transition depuis les années 1940 est encore très visible.",
-      "heritage": "Les cornes fines et la taille très contenue restent typiquement quarante.",
-      "next": "Les index plus sobres et la lisibilité plus directe annoncent le modernisme des années 1960.",
-      "note": ""
+      "name": "Tissot habillée rectangulaire",
+      "file": "Tissot dress watch manuale anni Cinquanta.jpg",
+      "period": "années 1950",
+      "typical": "Petite montre habillée rectangulaire à remontage manuel, cadran clair et index appliqués : un exemple utile du maintien des formes joaillières et géométriques à côté de la montre ronde masculine dominante.",
+      "heritage": "La boîte rectangulaire compacte et le rapport très étroit entre boîtier et bracelet prolongent directement l’Art déco et les petites montres habillées des années 1930–40.",
+      "next": "Le cadran très simplifié et la continuité visuelle avec le bracelet annoncent le goût des années 1960–70 pour les objets plus graphiques et les architectures boîtier-bracelet plus intégrées.",
+      "note": "Photo corrigée : l’ancienne illustration « Tissot 15.3 » montrait uniquement un calibre, donc elle ne permettait pas d’analyser correctement le dessin extérieur de la montre."
     },
     {
-      "name": "Tissot 871",
-      "file": "Tissot 871 (base Lemania 1281), anni '50.jpg",
-      "period": "années 1950",
-      "typical": "Chronographe habillé : les fonctions sportives se combinent avec un boîtier encore élégant et contenu.",
-      "heritage": "La disposition des sous-compteurs reprend les chronographes des années 1940.",
-      "next": "La vocation plus sportive et la présence accrue de l’acier annoncent l’âge d’or du chronographe des années 1960.",
-      "note": ""
+      "name": "Tissot manuelle 1958",
+      "file": "Tissot Handaufzug, 1958.jpg",
+      "period": "1958",
+      "typical": "Montre habillée manuelle de fin de décennie : cadran clair, petite seconde à 6 h, index appliqués et cornes longues encore bien séparées de la carrure.",
+      "heritage": "La petite seconde, le plexi bombé et les cornes individualisées sont des survivances fortes des années 1940–début 1950 ; en 1958, ce ne sont déjà plus les seules solutions modernes disponibles.",
+      "next": "La simplification du cadran, l’allongement des index et la géométrie plus nette des cornes préparent les dress watches très rationnelles du début des années 1960.",
+      "note": "Photo corrigée : l’ancienne image du Tissot 871 montrait surtout le mouvement du chronographe. Cette montre complète permet une lecture morphologique cohérente."
     },
     {
       "name": "Tissot chronographe",
@@ -980,6 +980,39 @@
         ['Finition dorée', "Le doré n’est pas en soi un marqueur de décennie. Ici il rattache surtout la montre au registre habillé d’après-guerre, alors que la forme de boîte est nettement plus prospective."],
         ['Lecture de transition', "C’est exactement le type de pièce qu’il faut éviter de dater sur un seul indice : cadran = plutôt conservateur ; boîte = nettement en avance. L’association des deux est typique des expérimentations du début des années 1960."]
       ]
+    },
+    '1950|Tissot habillée rectangulaire': {
+      verdict: "Cette petite Tissot montre qu’une décennie ne se résume jamais à une seule silhouette. Le rond masculin domine le marché des années 1950, mais les montres habillées féminines et joaillières conservent volontiers des géométries carrées ou rectangulaires issues de l’Art déco.",
+      observations: [
+        ['Boîte rectangulaire', "La forme rectangulaire n’est pas une invention des années 1950 : elle vient directement des années 1920–40. Son maintien ici est donc un héritage, pas un marqueur chronologique suffisant en soi."],
+        ['Proportions', "Le boîtier est très petit et presque bijou. Cette miniaturisation est courante sur les montres habillées féminines de l’époque et ne doit pas être comparée directement aux diamètres des montres masculines contemporaines."],
+        ['Cornes / bracelet', "Les cornes sont visuellement absorbées par le bracelet métallique fin. Cette continuité boîtier-bracelet reste encore décorative, mais elle préfigure la recherche d’intégration qui deviendra beaucoup plus architecturale dans les années 1960–70."],
+        ['Cadran', "Les index appliqués simples et la faible quantité de texte montrent le mouvement général des années 1950 vers des cadrans plus propres. C’est plus moderne que les cadrans très chiffrés de l’entre-deux-guerres."],
+        ['Aiguilles', "Les aiguilles restent fines et discrètes, dimensionnées pour une montre habillée. Ici, leur sobriété participe davantage à la fonction joaillière qu’à une logique de montre-outil."],
+        ['Ce qui date réellement', "Le meilleur indice n’est donc pas la forme rectangulaire seule, mais la combinaison : très petit boîtier, bracelet métal fin, cadran épuré à index appliqués et remontage manuel. Ensemble, ces éléments sont cohérents avec une montre habillée des années 1950."]
+      ],
+      heritage: "L’architecture générale reste très liée aux montres-bijoux et aux formes Art déco des décennies précédentes.",
+      typical: "Le traitement plus propre du cadran et des index est en revanche pleinement dans la modernisation graphique des années 1950.",
+      next: "L’intégration visuelle du bracelet et la simplification des surfaces annoncent les expériences plus radicales des années 1960–70.",
+      caution: "Sur ce type de petite Tissot, la forme seule peut tromper fortement. Pour une datation serrée, il faut relever référence de boîte et calibre, car des architectures rectangulaires proches ont été produites pendant plusieurs décennies."
+    },
+    '1950|Tissot manuelle 1958': {
+      verdict: "Cette Tissot de 1958 est un excellent exemple de fin de décennie : encore très attachée aux codes habillés des années 1940–50, mais déjà plus épurée et géométrique. La petite seconde est ici un héritage technique et stylistique, pas un signe 'typique de 1958' à elle seule.",
+      observations: [
+        ['Petite seconde à 6 h', "En 1958, la petite seconde reste parfaitement normale sur un calibre manuel, mais elle est historiquement plus ancienne que la décennie. La seconde centrale est déjà largement diffusée, notamment sur les automatiques et les montres quotidiennes. Ici, la petite seconde signale donc surtout la continuité d’une architecture de mouvement traditionnelle."],
+        ['Cadran', "Le cadran clair est très ouvert, avec beaucoup d’espace négatif. Les chiffres 12, 3 et 9 cohabitent avec des index appliqués : c’est encore plus décoratif qu’un cadran entièrement bâtons du début des années 1960, mais déjà beaucoup plus léger qu’un cadran chiffré des années 1940."],
+        ['Index', "Les index appliqués longs et minces deviennent un vocabulaire majeur de l’après-guerre. Leur allongement vertical et leur dessin assez rectiligne contribuent ici à moderniser une montre dont l’architecture générale reste classique."],
+        ['Aiguilles', "Les aiguilles fines et facettées restent dans le registre dress watch. Elles sont moins instrumentales que les aiguilles larges et fortement luminescentes qui se généralisent sur les montres-outils des années 1960."],
+        ['Plexiglas', "Le plexi fortement bombé produit des déformations visibles en périphérie. C’est très courant dans les années 1950, mais ce n’est pas un critère de datation précis : ce type de verre reste présent bien après 1960."],
+        ['Cornes', "Les cornes sont longues, effilées et clairement détachées de la carrure ronde. C’est un langage très 1950s : la corne est encore un élément dessiné en soi. Au cours des années 1960 puis surtout 1970, la carrure tend davantage à absorber les cornes ou à prolonger directement le bracelet."],
+        ['Boîtier doré', "La teinte dorée place la montre dans un registre habillé, mais l’or ou le plaqué-or traverse toutes les décennies. Il ne faut jamais le considérer comme un marqueur des années 1950 sans les autres indices."],
+        ['Absence de date', "À la fin des années 1950, la date est déjà très répandue. Son absence donne à cette pièce un caractère plus conservateur et plus puriste, cohérent avec une montre manuelle habillée plutôt qu’avec la montre automatique quotidienne qui dominera les années 1960."],
+        ['Lecture chronologique', "La combinaison est donc très parlante : petite seconde + cornes autonomes + plexi bombé = héritage ; index plus longs + cadran plus dépouillé = modernisation de fin des années 1950 ; la prochaine étape sera la seconde centrale, la date et des boîtiers plus fonctionnels dans les années 1960."]
+      ],
+      heritage: "Petite seconde, plexi bombé, architecture manuelle et cornes très individualisées viennent directement du vocabulaire des années 1940–début 1950.",
+      typical: "Les index appliqués étirés, la respiration du cadran et la simplification générale sont en revanche très représentatifs de la modernisation de la seconde moitié des années 1950.",
+      next: "Cette épuration annonce les dress watches du début des années 1960 ; en revanche, elle n’annonce pas encore les boîtiers coussin, tonneau ou intégrés de la fin des sixties et des années 1970.",
+      caution: "Cette photo documente une Tissot donnée comme 1958 sur Wikimedia Commons. Pour identifier précisément la référence et le calibre de l’exemplaire, il faut ouvrir le fond et relever les marquages ; le style seul ne permet pas d’attribuer un calibre exact."
     },
     '1960|Tissot Visodate': {
       verdict: "La Visodate montre comment la date devient une fonction quotidienne intégrée à une montre encore très habillée. Son intérêt chronologique est moins spectaculaire que celui d’une plongeuse, mais beaucoup plus représentatif de ce que les hommes portent réellement dans les années 1960.",

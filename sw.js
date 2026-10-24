@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-12-history-mobile-floating-photo';
+const CACHE = 'folio-v6-13-history-photo-fix-xl-bubble';
 const ASSETS = [
   './',
   './index.html',

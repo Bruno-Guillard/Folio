@@ -24,3 +24,10 @@ Le module est volontairement synthétique : il donne des repères de collectionn
 - 2010 à aujourd'hui — *Apple Watch.jpg*, raneko, CC BY 2.0.
 
 Les pages Wikimedia sont liées directement depuis chaque fiche dans Folio.
+
+
+## Corrections V6.13 — années 1950
+
+- *Tissot dress watch manuale anni Cinquanta.jpg* — EMore98, CC BY-SA 4.0 — utilisée à la place de la photo du calibre Tissot 15.3, qui ne permettait pas une analyse morphologique de la montre.
+- *Tissot Handaufzug, 1958.jpg* — Dnalor 01, CC BY-SA 3.0 — montre complète de 1958 utilisée à la place de la vue mouvement du Tissot 871.
+- Ranfft DB — Tissot 15.3 / 15.3-2 : le calibre 15.3 est une famille de petits mouvements manuels produite à partir de 1947 ; ce n’est pas un style de boîtier ou de cadran.
