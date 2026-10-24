@@ -161,3 +161,7 @@ Le script initialise le titre d'annonce des fiches existantes avec leur nom Foli
 - Une frise générale remonte aux premières montres portatives, puis aux jalons 1810, 1868, 1904, 1926, 1931, quartz, digital, etc.
 - Aucun changement Supabase : ce module est statique et indépendant de la collection.
 - Les photos d’exemple sont chargées depuis Wikimedia Commons et créditées dans la page.
+
+
+## V6.8 — Histoire détaillée par époque
+Chaque carte d’époque comporte désormais un bouton **En savoir plus** ouvrant une page dédiée avec 10 montres à observer. Chaque exemple distingue les codes typiques de la décennie, l’héritage de la période précédente et les éléments qui annoncent la suivante.

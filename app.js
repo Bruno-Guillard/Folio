@@ -50,6 +50,7 @@
   const isRepairItem = item => !!repairFolderForItem(item);
 
   const commonsFile = name => `https://commons.wikimedia.org/wiki/Special:Redirect/file/${encodeURIComponent(name)}?width=960`;
+  const commonsSource = name => `https://commons.wikimedia.org/wiki/File:${encodeURIComponent(name).replace(/%20/g,'_')}`;
 
   const HISTORY_ERAS = [
     {
@@ -133,6 +134,745 @@
       examples: ['Montres connectées', 'Rééditions patrimoniales', 'Micro-marques', 'Petits diamètres en retour']
     }
   ];
+
+  const HISTORY_ERA_DETAILS = {
+  "1940": [
+    {
+      "name": "Waltham Type A-11",
+      "file": "Waltham Type A-11 Hack Navigational, 1942.jpg",
+      "period": "1942",
+      "typical": "Architecture militaire très fonctionnelle : boîtier rond compact, cadran sombre, grands chiffres arabes, minuterie très lisible et dispositif de stop-seconde pour synchroniser les hommes.",
+      "heritage": "Elle conserve les proportions contenues et les cornes fines des années 1930, ainsi que le remontage manuel et une construction encore proche de la montre habillée.",
+      "next": "Elle fixe le vocabulaire de la field watch d’après-guerre : contraste élevé, priorité à la lisibilité et robustesse avant décoration.",
+      "note": ""
+    },
+    {
+      "name": "ATP britannique",
+      "file": "Wristlet watch (AM 18115-1).jpg",
+      "period": "vers 1940",
+      "typical": "Petit diamètre, petite seconde à 6 h, aiguilles luminescentes et cadran extrêmement direct : la fonction domine nettement l’esthétique.",
+      "heritage": "La petite seconde et les cornes encore assez délicates prolongent les montres civiles des années 1930.",
+      "next": "La minuterie périphérique, la luminescence et l’acier annoncent les montres militaires et utilitaires des années 1950.",
+      "note": ""
+    },
+    {
+      "name": "Hamilton homme",
+      "file": "Vintage Hamilton Men's Wrist Watch, 17 Jewels, Made In USA, Circa 1940s (16838342505).jpg",
+      "period": "années 1940",
+      "typical": "Montre civile compacte avec cadran clair, chiffres/index fins et boîtier encore très dessiné : le raffinement reste important malgré la simplification générale de la décennie.",
+      "heritage": "Les cornes travaillées et les proportions étroites viennent directement du langage Art déco des années 1930.",
+      "next": "La lisibilité plus simple et le cadran moins décoratif annoncent la dress watch épurée des années 1950.",
+      "note": ""
+    },
+    {
+      "name": "Gruen Veri-Thin",
+      "file": "Vintage Gruen Veri-Thin Men's Wrist Watch, 17 Jewels, Case Made In USA, Swiss Movement, Circa 1940 (35425955401).jpg",
+      "period": "vers 1940",
+      "typical": "Boîtier fin, cadran clair, index/chiffres allongés et forte recherche d’élégance : c’est la branche habillée des années 1940.",
+      "heritage": "La finesse et les cornes expressives héritent de l’Art déco tardif.",
+      "next": "La recherche de minceur et d’index appliqués plus graphiques prépare directement les montres habillées des années 1950.",
+      "note": ""
+    },
+    {
+      "name": "Minerva 40BR",
+      "file": "Minerva 40BR.jpg",
+      "period": "vers 1940",
+      "typical": "Chronographe à poussoirs séparés, cadran multi-échelles et sous-compteurs : la montre devient un véritable instrument tout en restant de taille contenue.",
+      "heritage": "Le boîtier rond classique et les aiguilles fines restent très proches des chronographes des années 1930.",
+      "next": "La densité fonctionnelle du cadran annonce les chronographes sportifs et professionnels qui exploseront dans les années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Universal Genève Tri-Compax",
+      "file": "Universal-Geneve Tri-Compax.jpg",
+      "period": "famille née en 1944",
+      "typical": "Composition complexe mais équilibrée, multiples sous-compteurs et calendrier : la haute complication se porte désormais au poignet sans perdre l’élégance.",
+      "heritage": "Le cadran symétrique et les boîtiers fins restent issus des codes classiques d’avant-guerre.",
+      "next": "La combinaison complication + sport préfigure les chronographes sophistiqués des années 1950 et 1960.",
+      "note": ""
+    },
+    {
+      "name": "Lanco habillée",
+      "file": "Lanco dress watch, anni '40.jpg",
+      "period": "années 1940",
+      "typical": "Petite montre habillée, lunette fine, cadran clair et index sobres : une silhouette typique du civil pendant et juste après la guerre.",
+      "heritage": "Ses cornes relativement travaillées et sa petite taille gardent la sophistication des années 1930.",
+      "next": "Le cadran plus aéré et les index géométriques annoncent le minimalisme chic des années 1950.",
+      "note": ""
+    },
+    {
+      "name": "Bovet",
+      "file": "Bovet August 1944.jpg",
+      "period": "1944",
+      "typical": "Montre de petite taille avec forte verticalité du boîtier et détails encore très classiques, représentative d’un marché où la montre n’est pas encore devenue massive.",
+      "heritage": "La forme étirée et la décoration du boîtier prolongent le goût Art déco.",
+      "next": "La simplification du cadran et l’usage quotidien au poignet annoncent l’élégance plus rationnelle des années 1950.",
+      "note": ""
+    },
+    {
+      "name": "Tutima Fliegerchronograph",
+      "file": "Tutima Glashütte Fliegerchronograph from World War II.jpg",
+      "period": "Seconde Guerre mondiale",
+      "typical": "Chronographe de pilote à cadran sombre, forte lisibilité, poussoirs larges et construction utilitaire : ici la forme répond directement à l’usage aéronautique.",
+      "heritage": "Le mouvement manuel et le boîtier rond conservent la mécanique traditionnelle des années 1930.",
+      "next": "Il annonce les montres-outils de pilote et les chronographes professionnels qui deviendront centraux dans les années 1950-1960.",
+      "note": ""
+    },
+    {
+      "name": "Mathey-Tissot Calamatic",
+      "file": "Mathey-tissot calamatic 1947.jpg",
+      "period": "1947",
+      "typical": "Silhouette civile de l’immédiat après-guerre : boîtier compact, cadran clair et index plus propres, avec une présence moins décorative qu’avant-guerre.",
+      "heritage": "Les cornes restent encore sculptées, signe de la transition depuis les années 1930-40.",
+      "next": "La sobriété générale et l’automatisation progressive annoncent la montre habillée moderne des années 1950.",
+      "note": ""
+    }
+  ],
+  "1950": [
+    {
+      "name": "Doxa Automatic",
+      "file": "Doxa Automatic Watch, c.1950 01.jpg",
+      "period": "vers 1950",
+      "typical": "Cadran clair très propre, index appliqués, petite taille et surtout remontage automatique : la modernité technique entre dans la montre habillée.",
+      "heritage": "Les cornes encore marquées et les proportions fines viennent directement des années 1940.",
+      "next": "L’automatique généralisé et le cadran épuré annoncent la montre suisse des années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Jaeger-LeCoultre habillée",
+      "file": "Jaeger-LeCoultre men's dress watch ca. 1950s.jpg",
+      "period": "années 1950",
+      "typical": "Index bâtons appliqués, cadran argenté, lunette fine et grande sobriété : le luxe passe désormais par la pureté plutôt que par la décoration.",
+      "heritage": "Le diamètre contenu et la finesse restent hérités des années 1940.",
+      "next": "Les index droits et la géométrie du cadran deviennent un langage dominant dans les années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Movado or",
+      "file": "Montre Movado.jpg",
+      "period": "vers 1950",
+      "typical": "Boîtier précieux, cadran très ouvert et bracelet intégré visuellement au boîtier : une élégance plus architecturale apparaît.",
+      "heritage": "La petite taille et le travail du métal prolongent la tradition habillée des années 1940.",
+      "next": "La recherche de continuité boîtier-bracelet préfigure les expérimentations de formes des années 1960-70.",
+      "note": ""
+    },
+    {
+      "name": "Omega 17 rubis",
+      "file": "Vintage Omega Men's 17-Jewel Wrist Watch, Swiss-Made, Circa 1950s (13827062045).jpg",
+      "period": "années 1950",
+      "typical": "Cadran clair, index appliqués et boîtier rond équilibré : l’archétype de la montre habillée masculine de l’après-guerre.",
+      "heritage": "Les proportions restent plus petites et plus fines que celles qui viendront ensuite.",
+      "next": "La simplification du cadran et l’acier plus présent ouvrent la voie aux montres polyvalentes des années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Tissot « cioccolatino »",
+      "file": "Tissot \"cioccolatino\" in oro, anni '50.jpg",
+      "period": "années 1950",
+      "typical": "Boîtier rectangulaire compact et or : les formes non rondes restent très présentes dans la montre habillée, mais avec un dessin plus net qu’avant-guerre.",
+      "heritage": "La géométrie rectangulaire est un héritage direct de l’Art déco.",
+      "next": "Le boîtier plus intégré et la simplification des surfaces annoncent les formes coussin/TV des décennies suivantes.",
+      "note": ""
+    },
+    {
+      "name": "Tissot 15.3",
+      "file": "Tissot 15.3, primi anni '50.jpg",
+      "period": "début des années 1950",
+      "typical": "Petite montre ronde, cadran clair et typographie fine : la transition depuis les années 1940 est encore très visible.",
+      "heritage": "Les cornes fines et la taille très contenue restent typiquement quarante.",
+      "next": "Les index plus sobres et la lisibilité plus directe annoncent le modernisme des années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Tissot 871",
+      "file": "Tissot 871 (base Lemania 1281), anni '50.jpg",
+      "period": "années 1950",
+      "typical": "Chronographe habillé : les fonctions sportives se combinent avec un boîtier encore élégant et contenu.",
+      "heritage": "La disposition des sous-compteurs reprend les chronographes des années 1940.",
+      "next": "La vocation plus sportive et la présence accrue de l’acier annoncent l’âge d’or du chronographe des années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Tissot chronographe",
+      "file": "Tissot cronografo risalente a metà anni Cinquanta.jpg",
+      "period": "milieu des années 1950",
+      "typical": "Cadran dense mais organisé, poussoirs nets et boîtier acier : la montre outil devient compatible avec une utilisation quotidienne.",
+      "heritage": "Le diamètre et les aiguilles restent encore très classiques.",
+      "next": "La lecture plus sportive préfigure les chronographes de course et d’aviation des années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Breitling Premier calendrier",
+      "file": "Breitling Premier cronografo con calendario, anni '50.jpg",
+      "period": "années 1950",
+      "typical": "Chronographe à calendrier très sophistiqué, mais présenté dans une enveloppe élégante : la complication reste raffinée plutôt que massive.",
+      "heritage": "La construction du boîtier et les poussoirs ronds restent hérités des chronographes des années 1940.",
+      "next": "La multiplication des fonctions prépare les cadrans instrumentaux des années 1960.",
+      "note": ""
+    },
+    {
+      "name": "Omega Seamaster",
+      "file": "Omega Seamaster ca. 1960.jpg",
+      "period": "vers 1960 — transition",
+      "typical": "Boîtier acier polyvalent, index simples et étanchéité plus crédible : la montre habillée commence à devenir une montre de tous les jours.",
+      "heritage": "Le cadran clair et la finesse restent profondément années 1950.",
+      "next": "L’acier, la robustesse et le dessin plus fonctionnel annoncent très clairement les années 1960.",
+      "note": ""
+    }
+  ],
+  "1960": [
+    {
+      "name": "Omega Seamaster",
+      "file": "Omega Seamaster ca. 1960.jpg",
+      "period": "vers 1960",
+      "typical": "Acier, cadran clair très lisible et boîtier polyvalent : la montre sportive élégante devient un standard.",
+      "heritage": "Elle garde les proportions mesurées et les index appliqués des années 1950.",
+      "next": "Sa robustesse et son aspect plus utilitaire annoncent l’explosion des montres-outils de la décennie.",
+      "note": ""
+    },
+    {
+      "name": "Enicar Ultrasonic « Cioccolatone »",
+      "file": "1961 Enicar Ultrasonic gold-plated \"Cioccolatone\" design.jpg",
+      "period": "1961",
+      "typical": "Boîtier carré/coussin plus large et présence graphique forte : on commence à sortir franchement du petit rond classique.",
+      "heritage": "La finition dorée et le cadran habillé restent hérités des années 1950.",
+      "next": "La masse du boîtier et sa géométrie annoncent les coussins et TV cases des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Tissot Visodate",
+      "file": "Tissot Visodate, anni '60.jpg",
+      "period": "années 1960",
+      "typical": "Date visible, index bâtons et boîtier acier : la montre de ville devient plus pratique et plus moderne.",
+      "heritage": "Elle conserve la finesse et le cadran argenté des dress watches des années 1950.",
+      "next": "La date et les lignes plus droites annoncent les montres jour-date omniprésentes des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Tissot Seastar Visodate",
+      "file": "Tissot Seastar Visodate automatico, anni '60.jpg",
+      "period": "années 1960",
+      "typical": "Automatique, date et vocation plus robuste : la montre habillée absorbe des fonctions autrefois réservées aux montres techniques.",
+      "heritage": "Les index fins et la sobriété du cadran restent cinquante.",
+      "next": "Le mélange élégance/robustesse annonce les sport-chic et bracelets intégrés des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "ARSA manuel",
+      "file": "ARSA a carica manuale anni 60 circa.jpg",
+      "period": "années 1960",
+      "typical": "Cadran simple, index droits et boîtier rond sans excès : un bon exemple du modernisme discret de la décennie.",
+      "heritage": "Le remontage manuel et le diamètre contenu sont encore dans la continuité des années 1950.",
+      "next": "La géométrie plus franche des index prépare les cadrans graphiques des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Raketa militaire",
+      "file": "Raketa soviet-era military watch.jpg",
+      "period": "années 1960",
+      "typical": "Cadran très lisible, boîtier utilitaire et esthétique fonctionnelle : la montre-outil se décline dans de nombreux pays.",
+      "heritage": "Le diamètre et la construction simple prolongent les field watches des années 1940-50.",
+      "next": "Le nylon, la robustesse et la forte identité graphique annoncent les tool watches très présentes dans les années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Saturn soviétique",
+      "file": "Сатурн часы, 1960-е.jpg",
+      "period": "années 1960",
+      "typical": "Cadran clair, index très dessinés et boîtier à la géométrie plus affirmée : le style devient moins conservateur.",
+      "heritage": "La taille et la structure restent celles d’une montre habillée des années 1950.",
+      "next": "Les formes plus épaisses et graphiques annoncent la liberté de dessin des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Vostok Amphibia",
+      "file": "Часы Восток-Амфибия, сделано в СССР.jpg",
+      "period": "fin des années 1960",
+      "typical": "Boîtier de plongée, lunette tournante et étanchéité : la fonction sportive impose une nouvelle silhouette.",
+      "heritage": "Elle hérite de la recherche de robustesse et de lisibilité des montres militaires précédentes.",
+      "next": "Le volume du boîtier et l’usage de la couleur sur la lunette annoncent les plongeuses très expressives des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Bulova Accutron 214",
+      "file": "Vintage Bulova Accutron Men's Wrist Watch, Date Code M3 (1963), The Watch That Hums, Model 214, The First Model Of Accutron Watches (18413120563).jpg",
+      "period": "1963",
+      "typical": "Technologie à diapason : la précision électronique apparaît tout en conservant l’affichage analogique classique.",
+      "heritage": "Le boîtier et les index restent visuellement proches d’une montre mécanique des années 1950.",
+      "next": "L’électronique prépare directement la révolution quartz des années 1970.",
+      "note": ""
+    },
+    {
+      "name": "Seiko Astron 35A",
+      "file": "Seiko Astron.jpg",
+      "period": "1969",
+      "typical": "Première montre quartz commercialisée : techniquement révolutionnaire, mais volontairement présentée dans un boîtier doré encore très classique.",
+      "heritage": "Son apparence reste proche d’une dress watch haut de gamme des années 1960.",
+      "next": "Son mouvement quartz annonce la transformation totale du marché dans les années 1970 et 1980.",
+      "note": ""
+    }
+  ],
+  "1970": [
+    {
+      "name": "Pulsar P4 Time Computer",
+      "file": "Pulsar P4 Time Computer 3215-2 LED display watch circa 1975.png",
+      "period": "vers 1975",
+      "typical": "Affichage LED rouge, façade sombre et boîtier-bracelet très intégré : le cadran traditionnel disparaît complètement.",
+      "heritage": "La fascination pour l’électronique vient des Accutron et premières quartz des années 1960.",
+      "next": "L’affichage numérique annonce les LCD légères et bon marché des années 1980.",
+      "note": ""
+    },
+    {
+      "name": "Bulova Computron",
+      "file": "Vintage Bulova Computron Digital Quartz Watch With Matching Band, Red LED Display, Goldtone Finish, Circa 1976 (26810030187).jpg",
+      "period": "1976",
+      "typical": "Boîtier asymétrique de type driver, LED latérale et bracelet intégré : le design assume une rupture totale avec la montre ronde.",
+      "heritage": "La finition dorée garde un lien avec le luxe traditionnel des décennies précédentes.",
+      "next": "Le boîtier conceptuel et l’électronique préfigurent la montre-tech objet de mode des années 1980.",
+      "note": ""
+    },
+    {
+      "name": "Timeton digital",
+      "file": "Digitaluhr Timeton 1979.JPG",
+      "period": "1979",
+      "typical": "LCD lisible en permanence, boîtier rectangulaire et fonctions numériques : la montre devient un petit appareil électronique.",
+      "heritage": "Elle reprend la logique digitale née avec les LED du milieu des années 1970.",
+      "next": "La simplicité de l’affichage et le coût réduit annoncent directement les Casio mass-market des années 1980.",
+      "note": ""
+    },
+    {
+      "name": "Lucien Piccard DSM LCD",
+      "file": "Lucien Piccard DSM LCD Watch.jpg",
+      "period": "années 1970",
+      "typical": "Écran LCD encadré par un boîtier encore bijou : électronique et codes de luxe coexistent.",
+      "heritage": "Les finitions métalliques et le bracelet travaillé viennent de la montre habillée traditionnelle.",
+      "next": "Le LCD devient la norme numérique des années 1980, souvent dans des boîtiers plus légers et plastiques.",
+      "note": ""
+    },
+    {
+      "name": "Zenith TimeCommand",
+      "file": "Vintage Zenith Swiss-Made TimeComand Watch, Quartz Movement, Analog Time With LED Digital Readout, Souvenir Of The 1977 NHL All Star Game , Back Engraved Peter McNab, Bruins (29642324957).jpg",
+      "period": "1977",
+      "typical": "Affichage hybride analogique + LED : l’industrie expérimente avant que les formats ne se stabilisent.",
+      "heritage": "Les aiguilles et le cadran conservent une lecture traditionnelle héritée des années 1960.",
+      "next": "L’hybridation annonce les ana-digi et montres multifonctions des années 1980-90.",
+      "note": ""
+    },
+    {
+      "name": "Aquadive Time-Depth",
+      "file": "1972 Aquadive Time-Depth wrist watch.jpg",
+      "period": "1972",
+      "typical": "Boîtier massif de plongeuse/instrument, cadran très fonctionnel et présence technique forte : le volume devient un élément de style.",
+      "heritage": "L’ADN de plongeuse vient directement des montres-outils des années 1960.",
+      "next": "Les volumes protecteurs et la technicité annoncent les grandes montres sport des années 1980 puis 2000.",
+      "note": ""
+    },
+    {
+      "name": "Tissot PR 516 GL",
+      "file": "Tissot Armbanduhr Automatic PR 516 GL (1972).jpg",
+      "period": "1972",
+      "typical": "Boîtier coussin et bracelet intégré : l’objet se pense désormais comme une seule architecture continue.",
+      "heritage": "Le cadran analogique et l’automatique restent issus de la tradition mécanique des années 1960.",
+      "next": "Le bracelet intégré deviendra un code sport-chic majeur, réinterprété dans les décennies suivantes.",
+      "note": ""
+    },
+    {
+      "name": "ARSA coussin dégradé",
+      "file": "ARSA a carica manuale con cassa a cuscino e quadrante degradé, anni '70 circa.jpg",
+      "period": "années 1970",
+      "typical": "Caisse coussin, cadran dégradé et proportions plus larges : trois marqueurs visuels très typiques de la décennie.",
+      "heritage": "Le remontage manuel et les index restent techniquement classiques.",
+      "next": "Le traitement couleur et la simplification des formes annoncent la montre mode des années 1980.",
+      "note": ""
+    },
+    {
+      "name": "Omega Seamaster automatique",
+      "file": "Omega Seamaster automatico ref. 166.087, anni Settanta.jpg",
+      "period": "années 1970",
+      "typical": "Boîtier plus massif, angles plus francs et cadran très géométrique : même la montre suisse traditionnelle adopte le langage seventies.",
+      "heritage": "L’automatique et la vocation polyvalente viennent des Seamaster des années 1950-60.",
+      "next": "La simplification de la carrure prépare les quartz minces et intégrées des années 1980.",
+      "note": ""
+    },
+    {
+      "name": "Ancre Antishoc",
+      "file": "1970s Watch Ancre Antishoc stainless steel back antmagnetic (51878890718).jpg",
+      "period": "années 1970",
+      "typical": "Montre mécanique populaire à boîtier large et dessin simple : les formes audacieuses ne sont plus réservées au haut de gamme.",
+      "heritage": "Le cadran analogique et les index bâtons prolongent la normalisation des années 1960.",
+      "next": "La démocratisation du design prépare l’explosion des montres quartz accessibles des années 1980.",
+      "note": ""
+    }
+  ],
+  "1980": [
+    {
+      "name": "Swatch GB101",
+      "file": "Swatch GB101.jpg",
+      "period": "1983",
+      "typical": "Boîtier plastique monobloc, cadran graphique et construction simplifiée : la montre devient un produit de mode industriel assumé.",
+      "heritage": "La couleur et la liberté de design viennent des expérimentations des années 1970.",
+      "next": "Le principe de collection, de séries et de renouvellement rapide annonce la montre-accessoire des années 1990.",
+      "note": ""
+    },
+    {
+      "name": "Prototype Swatch",
+      "file": "Swatch proto 1981.jpg",
+      "period": "1981",
+      "typical": "Réduction du nombre de pièces, plastique et géométrie très simple : l’objectif est autant industriel qu’esthétique.",
+      "heritage": "Le quartz et le minimalisme électronique sont hérités de la décennie précédente.",
+      "next": "Cette logique de produit accessible et design ouvrira la voie aux collections massives des années 1990.",
+      "note": ""
+    },
+    {
+      "name": "Swatch 1985",
+      "file": "Swatch-1985 hg.jpg",
+      "period": "1985",
+      "typical": "Couleurs franches, cadran comme support graphique et bracelet plastique : l’horlogerie assume pleinement la culture pop.",
+      "heritage": "Les palettes fortes prolongent les cadrans colorés des années 1970.",
+      "next": "L’idée de montre identitaire, presque vestimentaire, s’amplifiera dans les années 1990.",
+      "note": ""
+    },
+    {
+      "name": "Casio AX-1",
+      "file": "Casio AX-1.jpg",
+      "period": "années 1980",
+      "typical": "Boîtier rectangulaire, LCD et boutons multiples : l’esthétique est directement dictée par l’électronique et les fonctions.",
+      "heritage": "Il descend directement des LCD apparus à la fin des années 1970.",
+      "next": "La miniaturisation et les fonctions multiples annoncent les databanks, radio-pilotées et wearables ultérieurs.",
+      "note": ""
+    },
+    {
+      "name": "Casio TC500",
+      "file": "Casio TC500 Touch Sensor Watch.jpg",
+      "period": "1983",
+      "typical": "Capteur tactile sur le verre : l’interaction avec la montre dépasse déjà le simple poussoir mécanique.",
+      "heritage": "Le format LCD carré reste typiquement issu des digitales des années 1970.",
+      "next": "L’interface tactile préfigure très directement les montres connectées des années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Casio CA-502",
+      "file": "Casio CA-502 (1984) (48403055572).jpg",
+      "period": "1984",
+      "typical": "Clavier calculatrice, LCD et bracelet métal : la montre devient un terminal personnel miniature.",
+      "heritage": "L’affichage et la forme rectangulaire viennent de la révolution digitale des années 1970.",
+      "next": "La concentration de fonctions annonce les montres databank des années 1990 puis les smartwatches.",
+      "note": ""
+    },
+    {
+      "name": "Piratron LCD",
+      "file": "LCD-Uhr Piratron 1985.jpg",
+      "period": "1985",
+      "typical": "Digital très lisible, boîtier simple et électronique standardisée : le quartz est désormais complètement quotidien.",
+      "heritage": "La technologie est l’aboutissement des expérimentations LED/LCD des années 1970.",
+      "next": "La banalisation de l’électronique prépare une décennie 1990 où le quartz devient invisible parce qu’omniprésent.",
+      "note": ""
+    },
+    {
+      "name": "Tissot RockWatch",
+      "file": "Tissot Rockwatch, circa 1985.jpg",
+      "period": "vers 1985",
+      "typical": "Boîtier en pierre et design conceptuel : la matière elle-même devient le sujet de la montre.",
+      "heritage": "L’expérimentation de matériaux et de formes prolonge la liberté créative des années 1970.",
+      "next": "Cette logique de design-objet annonce les collections lifestyle et les séries limitées des années 1990-2000.",
+      "note": ""
+    },
+    {
+      "name": "Breil quartz sport-chic",
+      "file": "Breil al quarzo, metà anni '80 circa, omaggio all'Audemars Piguet Royal Oak..jpg",
+      "period": "milieu des années 1980",
+      "typical": "Bracelet intégré, lunette géométrique et quartz : les codes luxueux des années 1970 sont démocratisés par l’électronique.",
+      "heritage": "Le bracelet intégré vient directement du sport-chic seventies.",
+      "next": "La combinaison métal/quartz et dessin affirmé restera très présente dans les années 1990.",
+      "note": ""
+    },
+    {
+      "name": "Omega Seamaster quartz Séoul",
+      "file": "Omega Seamaster crono al quarzo celebrativo delle Olimpiadi di Seoul del 1988 in cui Omega ha ricoperto il ruolo di cronometrista ufficiale.jpg",
+      "period": "1988",
+      "typical": "Chronographe quartz sportif, fonctions nombreuses et esthétique très instrumentale : le quartz est aussi haut de gamme.",
+      "heritage": "La vocation sport/outil vient des chronographes des années 1960-70.",
+      "next": "Le mélange technique + prestige prépare les grandes montres sport des années 1990-2000.",
+      "note": ""
+    }
+  ],
+  "1990": [
+    {
+      "name": "Tissot PRX",
+      "file": "Tissot PRX dei primi anni '90.jpg",
+      "period": "début des années 1990",
+      "typical": "Bracelet intégré, boîtier plat et quartz : le sport-chic des années 1970 est devenu plus fin et plus rationnel.",
+      "heritage": "L’architecture intégrée vient directement des années 1970-80.",
+      "next": "La sobriété de surface et les proportions contenues annoncent le retour néo-vintage des années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Swatch Autoquarz",
+      "file": "Swatch Swiss Autoquarz, 1998.jpg",
+      "period": "1998",
+      "typical": "La montre populaire réintroduit une dimension mécanique/énergétique dans un univers dominé par le quartz.",
+      "heritage": "Le boîtier coloré et l’esprit ludique viennent des Swatch des années 1980.",
+      "next": "Le regain d’intérêt pour le fonctionnement mécanique annonce la renaissance horlogère des années 2000.",
+      "note": ""
+    },
+    {
+      "name": "Swatch SPMZ105",
+      "file": "Swatch Uhr.jpg",
+      "period": "1997",
+      "typical": "Design, packaging et série deviennent aussi importants que la fonction horaire : la montre est pleinement un objet culturel.",
+      "heritage": "Elle prolonge la logique mode et collection de la Swatch des années 1980.",
+      "next": "Cette approche de marque/lifestyle annonce les collaborations et micro-séries des années 2000-2010.",
+      "note": ""
+    },
+    {
+      "name": "Tissot Ceraten",
+      "file": "Tissot Ceraten, fine anni '80-primi anni '90.jpg",
+      "period": "fin 1980 / début 1990",
+      "typical": "Céramique, lignes très lisses et bracelet intégré : le matériau high-tech donne une esthétique plus froide et minimaliste.",
+      "heritage": "La géométrie et le quartz viennent des années 1980.",
+      "next": "La céramique technique deviendra un matériau majeur du haut de gamme des années 2000.",
+      "note": ""
+    },
+    {
+      "name": "Mondia Mistral Moonphase",
+      "file": "Mondia Mistral Moonphase al quarzo, fine anni '80 - inizio anni '90.jpg",
+      "period": "fin 1980 / début 1990",
+      "typical": "Le quartz se pare de complications visuelles classiques comme la phase de lune : technologie moderne, apparence patrimoniale.",
+      "heritage": "Le quartz et les boîtiers fins restent typiquement années 1980.",
+      "next": "Le retour des codes historiques annonce la vague néo-vintage et la renaissance mécanique des années 2000.",
+      "note": ""
+    },
+    {
+      "name": "Chronoswiss",
+      "file": "Chronoswiss 1989.jpg",
+      "period": "1989 — repère de transition",
+      "typical": "Boîtier classique, cadran très horloger et mécanique mise en avant : l’amateur recommence à valoriser le mouvement et l’artisanat.",
+      "heritage": "La taille reste relativement contenue et le dessin s’oppose volontairement au plastique/quartz des années 1980.",
+      "next": "Cette posture patrimoniale devient l’un des grands moteurs du renouveau mécanique des années 1990-2000.",
+      "note": ""
+    },
+    {
+      "name": "Poljot Buran",
+      "file": "Before-and-after comparison of photo retouche on Poljot Buran chronograph wristwatch from about 1990.jpg",
+      "period": "vers 1990",
+      "typical": "Chronographe mécanique au dessin classique : un bon contrepoint au quartz dominant, révélateur de la persistance des mouvements mécaniques.",
+      "heritage": "La construction s’inscrit dans la continuité des chronographes utilitaires des décennies précédentes.",
+      "next": "La redécouverte du chronographe mécanique annonce le marché collectionneur des années 2000.",
+      "note": ""
+    },
+    {
+      "name": "Swatch Irony",
+      "file": "Swatch Irony da donna, fine anni '90 - inizio anni 2000.jpg",
+      "period": "fin 1990 / début 2000",
+      "typical": "Le langage Swatch quitte le tout-plastique pour le métal : la montre mode cherche plus de perception de qualité.",
+      "heritage": "La logique de collection et le quartz viennent des années 1980-90.",
+      "next": "Le métal, l’épaisseur et le look plus premium annoncent les montres lifestyle des années 2000.",
+      "note": ""
+    },
+    {
+      "name": "Junghans MEGA 1",
+      "file": "Junghans-MEGA1-watch.jpg",
+      "period": "1990",
+      "typical": "Première montre-bracelet radio-pilotée : la précision vient désormais d’un signal externe, sans modifier radicalement l’usage quotidien.",
+      "heritage": "Elle s’appuie sur la maturité du quartz et de l’électronique des années 1980.",
+      "next": "La connexion à une infrastructure externe annonce les objets synchronisés puis les smartwatches.",
+      "note": ""
+    },
+    {
+      "name": "Casio F-91W",
+      "file": "Casio f91w digital watch.png",
+      "period": "1989, icône des années 1990",
+      "typical": "Ultra simple, légère, fiable et bon marché : la digitale devient un objet universel plutôt qu’un gadget futuriste.",
+      "heritage": "Son LCD et son boîtier résine sont l’héritage direct des années 1980.",
+      "next": "Sa logique fonctionnelle minimale cohabitera avec les montres sport plus massives des années 2000.",
+      "note": ""
+    }
+  ],
+  "2000": [
+    {
+      "name": "Seiko quartz",
+      "file": "Seiko watch.jpg",
+      "period": "achetée en 2004",
+      "typical": "Montre quartz de ville très rationnelle : lisibilité, faible entretien et boîtier acier sans extravagance.",
+      "heritage": "Elle prolonge la domination du quartz installée dans les années 1980-90.",
+      "next": "La sobriété fonctionnelle annonce le retour à des designs plus simples et néo-vintage dans les années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Festina",
+      "file": "Festina watch.jpg",
+      "period": "2006",
+      "typical": "Montre sport/lifestyle à présence plus forte : bracelets métal, cadrans chargés et diamètre accru deviennent courants.",
+      "heritage": "Le quartz sportif et les fonctions chronographe viennent des années 1990.",
+      "next": "Le goût des montres imposantes prépare le pic des grandes tailles avant le retour progressif à des diamètres plus contenus.",
+      "note": ""
+    },
+    {
+      "name": "Casio G-Shock GW-056E",
+      "file": "2006090201 Casio-G-shock.Mod.3017-GW-056E 2006.jpg",
+      "period": "2006",
+      "typical": "Résine, protection massive et fonctions électroniques : la robustesse devient un langage esthétique complet.",
+      "heritage": "L’ADN G-Shock vient directement des années 1980 et de la montre digitale utilitaire.",
+      "next": "La fonction connectée/solaire/radio-pilotée annonce les montres techniques intelligentes des années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Fossil",
+      "file": "Wristwatch on hand.JPG",
+      "period": "2007",
+      "typical": "Montre mode sur bracelet métal, boîtier généreux et présence visuelle forte : l’horlogerie devient un accessoire de style grand public.",
+      "heritage": "Elle reprend la logique lifestyle des années 1990.",
+      "next": "L’importance du design de marque prépare les collaborations, micro-marques et marketing communautaire des années 2010.",
+      "note": ""
+    },
+    {
+      "name": "BRM Birotor",
+      "file": "BRM BIROTOR.jpg",
+      "period": "2008",
+      "typical": "Mécanique volontairement spectaculaire, construction visible et design industriel : le mouvement redevient un argument esthétique majeur.",
+      "heritage": "Cela prolonge la renaissance mécanique amorcée dans les années 1990.",
+      "next": "La mise en scène du mécanisme annonce la haute horlogerie contemporaine et les micro-marques techniques.",
+      "note": ""
+    },
+    {
+      "name": "Roman Watch",
+      "file": "Roman Watch.jpg",
+      "period": "2008",
+      "typical": "Montre classique de ville, chiffres romains et cadran traditionnel : au milieu des montres XXL, le classicisme reste très présent.",
+      "heritage": "Le vocabulaire reprend directement les dress watches historiques.",
+      "next": "Cette continuité facilite le grand retour des codes vintage et des petits diamètres dans les années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Casio titane",
+      "file": "Ti covered watches.jpg",
+      "period": "2006",
+      "typical": "Titane, bracelet intégré et quartz : les matériaux techniques deviennent accessibles au quotidien.",
+      "heritage": "Le quartz multifonction et le métal intégré viennent des années 1980-90.",
+      "next": "La recherche de légèreté et de matériaux prépare les wearables et montres sport techniques des années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Breitling Aerospace Avantage",
+      "file": "Breitling Aerospace Avantage.jpg",
+      "period": "années 2000",
+      "typical": "Ana-digi, titane et fonctions professionnelles : la montre instrument devient plus grande et plus sophistiquée.",
+      "heritage": "Elle hérite des ana-digi et quartz haut de gamme des années 1980-90.",
+      "next": "La densité fonctionnelle annonce le terrain sur lequel les smartwatches entreront en concurrence.",
+      "note": ""
+    },
+    {
+      "name": "Omega Planet Ocean",
+      "file": "Omega Seamaster Planet Ocean (16251735477).jpg",
+      "period": "famille lancée en 2005",
+      "typical": "Plongeuse très robuste, boîtier épais, lunette marquée et grande présence : l’esthétique tool watch est volontairement amplifiée.",
+      "heritage": "Elle reprend les codes des plongeuses des années 1960-70.",
+      "next": "La réinterprétation patrimoniale annonce la vague heritage et néo-vintage des années 2010.",
+      "note": ""
+    },
+    {
+      "name": "Tissot T-Touch",
+      "file": "Tissot T-Touch.jpg",
+      "period": "icône des années 2000",
+      "typical": "Verre tactile, affichage analogique + digital et capteurs : la montre classique absorbe des interactions électroniques avancées.",
+      "heritage": "Elle hérite des ana-digi et montres calculatrices des années 1980-90.",
+      "next": "Le geste tactile et les capteurs annoncent directement les smartwatches de la décennie suivante.",
+      "note": ""
+    }
+  ],
+  "2010": [
+    {
+      "name": "Apple Watch",
+      "file": "Apple Watch.jpg",
+      "period": "2015",
+      "typical": "Écran intégral, interface tactile, notifications et capteurs : la montre devient une extension du smartphone.",
+      "heritage": "Elle reprend les idées de tactile, de synchronisation et de capteurs expérimentées depuis les années 1980-2000.",
+      "next": "Elle ouvre une branche durable où logiciel, santé et services deviennent aussi importants que l’objet horloger.",
+      "note": ""
+    },
+    {
+      "name": "Pebble Time",
+      "file": "Pebble Time front.jpg",
+      "period": "2015",
+      "typical": "Écran e-paper, notifications et autonomie pensée comme un compromis : la smartwatch cherche encore son langage propre.",
+      "heritage": "Le boîtier rectangulaire et l’affichage digital rappellent les montres électroniques des années 1980.",
+      "next": "Le principe d’écosystème d’applications annonce la maturité des plateformes connectées.",
+      "note": ""
+    },
+    {
+      "name": "Alcatel Smartwatch",
+      "file": "Alcatel Smartwatch.jpg",
+      "period": "2015",
+      "typical": "Écran numérique dans une silhouette ronde : tentative de concilier montre traditionnelle et interface connectée.",
+      "heritage": "La forme ronde hérite directement de l’horlogerie classique.",
+      "next": "Cette hybridation devient un standard pour de nombreuses smartwatches contemporaines.",
+      "note": ""
+    },
+    {
+      "name": "Lenovo Smartwatch",
+      "file": "LenovoWatch.jpg",
+      "period": "2015",
+      "typical": "Design de montre classique avec composant numérique : la décennie expérimente plusieurs façons de cacher la technologie.",
+      "heritage": "Les proportions et le cadran s’inspirent des montres mécaniques traditionnelles.",
+      "next": "L’intégration discrète de fonctions numériques annonce les hybrides connectées actuelles.",
+      "note": ""
+    },
+    {
+      "name": "Nomos Metro",
+      "file": "Nomos Glashütte Metro.jpg",
+      "period": "années 2010",
+      "typical": "Petit diamètre relatif, cadran très aéré et minimalisme graphique : contrepoint net à la course aux grandes tailles des années 2000.",
+      "heritage": "La pureté formelle reprend des codes du modernisme des années 1950-60.",
+      "next": "Elle participe au retour durable vers des proportions plus contenues et des designs sobres.",
+      "note": ""
+    },
+    {
+      "name": "Nomos Tangente neomatik 41 Update",
+      "file": "Nomos Glashütte Tangente neomatik 41 Update.jpg",
+      "period": "fin des années 2010",
+      "typical": "Mécanique fine, typographie minimaliste et complication intégrée discrètement : le mouvement traditionnel est présenté avec un design contemporain.",
+      "heritage": "Le langage Bauhaus et la finesse renvoient aux montres habillées du milieu du XXe siècle.",
+      "next": "Cette synthèse patrimoine + modernité devient un axe majeur des marques indépendantes et micro-marques.",
+      "note": ""
+    },
+    {
+      "name": "G-Shock moderne",
+      "file": "G-Shock.jpg",
+      "period": "années 2010",
+      "typical": "La robustesse extrême reste assumée visuellement : gros volumes, protections et lecture digitale.",
+      "heritage": "L’ADN est directement celui des premières G-Shock des années 1980.",
+      "next": "L’ajout progressif de solaire, radio, Bluetooth et capteurs rapproche la tool watch de la smartwatch.",
+      "note": ""
+    },
+    {
+      "name": "Mondia Campus",
+      "file": "Mondia Campus, anni 2010.jpg",
+      "period": "années 2010",
+      "typical": "Montre analogique simple, lisible et rétro : le vintage redevient une référence esthétique explicite.",
+      "heritage": "Les index et proportions font écho aux montres de ville des années 1950-60.",
+      "next": "Cette relecture historique annonce la multiplication des rééditions fidèles et des petites tailles dans les années 2020.",
+      "note": ""
+    },
+    {
+      "name": "Breil Manta quartz",
+      "file": "Breil Manta al quarzo, metà anni 2010.jpg",
+      "period": "milieu des années 2010",
+      "typical": "Montre sport-lifestyle encore assez imposante : les années 2010 ne rompent pas immédiatement avec les volumes des années 2000.",
+      "heritage": "Le boîtier massif et le quartz sportif prolongent les années 2000.",
+      "next": "En parallèle, la tendance opposée vers des dimensions plus petites prépare la diversité actuelle du marché.",
+      "note": ""
+    },
+    {
+      "name": "Breitling Superocean II 36",
+      "file": "Breitling Superocean II 36 - 2017.jpg",
+      "period": "2017",
+      "typical": "Plongeuse sportive dans un diamètre de 36 mm : exemple parlant du retour à des proportions plus mesurées sans abandonner les codes tool watch.",
+      "heritage": "Lunette, étanchéité et lecture forte viennent des plongeuses des années 1960-70.",
+      "next": "Le petit diamètre anticipe la normalisation actuelle des formats 36–39 mm, y compris sur des montres sportives.",
+      "note": ""
+    }
+  ]
+};
 
   const HISTORY_TIMELINE = [
     ['XVIe siècle', 'Les premières montres portatives à ressort apparaissent en Europe. Elles sont encore portées en pendentif ou dans la poche.'],
@@ -770,6 +1510,7 @@
     if (type === 'folder') return renderFolder(id);
     if (type === 'watch') return renderWatch(id);
     if (type === 'history') return renderHistory();
+    if (type === 'history-era') return renderHistoryEraDetail(id);
   }
 
   function renderHome() {
@@ -837,9 +1578,68 @@
           <div class="history-tags">${era.recognize.map(x => `<span>${esc(x)}</span>`).join('')}</div>
           <div class="history-subtitle">Exemples repères</div>
           <div class="history-examples">${era.examples.map(x => `<span>• ${esc(x)}</span>`).join('')}</div>
+          <button class="history-more-btn" data-history-more="${era.key}">En savoir plus <span>›</span></button>
           <a class="history-credit" href="${era.source}" target="_blank" rel="noopener noreferrer">Photo : ${esc(era.credit)} · Wikimedia Commons ↗</a>
         </div>
       </article>`;
+  }
+
+  function historyDetailCard(item, index) {
+    const source = commonsSource(item.file);
+    return `
+      <article class="history-detail-card">
+        <div class="history-detail-image-wrap">
+          <img class="history-detail-image" src="${commonsFile(item.file)}" alt="${esc(item.name)}" loading="lazy" referrerpolicy="no-referrer">
+          <div class="history-detail-image-fallback" aria-hidden="true">⌚</div>
+          <span class="history-detail-number">${String(index + 1).padStart(2,'0')}</span>
+        </div>
+        <div class="history-detail-copy">
+          <div class="history-detail-period">${esc(item.period || '')}</div>
+          <h2>${esc(item.name)}</h2>
+          ${item.note ? `<p class="history-detail-note">${esc(item.note)}</p>` : ''}
+          <div class="history-analysis-block">
+            <div class="history-analysis-label">Typique de l’époque</div>
+            <p>${esc(item.typical)}</p>
+          </div>
+          <div class="history-analysis-block previous">
+            <div class="history-analysis-label">Héritage de l’époque précédente</div>
+            <p>${esc(item.heritage)}</p>
+          </div>
+          <div class="history-analysis-block next">
+            <div class="history-analysis-label">Ce qui annonce la suite</div>
+            <p>${esc(item.next)}</p>
+          </div>
+          <a class="history-credit" href="${source}" target="_blank" rel="noopener noreferrer">Source photo · Wikimedia Commons ↗</a>
+        </div>
+      </article>`;
+  }
+
+  function renderHistoryEraDetail(eraKey) {
+    const era = HISTORY_ERAS.find(x => x.key === eraKey);
+    if (!era) return setView('history');
+    const items = HISTORY_ERA_DETAILS[eraKey] || [];
+    els.subtitle.textContent = `Histoire · ${era.label}`;
+    els.fab.classList.add('hidden');
+    els.main.innerHTML = `
+      <section class="history-detail-hero">
+        <div class="history-eyebrow">FOLIO · HISTOIRE · ${esc(era.label)}</div>
+        <h1>${esc(era.title)}</h1>
+        <p>${esc(era.intro)}</p>
+        <div class="history-tags">${era.recognize.map(x => `<span>${esc(x)}</span>`).join('')}</div>
+        <div class="history-detail-count">${items.length} montres à observer</div>
+      </section>
+      <section class="history-detail-grid">
+        ${items.map(historyDetailCard).join('')}
+      </section>
+      <section class="history-sources history-detail-sources">
+        <strong>Comment lire ces exemples</strong>
+        <p>Chaque montre est utilisée comme repère visuel : certains modèles sont datés précisément, d’autres représentent une famille de design dont les codes se prolongent sur plusieurs années. L’analyse distingue volontairement ce qui appartient à la décennie, ce qui vient de la précédente et ce qui prépare la suivante.</p>
+        <p class="history-online-note">Les photographies sont chargées depuis Wikimedia Commons et peuvent nécessiter une connexion Internet.</p>
+      </section>`;
+    bindCommon();
+    document.querySelectorAll('.history-detail-image').forEach(img => {
+      img.addEventListener('error', () => img.classList.add('image-error'));
+    });
   }
 
   function renderHistory() {
@@ -892,6 +1692,7 @@
     document.querySelectorAll('[data-era-target]').forEach(btn => btn.addEventListener('click', () => {
       document.getElementById(`era-${btn.dataset.eraTarget}`)?.scrollIntoView({ behavior:'smooth', block:'start' });
     }));
+    document.querySelectorAll('[data-history-more]').forEach(btn => btn.addEventListener('click', () => setView('history-era', btn.dataset.historyMore)));
     document.querySelectorAll('.history-era-photo, .history-pill-image img').forEach(img => {
       img.addEventListener('error', () => img.classList.add('image-error'));
     });
@@ -2015,6 +2816,8 @@
     if (state.view.type === 'watch') {
       const w = state.watches.find(x => x.id === state.view.id);
       setView(w?.folderId ? 'folder' : 'home', w?.folderId || null);
+    } else if (state.view.type === 'history-era') {
+      setView('history');
     } else setView('home');
   });
   els.menuBtn.addEventListener('click', showMainMenu);

@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-7-history';
+const CACHE = 'folio-v6-8-history-eras';
 const ASSETS = [
   './',
   './index.html',
