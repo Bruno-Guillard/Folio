@@ -196,6 +196,7 @@ const FolioCloud = (() => {
       listing_title: item.listingTitle || '',
       asking_price: item.askingPrice === '' || item.askingPrice === null || item.askingPrice === undefined ? null : Number(item.askingPrice),
       description: item.description || '',
+      study_json: item.study && typeof item.study === 'object' ? item.study : null,
       purchase_price: item.buyPrice === '' || item.buyPrice === null || item.buyPrice === undefined ? null : Number(item.buyPrice),
       sale_price: item.sellPrice === '' || item.sellPrice === null || item.sellPrice === undefined ? null : Number(item.sellPrice),
       fees: item.fees === '' || item.fees === null || item.fees === undefined ? 0 : Number(item.fees),
