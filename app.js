@@ -2370,32 +2370,32 @@
     els.subtitle.textContent = 'Études de montres';
     els.fab.classList.add('hidden');
     const watches = soldWatchesInOrder();
-    let html = \`
+    let html = `
       <section class="study-page-head">
         <div class="history-eyebrow">Collection vendue</div>
         <h1>Études de montres</h1>
         <p>Chaque fiche regroupe les photos, les données déjà connues et une analyse organisée : identification, datation, boîtier, cadran, mouvement, fond de boîte, cohérence et contexte historique.</p>
-      </section>\`;
+      </section>`;
     if (!watches.length) {
-      html += \`<div class="empty"><span class="big">⌕</span>Aucune montre dans le dossier « Vendu ».</div>\`;
+      html += `<div class="empty"><span class="big">⌕</span>Aucune montre dans le dossier « Vendu ».</div>`;
     } else {
-      html += \`<div class="study-list">\`;
+      html += `<div class="study-list">`;
       watches.forEach((w, i) => {
         const first = Array.isArray(w.photos) && w.photos.length ? blobUrl(w.photos[0]) : null;
         const done = studyHasContent(w.study);
-        html += \`
-          <button class="study-card" data-study-id="\${w.id}">
-            <div class="study-card-index">\${String(i+1).padStart(2,'0')}</div>
-            <div class="study-card-photo">\${first ? \`<img src="\${first}" alt="\${esc(w.name)}">\` : '<span>⌚</span>'}</div>
+        html += `
+          <button class="study-card" data-study-id="${w.id}">
+            <div class="study-card-index">${String(i+1).padStart(2,'0')}</div>
+            <div class="study-card-photo">${first ? `<img src="${first}" alt="${esc(w.name)}">` : '<span>⌚</span>'}</div>
             <div class="study-card-copy">
-              <strong>\${esc(w.name || 'Sans nom')}</strong>
-              <span>\${done ? 'Étude renseignée' : 'Étude à compléter'}</span>
-              \${w.description ? \`<small>\${esc(w.description.slice(0,150))}\${w.description.length>150?'…':''}</small>\` : ''}
+              <strong>${esc(w.name || 'Sans nom')}</strong>
+              <span>${done ? 'Étude renseignée' : 'Étude à compléter'}</span>
+              ${w.description ? `<small>${esc(w.description.slice(0,150))}${w.description.length>150?'…':''}</small>` : ''}
             </div>
             <div class="study-card-arrow">›</div>
-          </button>\`;
+          </button>`;
       });
-      html += \`</div>\`;
+      html += `</div>`;
     }
     els.main.innerHTML = html;
     bindCommon();
@@ -2403,7 +2403,7 @@
 
   function studySection(title, text) {
     if (!String(text || '').trim()) return '';
-    return \`<section class="study-analysis-section"><h3>\${esc(title)}</h3><p>\${esc(text)}</p></section>\`;
+    return `<section class="study-analysis-section"><h3>${esc(title)}</h3><p>${esc(text)}</p></section>`;
   }
 
   function renderStudy(watchId) {
@@ -2417,26 +2417,26 @@
     const urls = photos.map(blobUrl).filter(Boolean);
     const st = (w.study && typeof w.study === 'object') ? w.study : {};
     const done = studyHasContent(st);
-    let html = \`<article class="watch-study-detail">\`;
+    let html = `<article class="watch-study-detail">`;
     if (urls.length) {
-      html += \`<div class="study-photo-stage"><img id="studyHeroPhoto" src="\${urls[0]}" alt="\${esc(w.name)}"></div>\`;
-      if (urls.length > 1) html += \`<div class="study-photo-strip">\${urls.map((u,i)=>\`<img class="study-thumb \${i===0?'active':''}" data-study-photo-index="\${i}" src="\${u}" alt="Photo \${i+1}">\`).join('')}</div>\`;
+      html += `<div class="study-photo-stage"><img id="studyHeroPhoto" src="${urls[0]}" alt="${esc(w.name)}"></div>`;
+      if (urls.length > 1) html += `<div class="study-photo-strip">${urls.map((u,i)=>`<img class="study-thumb ${i===0?'active':''}" data-study-photo-index="${i}" src="${u}" alt="Photo ${i+1}">`).join('')}</div>`;
     } else {
-      html += \`<div class="study-photo-stage study-photo-empty">⌚</div>\`;
+      html += `<div class="study-photo-stage study-photo-empty">⌚</div>`;
     }
-    html += \`
+    html += `
       <header class="study-detail-head">
         <div class="history-eyebrow">Étude de montre</div>
-        <h1>\${esc(w.name || 'Sans nom')}</h1>
-        <div class="study-confidence">Niveau de certitude : <strong>\${esc(st.certainty || 'à établir')}</strong></div>
-      </header>\`;
+        <h1>${esc(w.name || 'Sans nom')}</h1>
+        <div class="study-confidence">Niveau de certitude : <strong>${esc(st.certainty || 'à établir')}</strong></div>
+      </header>`;
     if (w.description) {
-      html += \`<section class="study-known-data"><h3>Données déjà connues dans Folio</h3><p>\${esc(w.description)}</p></section>\`;
+      html += `<section class="study-known-data"><h3>Données déjà connues dans Folio</h3><p>${esc(w.description)}</p></section>`;
     }
     if (!done) {
-      html += \`<div class="study-empty-analysis"><strong>Étude à compléter</strong><span>La montre est bien intégrée à la rubrique. L’analyse experte peut maintenant être renseignée à partir des photos, du mouvement, des références et des numéros visibles.</span></div>\`;
+      html += `<div class="study-empty-analysis"><strong>Étude à compléter</strong><span>La montre est bien intégrée à la rubrique. L’analyse experte peut maintenant être renseignée à partir des photos, du mouvement, des références et des numéros visibles.</span></div>`;
     }
-    html += \`<div class="study-analysis">\`;
+    html += `<div class="study-analysis">`;
     html += studySection('Identification', st.identification);
     html += studySection('Datation estimée', st.dating);
     html += studySection('Boîtier et proportions', st.case);
@@ -2448,9 +2448,9 @@
     html += studySection('Cohérence de l’ensemble', st.coherence);
     html += studySection('Contexte historique et stylistique', st.history);
     html += studySection('Conclusion', st.conclusion);
-    html += \`</div>
-      <div class="study-actions"><button class="btn secondary" data-action="edit-study">\${done ? 'Modifier l’étude' : 'Renseigner l’étude'}</button></div>
-    </article>\`;
+    html += `</div>
+      <div class="study-actions"><button class="btn secondary" data-action="edit-study">${done ? 'Modifier l’étude' : 'Renseigner l’étude'}</button></div>
+    </article>`;
     els.main.innerHTML = html;
     bindCommon();
     setTimeout(() => {
@@ -2478,20 +2478,20 @@
       ['history','Contexte historique et stylistique','Ce qui vient de la période précédente, ce qui est typique, ce qui annonce la suivante.'],
       ['conclusion','Conclusion','Synthèse, datation retenue et points restant à vérifier.']
     ];
-    openSheet(\`
-      <h2 class="sheet-title">Étude · \${esc(w.name || '')}</h2>
+    openSheet(`
+      <h2 class="sheet-title">Étude · ${esc(w.name || '')}</h2>
       <form id="studyForm" class="form study-form">
         <div class="field"><label>Niveau de certitude</label><select id="studyCertainty">
-          \${['','Certain','Très probable','Probable','Hypothèse'].map(v=>\`<option value="\${v}" \${String(st.certainty||'')===v?'selected':''}>\${v||'À établir'}</option>\`).join('')}
+          ${['','Certain','Très probable','Probable','Hypothèse'].map(v=>`<option value="${v}" ${String(st.certainty||'')===v?'selected':''}>${v||'À établir'}</option>`).join('')}
         </select></div>
-        \${fields.map(([key,label,ph])=>\`<div class="field"><label>\${label}</label><textarea id="study_\${key}" placeholder="\${esc(ph)}">\${esc(st[key]||'')}</textarea></div>\`).join('')}
+        ${fields.map(([key,label,ph])=>`<div class="field"><label>${label}</label><textarea id="study_${key}" placeholder="${esc(ph)}">${esc(st[key]||'')}</textarea></div>`).join('')}
         <div class="form-actions"><button type="button" class="btn secondary" data-close>Annuler</button><button class="btn primary">Enregistrer l’étude</button></div>
-      </form>\`);
+      </form>`);
     els.sheetContent.querySelector('[data-close]').addEventListener('click', closeSheet);
     els.sheetContent.querySelector('#studyForm').addEventListener('submit', async e => {
       e.preventDefault();
       const nextStudy = { certainty: els.sheetContent.querySelector('#studyCertainty').value };
-      fields.forEach(([key]) => { nextStudy[key] = els.sheetContent.querySelector(\`#study_\${key}\`).value.trim(); });
+      fields.forEach(([key]) => { nextStudy[key] = els.sheetContent.querySelector(`#study_${key}`).value.trim(); });
       const current = await WatchDB.get('watches', w.id);
       if (!current) return alert('Cette montre n’est plus disponible localement. Resynchronise Folio.');
       const next = { ...current, study: nextStudy, updatedAt: Date.now(), pendingSync: true };
