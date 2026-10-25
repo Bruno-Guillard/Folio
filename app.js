@@ -2362,7 +2362,7 @@
 
   function studyHasContent(study) {
     if (!study || typeof study !== 'object') return false;
-    return ['identification','dating','case','dial','hands','movement','caseback','bracelet','coherence','history','conclusion']
+    return ['identification','dating','case','dial','hands','movement','caseback','interventions','bracelet','coherence','history','conclusion']
       .some(k => String(study[k] || '').trim());
   }
 
@@ -2444,6 +2444,7 @@
     html += studySection('Aiguilles, seconde et verre', st.hands);
     html += studySection('Mouvement', st.movement);
     html += studySection('Fond de boîte, références et numéros', st.caseback);
+    html += studySection('Intervention & contrôles', st.interventions);
     html += studySection('Bracelet et boucle', st.bracelet);
     html += studySection('Cohérence de l’ensemble', st.coherence);
     html += studySection('Contexte historique et stylistique', st.history);
@@ -2473,6 +2474,7 @@
       ['hands','Aiguilles, seconde et verre','Type d’aiguilles, petite/grande seconde, longueur, lume, plexi/minéral et cohérence.'],
       ['movement','Mouvement','Calibre, famille, remontage, rubis, fréquence, période de production, particularités techniques.'],
       ['caseback','Fond de boîte, références et numéros','Références, numéros de série, codes fabricant et ce qu’ils permettent de dater.'],
+      ['interventions','Intervention & contrôles','Travaux réellement effectués, nettoyage, lubrification, réglages, pièces remplacées, quickset, passage jour/date, mesures timegrapher, réserve de marche et essais.'],
       ['bracelet','Bracelet et boucle','Origine probable, matière, boucle, endlinks et cohérence chronologique.'],
       ['coherence','Cohérence de l’ensemble','Compatibilité boîtier/cadran/mouvement/fond, remplacements ou assemblage éventuel.'],
       ['history','Contexte historique et stylistique','Ce qui vient de la période précédente, ce qui est typique, ce qui annonce la suivante.'],
