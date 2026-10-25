@@ -46,6 +46,11 @@
     return key === 'reparation' || key === 'reparations';
   };
 
+  const isSoldFolder = folder => {
+    const key = normalizeFolderName(folder?.name);
+    return key === 'vendu' || key === 'vendus';
+  };
+
   const repairFolderForItem = item => state.folders.find(f => f.id === item?.folderId && isRepairFolder(f)) || null;
   const isRepairItem = item => !!repairFolderForItem(item);
 
@@ -1537,6 +1542,7 @@
         listingTitle: row.listing_title || '',
         askingPrice: row.asking_price === null || row.asking_price === undefined ? null : Number(row.asking_price),
         description: row.description || '',
+        study: row.study_json && typeof row.study_json === 'object' ? row.study_json : null,
         buyPrice: row.purchase_price === null ? null : Number(row.purchase_price),
         sellPrice: row.sale_price === null ? null : Number(row.sale_price),
         fees: row.fees === null ? 0 : Number(row.fees),
@@ -1855,6 +1861,8 @@
     if (type === 'home') return renderHome();
     if (type === 'folder') return renderFolder(id);
     if (type === 'watch') return renderWatch(id);
+    if (type === 'studies') return renderStudies();
+    if (type === 'study') return renderStudy(id);
     if (type === 'history') return renderHistory();
     if (type === 'history-era') return renderHistoryEraDetail(id);
   }
@@ -1893,7 +1901,19 @@
       html += `</div>`;
     }
 
+    const soldFolder = state.folders.find(isSoldFolder);
+    const soldCount = soldFolder ? state.watches.filter(w => w.folderId === soldFolder.id).length : 0;
     html += `
+      <section class="study-entry-wrap">
+        <button class="study-entry" data-action="open-studies">
+          <div class="study-entry-icon">⌕</div>
+          <div class="study-entry-copy">
+            <strong>Études de montres</strong>
+            <span>${soldCount} montre${soldCount > 1 ? 's' : ''} vendue${soldCount > 1 ? 's' : ''} · analyses techniques et datation.</span>
+          </div>
+          <div class="study-entry-arrow">›</div>
+        </button>
+      </section>
       <section class="history-entry-wrap">
         <button class="history-entry" data-action="open-history">
           <div class="history-entry-icon">⌚</div>
@@ -2327,6 +2347,163 @@
     });
   }
 
+
+  function soldWatchesInOrder() {
+    const folder = state.folders.find(isSoldFolder);
+    if (!folder) return [];
+    return [...state.watches]
+      .filter(w => w.folderId === folder.id)
+      .sort((a,b) => {
+        const ao = Number(a.order), bo = Number(b.order);
+        if (Number.isFinite(ao) && Number.isFinite(bo) && ao !== bo) return ao - bo;
+        return (Number(a.createdAt) || 0) - (Number(b.createdAt) || 0);
+      });
+  }
+
+  function studyHasContent(study) {
+    if (!study || typeof study !== 'object') return false;
+    return ['identification','dating','case','dial','hands','movement','caseback','bracelet','coherence','history','conclusion']
+      .some(k => String(study[k] || '').trim());
+  }
+
+  function renderStudies() {
+    els.subtitle.textContent = 'Études de montres';
+    els.fab.classList.add('hidden');
+    const watches = soldWatchesInOrder();
+    let html = `
+      <section class="study-page-head">
+        <div class="history-eyebrow">Collection vendue</div>
+        <h1>Études de montres</h1>
+        <p>Chaque fiche regroupe les photos, les données déjà connues et une analyse organisée : identification, datation, boîtier, cadran, mouvement, fond de boîte, cohérence et contexte historique.</p>
+      </section>`;
+    if (!watches.length) {
+      html += `<div class="empty"><span class="big">⌕</span>Aucune montre dans le dossier « Vendu ».</div>`;
+    } else {
+      html += `<div class="study-list">`;
+      watches.forEach((w, i) => {
+        const first = Array.isArray(w.photos) && w.photos.length ? blobUrl(w.photos[0]) : null;
+        const done = studyHasContent(w.study);
+        html += `
+          <button class="study-card" data-study-id="${w.id}">
+            <div class="study-card-index">${String(i+1).padStart(2,'0')}</div>
+            <div class="study-card-photo">${first ? `<img src="${first}" alt="${esc(w.name)}">` : '<span>⌚</span>'}</div>
+            <div class="study-card-copy">
+              <strong>${esc(w.name || 'Sans nom')}</strong>
+              <span>${done ? 'Étude renseignée' : 'Étude à compléter'}</span>
+              ${w.description ? `<small>${esc(w.description.slice(0,150))}${w.description.length>150?'…':''}</small>` : ''}
+            </div>
+            <div class="study-card-arrow">›</div>
+          </button>`;
+      });
+      html += `</div>`;
+    }
+    els.main.innerHTML = html;
+    bindCommon();
+  }
+
+  function studySection(title, text) {
+    if (!String(text || '').trim()) return '';
+    return `<section class="study-analysis-section"><h3>${esc(title)}</h3><p>${esc(text)}</p></section>`;
+  }
+
+  function renderStudy(watchId) {
+    const w = state.watches.find(x => x.id === watchId);
+    if (!w) return setView('studies');
+    const soldFolder = state.folders.find(isSoldFolder);
+    if (!soldFolder || w.folderId !== soldFolder.id) return setView('studies');
+    els.subtitle.textContent = 'Étude';
+    els.fab.classList.add('hidden');
+    const photos = Array.isArray(w.photos) ? w.photos : [];
+    const urls = photos.map(blobUrl).filter(Boolean);
+    const st = (w.study && typeof w.study === 'object') ? w.study : {};
+    const done = studyHasContent(st);
+    let html = `<article class="watch-study-detail">`;
+    if (urls.length) {
+      html += `<div class="study-photo-stage"><img id="studyHeroPhoto" src="${urls[0]}" alt="${esc(w.name)}"></div>`;
+      if (urls.length > 1) html += `<div class="study-photo-strip">${urls.map((u,i)=>`<img class="study-thumb ${i===0?'active':''}" data-study-photo-index="${i}" src="${u}" alt="Photo ${i+1}">`).join('')}</div>`;
+    } else {
+      html += `<div class="study-photo-stage study-photo-empty">⌚</div>`;
+    }
+    html += `
+      <header class="study-detail-head">
+        <div class="history-eyebrow">Étude de montre</div>
+        <h1>${esc(w.name || 'Sans nom')}</h1>
+        <div class="study-confidence">Niveau de certitude : <strong>${esc(st.certainty || 'à établir')}</strong></div>
+      </header>`;
+    if (w.description) {
+      html += `<section class="study-known-data"><h3>Données déjà connues dans Folio</h3><p>${esc(w.description)}</p></section>`;
+    }
+    if (!done) {
+      html += `<div class="study-empty-analysis"><strong>Étude à compléter</strong><span>La montre est bien intégrée à la rubrique. L’analyse experte peut maintenant être renseignée à partir des photos, du mouvement, des références et des numéros visibles.</span></div>`;
+    }
+    html += `<div class="study-analysis">`;
+    html += studySection('Identification', st.identification);
+    html += studySection('Datation estimée', st.dating);
+    html += studySection('Boîtier et proportions', st.case);
+    html += studySection('Cadran, index et typographie', st.dial);
+    html += studySection('Aiguilles, seconde et verre', st.hands);
+    html += studySection('Mouvement', st.movement);
+    html += studySection('Fond de boîte, références et numéros', st.caseback);
+    html += studySection('Bracelet et boucle', st.bracelet);
+    html += studySection('Cohérence de l’ensemble', st.coherence);
+    html += studySection('Contexte historique et stylistique', st.history);
+    html += studySection('Conclusion', st.conclusion);
+    html += `</div>
+      <div class="study-actions"><button class="btn secondary" data-action="edit-study">${done ? 'Modifier l’étude' : 'Renseigner l’étude'}</button></div>
+    </article>`;
+    els.main.innerHTML = html;
+    bindCommon();
+    setTimeout(() => {
+      document.querySelectorAll('.study-thumb').forEach((el,i)=>el.addEventListener('click',()=>{
+        const hero=document.getElementById('studyHeroPhoto'); if(hero) hero.src=urls[i];
+        document.querySelectorAll('.study-thumb').forEach(x=>x.classList.remove('active')); el.classList.add('active');
+      }));
+    },0);
+  }
+
+  function showStudyForm(watchId) {
+    const w = state.watches.find(x => x.id === watchId);
+    if (!w) return;
+    const st = (w.study && typeof w.study === 'object') ? w.study : {};
+    const fields = [
+      ['identification','Identification','Marque, modèle/gamme probable, référence, marché, éléments certains et hypothèses.'],
+      ['dating','Datation estimée','Fourchette la plus précise possible et arguments de datation.'],
+      ['case','Boîtier et proportions','Forme, diamètre, matière, lunette, cornes, couronne, architecture et indices chronologiques.'],
+      ['dial','Cadran, index et typographie','Finition, logo, index, minuterie, date/jour, lume, signatures stylistiques.'],
+      ['hands','Aiguilles, seconde et verre','Type d’aiguilles, petite/grande seconde, longueur, lume, plexi/minéral et cohérence.'],
+      ['movement','Mouvement','Calibre, famille, remontage, rubis, fréquence, période de production, particularités techniques.'],
+      ['caseback','Fond de boîte, références et numéros','Références, numéros de série, codes fabricant et ce qu’ils permettent de dater.'],
+      ['bracelet','Bracelet et boucle','Origine probable, matière, boucle, endlinks et cohérence chronologique.'],
+      ['coherence','Cohérence de l’ensemble','Compatibilité boîtier/cadran/mouvement/fond, remplacements ou assemblage éventuel.'],
+      ['history','Contexte historique et stylistique','Ce qui vient de la période précédente, ce qui est typique, ce qui annonce la suivante.'],
+      ['conclusion','Conclusion','Synthèse, datation retenue et points restant à vérifier.']
+    ];
+    openSheet(`
+      <h2 class="sheet-title">Étude · ${esc(w.name || '')}</h2>
+      <form id="studyForm" class="form study-form">
+        <div class="field"><label>Niveau de certitude</label><select id="studyCertainty">
+          ${['','Certain','Très probable','Probable','Hypothèse'].map(v=>`<option value="${v}" ${String(st.certainty||'')===v?'selected':''}>${v||'À établir'}</option>`).join('')}
+        </select></div>
+        ${fields.map(([key,label,ph])=>`<div class="field"><label>${label}</label><textarea id="study_${key}" placeholder="${esc(ph)}">${esc(st[key]||'')}</textarea></div>`).join('')}
+        <div class="form-actions"><button type="button" class="btn secondary" data-close>Annuler</button><button class="btn primary">Enregistrer l’étude</button></div>
+      </form>`);
+    els.sheetContent.querySelector('[data-close]').addEventListener('click', closeSheet);
+    els.sheetContent.querySelector('#studyForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const nextStudy = { certainty: els.sheetContent.querySelector('#studyCertainty').value };
+      fields.forEach(([key]) => { nextStudy[key] = els.sheetContent.querySelector(`#study_${key}`).value.trim(); });
+      const current = await WatchDB.get('watches', w.id);
+      if (!current) return alert('Cette montre n’est plus disponible localement. Resynchronise Folio.');
+      const next = { ...current, study: nextStudy, updatedAt: Date.now(), pendingSync: true };
+      await WatchDB.put('watches', next);
+      await loadData();
+      closeSheet();
+      setView('study', next.id);
+      toast('Étude enregistrée');
+      syncItemRecord(next, { full:false, quiet:true }).then(loadData).catch(console.error);
+    });
+  }
+
   function renderWatch(watchId) {
     const w = state.watches.find(x => x.id === watchId);
     if (!w) return setView('home');
@@ -2427,6 +2604,9 @@
       });
     });
     document.querySelectorAll('[data-action="new-folder"]').forEach(el => el.addEventListener('click', showNewFolder));
+    document.querySelectorAll('[data-action="open-studies"]').forEach(el => el.addEventListener('click', () => setView('studies')));
+    document.querySelectorAll('[data-study-id]').forEach(el => el.addEventListener('click', () => setView('study', el.dataset.studyId)));
+    document.querySelectorAll('[data-action="edit-study"]').forEach(el => el.addEventListener('click', () => showStudyForm(state.view.id)));
     document.querySelectorAll('[data-action="open-history"]').forEach(el => el.addEventListener('click', () => setView('history')));
     document.querySelectorAll('[data-action="folder-menu"]').forEach(el => el.addEventListener('click', showFolderMenu));
     document.querySelectorAll('[data-action="edit-watch"]').forEach(el => el.addEventListener('click', () => showWatchForm(state.view.id)));
@@ -3262,6 +3442,10 @@
     if (state.view.type === 'watch') {
       const w = state.watches.find(x => x.id === state.view.id);
       setView(w?.folderId ? 'folder' : 'home', w?.folderId || null);
+    } else if (state.view.type === 'study') {
+      setView('studies');
+    } else if (state.view.type === 'studies') {
+      setView('home');
     } else if (state.view.type === 'history-era') {
       setView('history');
     } else setView('home');
