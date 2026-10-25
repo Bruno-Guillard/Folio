@@ -807,3 +807,14 @@ button { -webkit-tap-highlight-color: transparent; }
   .study-section-summary { font-size:14px; }
   .study-section-body { padding:16px 19px 18px; font-size:12.5px; }
 }
+
+.study-analysis-section.tone-special {
+  border-color:#cdbfdf;
+  background:#fbf9fd;
+}
+.study-analysis-section.tone-special .study-section-head {
+  background:#eee8f4;
+  border-color:#d9cde5;
+}
+.study-analysis-section.tone-special .study-section-head h3 { color:#5e4774; }
+.study-analysis-section.tone-special .study-section-summary { color:#493957; }
