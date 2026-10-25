@@ -2362,7 +2362,7 @@
 
   function studyHasContent(study) {
     if (!study || typeof study !== 'object') return false;
-    return ['history','overview','identification','dating','case','dial','hands','movement','caseback','interventions','bracelet','coherence','conclusion']
+    return ['history','overview','special','identification','dating','case','dial','hands','movement','caseback','interventions','bracelet','coherence','conclusion']
       .some(k => String(study[k] || '').trim());
   }
 
@@ -2453,6 +2453,7 @@
     html += `<div class="study-analysis">`;
     html += studySection('Contexte historique & stylistique', st.history, 'history');
     html += studySection('En bref — ce qui caractérise cette montre', st.overview, 'overview');
+    html += studySection('Ce qui rend cet exemplaire particulier', st.special, 'special');
     html += studySection('Identification', st.identification, 'identity');
     html += studySection('Datation estimée', st.dating, 'dating');
     html += studySection('Boîtier & proportions', st.case);
@@ -2496,6 +2497,7 @@
     const fields = [
       ['history','Contexte historique & stylistique','Replace la montre dans son époque : héritages de la période précédente, traits réellement contemporains et éléments annonçant la suivante.'],
       ['overview','En bref — ce qui caractérise cette montre','Résumé éditorial et valorisant : ce qui la rend intéressante, ce qui est typique de son époque, ce qui est hérité ou en avance, sans exagération commerciale.'],
+      ['special','Ce qui rend cet exemplaire particulier','Détails spécifiques et documentables de CET exemplaire : variante, typographie, marquage de transition, référence particulière, calibre réemployé ou détail de production intéressant. Laisser vide s’il n’y a rien de réellement spécifique.'],
       ['identification','Identification','Marque, modèle/gamme probable, référence, marché, éléments certains et hypothèses.'],
       ['dating','Datation estimée','Fourchette la plus précise possible et arguments de datation.'],
       ['case','Boîtier et proportions','Forme, diamètre, matière, lunette, cornes, couronne, architecture et indices chronologiques.'],
