@@ -2362,7 +2362,7 @@
 
   function studyHasContent(study) {
     if (!study || typeof study !== 'object') return false;
-    return ['identification','dating','case','dial','hands','movement','caseback','interventions','bracelet','coherence','history','conclusion']
+    return ['history','overview','identification','dating','case','dial','hands','movement','caseback','interventions','bracelet','coherence','conclusion']
       .some(k => String(study[k] || '').trim());
   }
 
@@ -2401,9 +2401,24 @@
     bindCommon();
   }
 
-  function studySection(title, text) {
-    if (!String(text || '').trim()) return '';
-    return `<section class="study-analysis-section"><h3>${esc(title)}</h3><p>${esc(text)}</p></section>`;
+  function studySection(title, text, tone='default') {
+    const raw = String(text || '').trim();
+    if (!raw) return '';
+    const sentences = raw.split(/(?<=[.!?])\s+/).filter(Boolean);
+    const take = Math.min(2, sentences.length);
+    const summary = sentences.slice(0, take).join(' ');
+    const rest = sentences.slice(take).join(' ');
+    const body = esc(rest || '')
+      .replace(/\b(CERTAIN|TRÈS PROBABLE|PROBABLE|HYPOTHÈSE|NON DÉMONTRÉ|À VÉRIFIER)\b/g, '<span class="study-certainty-tag">$1</span>')
+      .replace(/\b(18\s?000|6601B|6601|699990|4601651|41 h 29 min|37 mm|17 rubis|2,5 Hz)\b/g, '<strong class="study-key">$1</strong>');
+    return `
+      <section class="study-analysis-section tone-${tone}">
+        <div class="study-section-head">
+          <h3>${esc(title)}</h3>
+          <p class="study-section-summary">${esc(summary)}</p>
+        </div>
+        ${rest ? `<div class="study-section-body">${body}</div>` : ''}
+      </section>`;
   }
 
   function renderStudy(watchId) {
@@ -2426,32 +2441,44 @@
     }
     html += `
       <header class="study-detail-head">
-        <div class="history-eyebrow">Étude de montre</div>
+        <div class="history-eyebrow">Étude horlogère</div>
         <h1>${esc(w.name || 'Sans nom')}</h1>
-        <div class="study-confidence">Niveau de certitude : <strong>${esc(st.certainty || 'à établir')}</strong></div>
+        <div class="study-confidence">Niveau de certitude global : <strong>${esc(st.certainty || 'à établir')}</strong></div>
       </header>`;
-    if (w.description) {
-      html += `<section class="study-known-data"><h3>Données déjà connues dans Folio</h3><p>${esc(w.description)}</p></section>`;
-    }
+
     if (!done) {
       html += `<div class="study-empty-analysis"><strong>Étude à compléter</strong><span>La montre est bien intégrée à la rubrique. L’analyse experte peut maintenant être renseignée à partir des photos, du mouvement, des références et des numéros visibles.</span></div>`;
     }
+
     html += `<div class="study-analysis">`;
-    html += studySection('Identification', st.identification);
-    html += studySection('Datation estimée', st.dating);
-    html += studySection('Boîtier et proportions', st.case);
-    html += studySection('Cadran, index et typographie', st.dial);
-    html += studySection('Aiguilles, seconde et verre', st.hands);
-    html += studySection('Mouvement', st.movement);
-    html += studySection('Fond de boîte, références et numéros', st.caseback);
-    html += studySection('Intervention & contrôles', st.interventions);
-    html += studySection('Bracelet et boucle', st.bracelet);
+    html += studySection('Contexte historique & stylistique', st.history, 'history');
+    html += studySection('En bref — ce qui caractérise cette montre', st.overview, 'overview');
+    html += studySection('Identification', st.identification, 'identity');
+    html += studySection('Datation estimée', st.dating, 'dating');
+    html += studySection('Boîtier & proportions', st.case);
+    html += studySection('Cadran, index & typographie', st.dial);
+    html += studySection('Aiguilles, seconde & verre', st.hands);
+    html += studySection('Mouvement', st.movement, 'movement');
+    html += studySection('Fond de boîte, références & numéros', st.caseback);
+    html += studySection('Intervention & contrôles', st.interventions, 'controls');
+    html += studySection('Bracelet & boucle', st.bracelet);
     html += studySection('Cohérence de l’ensemble', st.coherence);
-    html += studySection('Contexte historique et stylistique', st.history);
-    html += studySection('Conclusion', st.conclusion);
-    html += `</div>
+    html += studySection('Conclusion', st.conclusion, 'conclusion');
+    html += `</div>`;
+
+    if (w.description) {
+      html += `
+        <section class="study-known-data">
+          <div class="study-known-kicker">Archive Folio</div>
+          <h3>Données déjà connues</h3>
+          <p>${esc(w.description)}</p>
+        </section>`;
+    }
+
+    html += `
       <div class="study-actions"><button class="btn secondary" data-action="edit-study">${done ? 'Modifier l’étude' : 'Renseigner l’étude'}</button></div>
     </article>`;
+
     els.main.innerHTML = html;
     bindCommon();
     setTimeout(() => {
@@ -2467,20 +2494,20 @@
     if (!w) return;
     const st = (w.study && typeof w.study === 'object') ? w.study : {};
     const fields = [
+      ['history','Contexte historique & stylistique','Replace la montre dans son époque : héritages de la période précédente, traits réellement contemporains et éléments annonçant la suivante.'],
+      ['overview','En bref — ce qui caractérise cette montre','Résumé éditorial et valorisant : ce qui la rend intéressante, ce qui est typique de son époque, ce qui est hérité ou en avance, sans exagération commerciale.'],
       ['identification','Identification','Marque, modèle/gamme probable, référence, marché, éléments certains et hypothèses.'],
       ['dating','Datation estimée','Fourchette la plus précise possible et arguments de datation.'],
       ['case','Boîtier et proportions','Forme, diamètre, matière, lunette, cornes, couronne, architecture et indices chronologiques.'],
       ['dial','Cadran, index et typographie','Finition, logo, index, minuterie, date/jour, lume, signatures stylistiques.'],
       ['hands','Aiguilles, seconde et verre','Type d’aiguilles, petite/grande seconde, longueur, lume, plexi/minéral et cohérence.'],
-      ['movement','Mouvement','Calibre, famille, remontage, rubis, fréquence, période de production, particularités techniques.'],
+      ['movement','Mouvement','Calibre, famille, remontage, rubis, fréquence, période de production, particularités techniques et innovations.'],
       ['caseback','Fond de boîte, références et numéros','Références, numéros de série, codes fabricant et ce qu’ils permettent de dater.'],
       ['interventions','Intervention & contrôles','Travaux réellement effectués, nettoyage, lubrification, réglages, pièces remplacées, quickset, passage jour/date, mesures timegrapher, réserve de marche et essais.'],
       ['bracelet','Bracelet et boucle','Origine probable, matière, boucle, endlinks et cohérence chronologique.'],
       ['coherence','Cohérence de l’ensemble','Compatibilité boîtier/cadran/mouvement/fond, remplacements ou assemblage éventuel.'],
-      ['history','Contexte historique et stylistique','Ce qui vient de la période précédente, ce qui est typique, ce qui annonce la suivante.'],
-      ['conclusion','Conclusion','Synthèse, datation retenue et points restant à vérifier.']
-    ];
-    openSheet(`
+      ['conclusion','Conclusion','Synthèse, datation retenue, intérêt horloger et points restant à vérifier.']
+    ];    openSheet(`
       <h2 class="sheet-title">Étude · ${esc(w.name || '')}</h2>
       <form id="studyForm" class="form study-form">
         <div class="field"><label>Niveau de certitude</label><select id="studyCertainty">
