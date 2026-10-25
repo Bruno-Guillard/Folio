@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-14-watch-studies-hotfix1';
+const CACHE = 'folio-v6-13-stable-restore';
 const ASSETS = [
   './',
   './index.html',
