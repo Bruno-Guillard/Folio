@@ -1863,6 +1863,8 @@
     if (type === 'watch') return renderWatch(id);
     if (type === 'studies') return renderStudies();
     if (type === 'study') return renderStudy(id);
+    if (type === 'brands') return renderBrands();
+    if (type === 'brand') return renderBrand(id);
     if (type === 'history') return renderHistory();
     if (type === 'history-era') return renderHistoryEraDetail(id);
   }
@@ -1904,6 +1906,16 @@
     const soldFolder = state.folders.find(isSoldFolder);
     const soldCount = soldFolder ? state.watches.filter(w => w.folderId === soldFolder.id).length : 0;
     html += `
+      <section class="brands-entry-wrap">
+        <button class="brands-entry" data-action="open-brands">
+          <div class="brands-entry-icon">M</div>
+          <div class="brands-entry-copy">
+            <strong>Marques</strong>
+            <span>Maisons, innovations, rachats et mouvements classés par époque.</span>
+          </div>
+          <div class="brands-entry-arrow">›</div>
+        </button>
+      </section>
       <section class="study-entry-wrap">
         <button class="study-entry" data-action="open-studies">
           <div class="study-entry-icon">⌕</div>
@@ -1925,6 +1937,361 @@
         </button>
       </section>`;
 
+    els.main.innerHTML = html;
+    bindCommon();
+  }
+
+
+  const BRAND_GUIDES = [
+    {
+      key:'seiko', name:'Seiko', country:'Japon', founded:'1881',
+      intro:"De l’atelier de Kintaro Hattori aux premières mondiales du quartz, du chronographe automatique et du Spring Drive, Seiko est l’une des manufactures les plus importantes pour comprendre l’horlogerie japonaise moderne.",
+      ownership:"Groupe japonais indépendant autour de Seiko Group / Seiko Watch Corporation. Attention à ne pas confondre Seiko Watch, Seiko Instruments et Seiko Epson : historiquement, plusieurs entités et manufactures ont produit des mouvements Seiko.",
+      milestones:[
+        ['1881','Kintaro Hattori ouvre son commerce de montres à Tokyo.'],
+        ['1892','Création de Seikosha, future base industrielle de la marque.'],
+        ['1913','Laurel : première montre-bracelet produite au Japon.'],
+        ['1959','Gyro Marvel : première automatique Seiko.'],
+        ['1960','Naissance de Grand Seiko.'],
+        ['1969','Astron : première montre-bracelet à quartz commercialisée ; 6139 : l’un des tout premiers chronographes automatiques.'],
+        ['1999','Commercialisation de Spring Drive.']
+      ],
+      movements:[
+        ['1950–1959','Marvel / 560','1956','≈1959','Manuel, architecture moderne pour Seiko ; étape majeure avant Crown et Grand Seiko.'],
+        ['1959–1961','Gyro Marvel','1959','≈1961','Première famille automatique Seiko, rotor central.'],
+        ['1961–1966','66 / 6601','1961','≈1966','Automatique 17 rubis, 18 000 A/h ; très présente dans Sportsmatic.'],
+        ['1965–1970','62xx','1965','≈1970','Famille automatique importante ; inclut notamment 6217, premier calibre de plongeuse professionnelle Seiko.'],
+        ['1967–1979','61xx','1967','≈1979','Grande famille automatique : 6105, 6106, 6119 ; architecture robuste et très diffusée.'],
+        ['1969–1979','6139 / 6138','1969','≈1979','Chronographes automatiques intégrés, roue à colonnes et embrayage vertical.'],
+        ['1970–1990s','70xx / 700x','≈1970','≈1996','Famille très diffusée : 7005, 7006, 7009 ; base de nombreuses Seiko 5.'],
+        ['1996–2019','7S26 / 7S36','1996','≈2019','Automatique simple sans remontage manuel ni stop-seconde ; cœur des Seiko 5 modernes.'],
+        ['2010–auj.','4R35 / 4R36','≈2010','actuel','Évolution moderne avec remontage manuel et stop-seconde.'],
+        ['2019–auj.','6R35','2019','actuel','Automatique moderne à réserve de marche étendue, utilisé dans Prospex et Presage.']
+      ],
+      source:'https://www.seikowatches.com/fr-fr/special/heritage/'
+    },
+    {
+      key:'citizen', name:'Citizen', country:'Japon', founded:'1918 / 1930',
+      intro:"Citizen a construit son identité sur l’industrialisation de montres fiables et accessibles, puis sur la miniaturisation, l’électronique et l’énergie solaire. La maison est aussi devenue un acteur majeur du mouvement vendu à d’autres marques via Miyota.",
+      ownership:"Citizen Watch Co. est le centre du groupe Citizen. Le groupe a notamment acquis Bulova en 2008 et possède Miyota, important fabricant de mouvements.",
+      milestones:[
+        ['1918','Fondation du Shokosha Watch Research Institute.'],
+        ['1924','Première montre de poche portant le nom Citizen.'],
+        ['1930','Création de Citizen Watch Co.'],
+        ['1956','Parashock : première montre japonaise avec système antichoc présenté publiquement par Citizen.'],
+        ['1962','Diamond Flake : record de finesse pour une montre mécanique à seconde centrale.'],
+        ['1976','Crystron Solar Cell : l’une des premières montres analogiques à énergie solaire.'],
+        ['1995','Déploiement de la désignation Eco-Drive.']
+      ],
+      movements:[
+        ['1950–1960s','Homer / 0200 et familles manuelles','≈1960','≈1970s','Mouvements manuels simples et robustes, très répandus dans les Citizen habillées.'],
+        ['1960s–1970s','52xx / 54xx','≈1965','≈1970s','Familles automatiques et manuelles de transition vers les architectures modernes Citizen.'],
+        ['1970s–auj.','82xx / 8200','≈1977','actuel','Automatique 21 rubis, 21 600 A/h ; extrêmement diffusé, également chez Miyota.'],
+        ['1980s–auj.','Miyota 8215','≈1977–1980','actuel','Dérivé de la famille 82xx, vendu à de très nombreuses marques tierces.'],
+        ['1990s–auj.','Eco-Drive E / B / J series','≈1990s','actuel','Familles quartz solaires rechargeant un accumulateur à partir de la lumière.'],
+        ['2010s–auj.','Miyota 9000','≈2009','actuel','Automatique plus fin à 28 800 A/h, destiné à un segment supérieur.'],
+        ['2021–auj.','Calibre 0200','2021','actuel','Mécanique haut de gamme moderne de The Citizen, architecture distincte du 0200 historique.']
+      ],
+      source:'https://www.citizenwatch-global.com/about/technology/eco-drive/'
+    },
+    {
+      key:'omega', name:'Omega', country:'Suisse', founded:'1848',
+      intro:"Omega est essentielle pour comprendre l’industrialisation suisse de précision, les chronomètres, l’exploration, le chronographe et, plus récemment, l’échappement Co‑Axial.",
+      ownership:"Omega appartient aujourd’hui au Swatch Group. La maison a rejoint SSIH en 1930 avec Tissot ; SSIH et ASUAG ont ensuite fusionné dans le groupe qui deviendra Swatch Group.",
+      milestones:[
+        ['1848','Louis Brandt fonde l’atelier à La Chaux-de-Fonds.'],
+        ['1894','Le calibre Omega donne son nom à la marque.'],
+        ['1930','Alliance SSIH avec Tissot.'],
+        ['1957','Lancement des Speedmaster, Seamaster 300 et Railmaster.'],
+        ['1969','Speedmaster portée lors d’Apollo 11.'],
+        ['1999','Industrialisation de l’échappement Co-Axial dans une montre de série.'],
+        ['2015','Déploiement du standard Master Chronometer avec METAS.']
+      ],
+      movements:[
+        ['1939–1960s','30T2 / 26x–28x','1939','≈1963','Grande famille manuelle 30 mm, connue pour sa robustesse et ses versions chronomètre.'],
+        ['1940s–1968','321','1946','1968','Chronographe à roue à colonnes d’origine Lémania ; Speedmaster pré-lunaire.'],
+        ['1955–1960s','500 / 501 / 503','1955','≈1960','Premières grandes générations automatiques à rotor complet de l’après-guerre.'],
+        ['1958–1970s','55x / 56x','1958','≈1970s','Famille automatique emblématique des Constellation et Seamaster.'],
+        ['1968–1996','861','1968','≈1996','Chronographe à came remplaçant le 321 dans la Speedmaster Professional.'],
+        ['1996–2021','1861 / 1863','1996','≈2021','Évolution du 861, longtemps moteur standard de la Moonwatch.'],
+        ['2007–2010s','8500 / 8501','2007','≈2010s','Premier mouvement Omega moderne largement conçu autour du Co‑Axial.'],
+        ['2016–auj.','8800 / 8900','≈2016','actuel','Familles Master Chronometer Co‑Axial antimagnétiques.'],
+        ['2019–auj.','321 réédité','2019','actuel','Reconstruction moderne du calibre historique 321.']
+      ],
+      source:'https://www.omegawatches.com/'
+    },
+    {
+      key:'rolex', name:'Rolex', country:'Suisse / origine britannique', founded:'1905',
+      intro:"Rolex s’est moins distinguée par la multiplication des complications que par l’industrialisation de solutions devenues fondamentales : étanchéité Oyster, remontage automatique Perpetual, robustesse et continuité de calibres.",
+      ownership:"Rolex SA est contrôlée par la Fondation Hans Wilsdorf. La marque n’appartient à aucun grand groupe horloger coté.",
+      milestones:[
+        ['1905','Hans Wilsdorf et Alfred Davis fondent Wilsdorf & Davis à Londres.'],
+        ['1908','Dépôt de la marque Rolex.'],
+        ['1926','Boîtier Oyster étanche.'],
+        ['1931','Rotor automatique Perpetual.'],
+        ['1945','Datejust avec date à guichet changeant automatiquement.'],
+        ['1953','Submariner et Explorer.'],
+        ['2000','Calibre 4130 : chronographe Daytona entièrement intégré Rolex.']
+      ],
+      movements:[
+        ['1950s','1030','≈1950','≈1960','Premier grand automatique Rolex entièrement développé pour une production moderne à grande échelle.'],
+        ['1957–1980s','15xx','≈1957','≈1988','Famille 1520/1530/1560/1570, référence historique de robustesse.'],
+        ['1977–1988','3035','1977','≈1988','28 800 A/h et date rapide ; transition vers la génération 31xx.'],
+        ['1988–2020','3135','1988','≈2020','L’un des calibres automatiques Rolex les plus durables et diffusés.'],
+        ['2000–2023','4130','2000','≈2023','Chronographe intégré Daytona à embrayage vertical.'],
+        ['2015–auj.','3235','2015','actuel','Nouvelle génération avec échappement Chronergy et réserve accrue.'],
+        ['2023–auj.','4131','2023','actuel','Successeur du 4130 dans le Daytona.']
+      ],
+      source:'https://www.rolex.com/fr/about-rolex/history'
+    },
+    {
+      key:'longines', name:'Longines', country:'Suisse', founded:'1832',
+      intro:"Longines a produit certains des chronographes et calibres manuels les plus remarquables du XXe siècle avant de s’intégrer progressivement au système industriel ASUAG/ETA puis Swatch Group.",
+      ownership:"Longines appartient au Swatch Group. La marque a cessé de produire l’ensemble de ses ébauches en interne et utilise aujourd’hui des mouvements ETA développés ou adaptés spécifiquement.",
+      milestones:[
+        ['1832','Fondation à Saint-Imier.'],
+        ['1867','Usine des Es Longines et calibre 20A.'],
+        ['1913','13.33Z : chronographe-bracelet à poussoir.'],
+        ['1936','13ZN, chronographe intégré hautement recherché.'],
+        ['1947','30CH, successeur du 13ZN.'],
+        ['1983','Longines entre dans le périmètre du groupe issu de la fusion ASUAG/SSIH.']
+      ],
+      movements:[
+        ['1913–1930s','13.33Z','1913','≈1936','Chronographe intégré précoce pour montre-bracelet.'],
+        ['1936–1950s','13ZN','1936','≈1951','Chronographe roue à colonnes, souvent avec retour en vol selon versions.'],
+        ['1947–1960s','30CH','1947','≈1967','Successeur du 13ZN ; dernier grand chronographe manufacture historique de Longines.'],
+        ['1955–1960s','30L / 302–30x','1955','≈1967','Manuel 30 mm très réputé, simple et précis.'],
+        ['1977–1980s','990','1977','≈1980s','Automatique extra-plat à double barillet ; l’un des derniers grands mouvements Longines développés en interne.'],
+        ['1990s–auj.','L6xx / L7xx / L8xx ETA dédiés','≈1990s','actuel','Familles ETA adaptées ou exclusives ; L888 est une évolution moderne à réserve accrue.']
+      ],
+      source:'https://www.longines.com/fr/universe'
+    },
+    {
+      key:'tissot', name:'Tissot', country:'Suisse', founded:'1853',
+      intro:"Tissot illustre particulièrement bien l’industrialisation suisse du milieu de gamme : manufacture historique, alliance avec Omega, expérimentations de matériaux et adoption précoce de solutions ETA rationalisées.",
+      ownership:"Tissot appartient au Swatch Group. En 1930, Tissot et Omega forment SSIH ; le regroupement ASUAG/SSIH donnera ensuite naissance au Swatch Group.",
+      milestones:[
+        ['1853','Fondation au Locle.'],
+        ['1930','Alliance avec Omega au sein de SSIH.'],
+        ['1950s','Développement d’une production très industrialisée et de familles de calibres communes.'],
+        ['1971','Astrolon / IDEA 2001 : montre mécanique en matériaux synthétiques.'],
+        ['1980s','RockWatch puis WoodWatch : expérimentation de matériaux de boîte.'],
+        ['2010s','Powermatic 80 : réserve de marche fortement accrue sur une base ETA.']
+      ],
+      movements:[
+        ['1930s–1950s','27 / 27B','≈1936','≈1950s','Grande famille manuelle Tissot, nombreuses variantes petite et seconde centrale.'],
+        ['1950s–1960s','28.5 / 781–784','≈1950s','≈1960s','Familles manuelles et automatiques largement diffusées.'],
+        ['1960s–1970s','24xx','≈1960s','≈1970s','Mouvements automatiques de transition avant domination croissante des bases ETA.'],
+        ['1971–1970s','2250 Astrolon','1971','≈1970s','Mouvement mécanique utilisant de nombreuses pièces en matière synthétique.'],
+        ['1980s–2010s','ETA 2824 / 2892 dérivés','≈1980s','≈2010s','Socle de nombreux modèles automatiques modernes Tissot.'],
+        ['2012–auj.','Powermatic 80 / C07','≈2012','actuel','Famille ETA dérivée du 2824, fréquence abaissée et réserve portée à environ 80 h.']
+      ],
+      source:'https://www.tissotwatches.com/fr-fr/tissot-world-history.html'
+    },
+    {
+      key:'zenith', name:'Zenith', country:'Suisse', founded:'1865',
+      intro:"Zenith combine tradition de manufacture de précision et une innovation majeure : El Primero, chronographe automatique intégré haute fréquence présenté en 1969.",
+      ownership:"Zenith appartient à LVMH depuis 1999.",
+      milestones:[
+        ['1865','Georges Favre-Jacot fonde la manufacture au Locle.'],
+        ['1948','Calibre 135 de chronométrie.'],
+        ['1969','Présentation d’El Primero, chronographe automatique intégré à 36 000 A/h.'],
+        ['1975','Arrêt programmé de la production mécanique ; Charles Vermot préserve clandestinement l’outillage El Primero.'],
+        ['1986','Reprise de la production El Primero.'],
+        ['1999','Acquisition par LVMH.']
+      ],
+      movements:[
+        ['1948–1962','135','1948','≈1962','Manuel de chronométrie, très réputé pour ses performances en concours.'],
+        ['1950s–1960s','25xx','≈1950s','≈1960s','Familles manuelles et automatiques de manufacture.'],
+        ['1969–1975','3019 PHC El Primero','1969','1975','Chronographe automatique intégré, 36 000 A/h, date.'],
+        ['1986–2000s','400 / 400Z El Primero','1986','≈2000s','Relance industrielle d’El Primero avec nombreuses variantes.'],
+        ['2000s–2010s','Elite 670 / 680','≈1990s','≈2010s','Famille automatique plus simple et fine que l’El Primero.'],
+        ['2019–auj.','El Primero 3600','2019','actuel','Nouvelle génération affichant directement le 1/10e de seconde.']
+      ],
+      source:'https://www.zenith-watches.com/fr_fr/brand/timeline'
+    },
+    {
+      key:'bulova', name:'Bulova', country:'États-Unis / Suisse / Japon', founded:'1875',
+      intro:"Bulova a joué un rôle considérable dans l’industrialisation américaine et surtout dans l’électronique horlogère avec Accutron, dont le diapason à transistor constitue un chaînon majeur entre mécanique et quartz.",
+      ownership:"Bulova a été acquise par Citizen Watch Co. en 2008.",
+      milestones:[
+        ['1875','Joseph Bulova fonde son activité à New York.'],
+        ['1920s','Industrialisation poussée et standardisation des composants.'],
+        ['1960','Accutron : montre électronique à diapason.'],
+        ['1969','Un mouvement Accutron équipe notamment des instruments du programme spatial américain.'],
+        ['2008','Acquisition par Citizen.'],
+        ['2010','Precisionist : quartz haute fréquence.']
+      ],
+      movements:[
+        ['1930s–1950s','10AK / 10BM et familles mécaniques','≈1930s','≈1950s','Mouvements mécaniques suisses utilisés dans de nombreuses Bulova américaines.'],
+        ['1960–1977','Accutron 214','1960','≈1977','Diapason 360 Hz, couronne de réglage au dos sur les premières générations.'],
+        ['1965–1970s','Accutron 218','≈1965','≈1970s','Évolution plus polyvalente du 214, avec variantes date et jour-date.'],
+        ['1970s–1990s','Quartz Bulova / Citizen / fournisseurs','≈1970s','≈1990s','Transition vers le quartz après le diapason.'],
+        ['2010–auj.','Precisionist / UHF','2010','actuel','Quartz haute fréquence à seconde visuellement plus fluide et précision accrue.']
+      ],
+      source:'https://www.bulova.com/global/about-us'
+    },
+    {
+      key:'hamilton', name:'Hamilton', country:'États-Unis puis Suisse', founded:'1892',
+      intro:"Hamilton relie deux histoires : la grande horlogerie industrielle américaine — chemins de fer, militaire, montre électrique — puis l’intégration à l’industrie suisse et au Swatch Group.",
+      ownership:"Après le déplacement progressif de la production vers la Suisse et plusieurs restructurations, Hamilton est aujourd’hui une marque du Swatch Group.",
+      milestones:[
+        ['1892','Fondation à Lancaster, Pennsylvanie.'],
+        ['Début XXe','Réputation de précision dans l’horlogerie ferroviaire américaine.'],
+        ['1957','Ventura : première montre électrique commercialisée.'],
+        ['1969','Participation au Calibre 11 avec Buren, Breitling, Heuer et Dubois Dépraz.'],
+        ['1970s','Fin progressive de la production américaine.'],
+        ['1980s','Intégration dans le groupe devenu Swatch Group.']
+      ],
+      movements:[
+        ['1940–1969','992B','1940','≈1969','Mouvement de poche ferroviaire emblématique, 21 rubis.'],
+        ['1957–1959','500 Electric','1957','≈1959','Premier mouvement de montre électrique Hamilton, techniquement audacieux mais délicat.'],
+        ['1961–1969','505 Electric','1961','≈1969','Évolution plus fiable du 500.'],
+        ['1960s','Buren micro-rotor 1xxx','≈1957','≈1960s','Micro-rotor issu de Buren, société contrôlée par Hamilton à partir de 1966.'],
+        ['1969–1970s','Calibre 11 / 12','1969','≈1970s','Chronographe automatique modulaire à micro-rotor Buren.'],
+        ['1980s–2010s','ETA 2824 / 2892 / 7750','≈1980s','≈2010s','Bases suisses communes au groupe.'],
+        ['2010s–auj.','H-10 / H-21 / H-31','≈2014','actuel','Évolutions ETA spécifiques Hamilton, réserve accrue selon familles.']
+      ],
+      source:'https://www.hamiltonwatch.com/en-int/company/hamilton-watches-history'
+    },
+    {
+      key:'orient', name:'Orient', country:'Japon', founded:'1950',
+      intro:"Orient est l’un des exemples les plus intéressants de continuité mécanique japonaise : la marque a conservé une forte identité de mouvements automatiques maison, notamment autour de la famille 46 née en 1971.",
+      ownership:"Orient Watch a fusionné avec Seiko Epson Corporation en 2017. Orient et Orient Star sont aujourd’hui exploitées par Seiko Epson ; cela ne signifie pas qu’Orient est une gamme de Seiko Watch.",
+      milestones:[
+        ['1950','Tama Keiki reprend la production de montres ; naissance de la société qui devient Orient Watch.'],
+        ['1951','Orient Star.'],
+        ['1964','Olympia Calendar Diver, première plongeuse Orient.'],
+        ['1971','Naissance de la série de calibres 46.'],
+        ['1996','Orient Star introduit l’indicateur de réserve de marche.'],
+        ['2017','Fusion d’Orient Watch avec Seiko Epson.']
+      ],
+      movements:[
+        ['1950s–1960s','T / N / 67 et familles anciennes','≈1950s','≈1960s','Familles mécaniques antérieures à la série 46 ; nomenclature très variable selon générations.'],
+        ['1971–auj.','46 series / 469xx','1971','actuel / dérivés','Architecture automatique extrêmement durable, base technique d’Orient pendant des décennies.'],
+        ['1970s–2010s','46940 / 46941 / 46943','≈1970s','≈2010s','Variantes jour-date très répandues, souvent sans remontage manuel ni stop-seconde.'],
+        ['2010s–auj.','F6 / F672x','≈2016','actuel','Évolution moderne de la lignée 46 avec remontage manuel et stop-seconde.'],
+        ['2017–auj.','46-F7 / F7','2017','actuel','Famille Orient Star plus haut de gamme, finitions et précision améliorées.']
+      ],
+      source:'https://orient-watch.com/en/about_orient/'
+    },
+    {
+      key:'casio', name:'Casio', country:'Japon', founded:'1946 / montres depuis 1974',
+      intro:"Casio aborde la montre comme un objet électronique utile. Son histoire horlogère est moins celle de calibres mécaniques que de modules numériques : calendrier automatique, calculatrice, capteurs, radio-pilotage, solaire et résistance aux chocs.",
+      ownership:"Casio Computer Co., Ltd. reste un groupe japonais indépendant de l’horlogerie mécanique traditionnelle.",
+      milestones:[
+        ['1974','Casiotron : première montre Casio, calendrier automatique numérique.'],
+        ['1983','DW-5000C : première G-Shock.'],
+        ['1989','Première G-Shock analogique-numérique AW-500.'],
+        ['1994','Premiers développements Pro Trek avec capteurs multiples.'],
+        ['2000s','Déploiement de Tough Solar et du radio-pilotage Multiband.'],
+        ['2010s–auj.','GPS, Bluetooth et synchronisation smartphone.']
+      ],
+      movements:[
+        ['1974–1970s','Modules Casiotron QW','1974','≈1970s','Premiers modules LCD Casio avec gestion automatique du calendrier.'],
+        ['1983–1980s','Module 240 — DW-5000C','1983','≈1980s','Module de la première G-Shock.'],
+        ['1990s–auj.','Modules G-Shock 1xxx–5xxx','≈1990s','actuel','Familles numériques et ana-digi extrêmement nombreuses ; la référence de module est plus utile que la notion de calibre.'],
+        ['2000s–auj.','Tough Solar / Multiband modules','≈2000s','actuel','Modules solaires rechargeables et synchronisation radio.'],
+        ['2010s–auj.','Bluetooth / GPS modules','≈2010s','actuel','Synchronisation connectée et fonctions de navigation/temps mondial.']
+      ],
+      source:'https://www.casio.com/fr/watches/50th/'
+    },
+    {
+      key:'cartier', name:'Cartier', country:'France / Suisse', founded:'1847',
+      intro:"Chez Cartier, l’histoire du design est au moins aussi importante que celle du mouvement. Santos et Tank ont contribué à définir la montre-bracelet moderne et l’intégration visuelle du boîtier au bracelet.",
+      ownership:"Cartier appartient au groupe Richemont. Historiquement, la maison a utilisé de nombreux mouvements de fournisseurs prestigieux avant de développer davantage de calibres maison au XXIe siècle.",
+      milestones:[
+        ['1847','Louis-François Cartier reprend l’atelier de son maître à Paris.'],
+        ['1904','Santos conçue pour Alberto Santos-Dumont ; l’une des premières montres-bracelets modernes.'],
+        ['1917','Création de la Tank.'],
+        ['1970s','Développement de Must de Cartier, forte diffusion du quartz.'],
+        ['1990s','Cartier entre dans le groupe Vendôme, futur Richemont.'],
+        ['2010','1904 MC : mouvement automatique moderne de manufacture.']
+      ],
+      movements:[
+        ['1900s–1930s','Ébauches Jaeger / LeCoultre / European Watch & Clock','≈1900s','≈1930s','Cartier fait largement appel à des spécialistes suisses pour ses mouvements de forme.'],
+        ['1970s–1990s','ETA / Ebel / Piaget / quartz suisses','≈1970s','≈1990s','Grande diversité de fournisseurs selon les collections et niveaux de gamme.'],
+        ['2000s','049 / ETA 2892-A2','≈2000s','≈2010s','Automatique utilisé dans plusieurs références avant l’expansion des calibres maison.'],
+        ['2010–auj.','1904 MC','2010','actuel','Automatique de manufacture, double barillet selon variantes.'],
+        ['2015–auj.','1847 MC','2015','actuel','Automatique compact et robuste, largement utilisé dans Santos et autres collections.'],
+        ['2010s–auj.','1917 MC / 962x MC','≈2010s','actuel','Familles manuelles et squelettes de manufacture selon collections.']
+      ],
+      source:'https://www.cartier.com/'
+    }
+  ];
+
+  function renderBrands() {
+    els.subtitle.textContent = 'Marques';
+    els.fab.classList.add('hidden');
+    let html = `
+      <section class="brands-intro">
+        <div class="history-eyebrow">Bibliothèque horlogère</div>
+        <h1>Marques</h1>
+        <p>Histoire des grandes maisons, innovations, rachats et surtout évolution de leurs mouvements. Les dates de fin indiquées comme « ≈ » sont des repères documentaires : une utilisation tardive peut exister selon les marchés, stocks et références.</p>
+      </section>
+      <div class="brands-grid">`;
+    for (const b of BRAND_GUIDES) {
+      html += `
+        <button class="brand-card" data-brand-key="${b.key}">
+          <div class="brand-card-country">${esc(b.country)}</div>
+          <strong>${esc(b.name)}</strong>
+          <span>${esc(b.intro)}</span>
+          <div class="brand-card-foot"><em>${esc(b.founded)}</em><b>›</b></div>
+        </button>`;
+    }
+    html += `</div>`;
+    els.main.innerHTML = html;
+    bindCommon();
+  }
+
+  function renderBrand(key) {
+    const b = BRAND_GUIDES.find(x => x.key === key);
+    if (!b) return setView('brands');
+    els.subtitle.textContent = b.name;
+    els.fab.classList.add('hidden');
+    const eras = [...new Set(b.movements.map(m => m[0]))];
+    let html = `
+      <article class="brand-detail">
+        <header class="brand-hero">
+          <div class="history-eyebrow">${esc(b.country)} · depuis ${esc(b.founded)}</div>
+          <h1>${esc(b.name)}</h1>
+          <p>${esc(b.intro)}</p>
+        </header>
+
+        <section class="brand-section brand-ownership">
+          <div class="brand-section-kicker">Structure & rachats</div>
+          <h2>La maison aujourd’hui</h2>
+          <p>${esc(b.ownership)}</p>
+        </section>
+
+        <section class="brand-section">
+          <div class="brand-section-kicker">Histoire & innovations</div>
+          <h2>Les grandes étapes</h2>
+          <div class="brand-timeline">
+            ${b.milestones.map(m => `<div class="brand-timeline-row"><strong>${esc(m[0])}</strong><span>${esc(m[1])}</span></div>`).join('')}
+          </div>
+        </section>
+
+        <section class="brand-section brand-movements-section">
+          <div class="brand-section-kicker">Technique</div>
+          <h2>Mouvements classés par époque</h2>
+          <p class="brand-section-intro">Le but n’est pas de lister chaque référence produite, mais de suivre les familles qui permettent de comprendre l’évolution technique de la marque. « Dernière utilisation » désigne la dernière période d’emploi généralement documentée, pas nécessairement le dernier exemplaire assemblé.</p>
+          <div class="brand-movement-list">
+            ${b.movements.map(m => `
+              <article class="brand-movement-card">
+                <div class="brand-movement-era">${esc(m[0])}</div>
+                <h3>${esc(m[1])}</h3>
+                <div class="brand-movement-dates">
+                  <span><small>Création / apparition</small><strong>${esc(m[2])}</strong></span>
+                  <span><small>Dernière utilisation repère</small><strong>${esc(m[3])}</strong></span>
+                </div>
+                <p>${esc(m[4])}</p>
+              </article>`).join('')}
+          </div>
+        </section>
+
+        <a class="brand-source" href="${b.source}" target="_blank" rel="noopener noreferrer">Source patrimoniale principale ↗</a>
+      </article>`;
     els.main.innerHTML = html;
     bindCommon();
   }
@@ -2635,6 +3002,8 @@
       });
     });
     document.querySelectorAll('[data-action="new-folder"]').forEach(el => el.addEventListener('click', showNewFolder));
+    document.querySelectorAll('[data-action="open-brands"]').forEach(el => el.addEventListener('click', () => setView('brands')));
+    document.querySelectorAll('[data-brand-key]').forEach(el => el.addEventListener('click', () => setView('brand', el.dataset.brandKey)));
     document.querySelectorAll('[data-action="open-studies"]').forEach(el => el.addEventListener('click', () => setView('studies')));
     document.querySelectorAll('[data-study-id]').forEach(el => el.addEventListener('click', () => setView('study', el.dataset.studyId)));
     document.querySelectorAll('[data-action="edit-study"]').forEach(el => el.addEventListener('click', () => showStudyForm(state.view.id)));
@@ -3473,6 +3842,10 @@
     if (state.view.type === 'watch') {
       const w = state.watches.find(x => x.id === state.view.id);
       setView(w?.folderId ? 'folder' : 'home', w?.folderId || null);
+    } else if (state.view.type === 'brand') {
+      setView('brands');
+    } else if (state.view.type === 'brands') {
+      setView('home');
     } else if (state.view.type === 'study') {
       setView('studies');
     } else if (state.view.type === 'studies') {
