@@ -870,3 +870,9 @@ button { -webkit-tap-highlight-color: transparent; }
   .brand-section{padding:20px}
   .brand-movement-list{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
+
+.brand-subfamilies{margin-top:12px;padding-top:11px;border-top:1px solid #e2ddd5;display:grid;gap:8px}
+.brand-subfamilies-title{font-size:8px;font-weight:900;letter-spacing:.11em;text-transform:uppercase;color:#8b857d}
+.brand-subfamily-row{display:grid;grid-template-columns:minmax(92px,auto) 1fr;gap:10px;align-items:start}
+.brand-subfamily-row strong{font-size:10px;color:#2b2925}
+.brand-subfamily-row span{font-size:10px;line-height:1.5;color:#666159}
