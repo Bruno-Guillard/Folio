@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-17-1-force-refresh';
+const CACHE = 'folio-v6-18-brands';
 const ASSETS = [
   './',
   './index.html',
