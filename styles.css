@@ -876,3 +876,11 @@ button { -webkit-tap-highlight-color: transparent; }
 .brand-subfamily-row{display:grid;grid-template-columns:minmax(92px,auto) 1fr;gap:10px;align-items:start}
 .brand-subfamily-row strong{font-size:10px;color:#2b2925}
 .brand-subfamily-row span{font-size:10px;line-height:1.5;color:#666159}
+
+.brand-subfamily-row{display:grid;gap:8px;padding:8px 0;border-bottom:1px solid #eeeae4}
+.brand-subfamily-row:last-child{border-bottom:0}
+.brand-subfamily-main{display:grid;grid-template-columns:minmax(92px,auto) 1fr;gap:10px;align-items:start}
+.brand-subfamily-dates{display:flex;gap:7px;flex-wrap:wrap}
+.brand-subfamily-dates span{display:flex;align-items:baseline;gap:5px;padding:4px 7px;border-radius:999px;background:#efede8}
+.brand-subfamily-dates small{font-size:7px;text-transform:uppercase;letter-spacing:.05em;color:#8b857d}
+.brand-subfamily-dates b{font-size:9px;color:#34312d}
