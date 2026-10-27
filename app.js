@@ -1957,16 +1957,59 @@
         ['1999','Commercialisation de Spring Drive.']
       ],
       movements:[
-        ['1950–1959','Marvel / 560','1956','≈1959','Manuel, architecture moderne pour Seiko ; étape majeure avant Crown et Grand Seiko.'],
-        ['1959–1961','Gyro Marvel','1959','≈1961','Première famille automatique Seiko, rotor central.'],
-        ['1961–1966','66 / 6601','1961','≈1966','Automatique 17 rubis, 18 000 A/h ; très présente dans Sportsmatic.'],
-        ['1965–1970','62xx','1965','≈1970','Famille automatique importante ; inclut notamment 6217, premier calibre de plongeuse professionnelle Seiko.'],
-        ['1967–1979','61xx','1967','≈1979','Grande famille automatique : 6105, 6106, 6119 ; architecture robuste et très diffusée.'],
-        ['1969–1979','6139 / 6138','1969','≈1979','Chronographes automatiques intégrés, roue à colonnes et embrayage vertical.'],
-        ['1970–1990s','70xx / 700x','≈1970','≈1996','Famille très diffusée : 7005, 7006, 7009 ; base de nombreuses Seiko 5.'],
-        ['1996–2019','7S26 / 7S36','1996','≈2019','Automatique simple sans remontage manuel ni stop-seconde ; cœur des Seiko 5 modernes.'],
-        ['2010–auj.','4R35 / 4R36','≈2010','actuel','Évolution moderne avec remontage manuel et stop-seconde.'],
-        ['2019–auj.','6R35','2019','actuel','Automatique moderne à réserve de marche étendue, utilisé dans Prospex et Presage.']
+        ['1950–1959','Marvel / 560','1956','≈1959','Manuel, architecture moderne pour Seiko ; étape majeure avant Crown et Grand Seiko.',[
+          ['Marvel 560','Manuel, seconde centrale, base d’une génération plus moderne de calibres Seiko.'],
+          ['Crown 560/57x','Évolution plus grande et plus ambitieuse ; donnera notamment accès aux premières Grand Seiko.']
+        ]],
+        ['1959–1961','Gyro Marvel','1959','≈1961','Première famille automatique Seiko, rotor central.',[
+          ['Gyro Marvel 290','Première automatique Seiko de série ; architecture encore très marquée fin des années 1950.']
+        ]],
+        ['1961–1966','66 / 6601','1961','≈1966','Automatique 17 rubis, 18 000 A/h ; très présente dans Sportsmatic.',[
+          ['6601A / 6601B','Automatique trois aiguilles sans calendrier ; Sportsmatic.'],
+          ['6606','Évolution avec calendrier, dans la même grande lignée technique.']
+        ]],
+        ['1965–1970','62xx','1965','≈1970','Famille automatique importante ; inclut notamment 6217, premier calibre de plongeuse professionnelle Seiko.',[
+          ['6206','Automatique jour-date, utilisé notamment dans Seikomatic.'],
+          ['6217','Automatique date ; célèbre pour la 62MAS, première plongeuse professionnelle Seiko.'],
+          ['6218','Version plus haut de gamme avec jour-date selon variantes.']
+        ]],
+        ['1967–1979','61xx','1967','≈1979','Grande famille automatique Suwa à 21 600 A/h ; architecture robuste et très diffusée.',[
+          ['6105','Date, 17 rubis ; versions A/B, certaines avec stop-seconde. Très lié aux plongeuses Seiko de la fin des années 1960–70.'],
+          ['6106','Jour-date, 17/23/25 rubis selon versions, quickset date et stop-seconde ; base importante de la famille.'],
+          ['6119A / B','Jour-date, 21 rubis, sans stop-seconde ; date rapide par pression de couronne.'],
+          ['6119C','Jour-date, 21 rubis ; quickset jour + date par pression différenciée de la couronne.'],
+          ['6117 / 6118','Dérivés GMT / complications de la même famille.'],
+          ['6159','Version haute fréquence 36 000 A/h dérivée de la lignée 61 pour plongeuses professionnelles.']
+        ]],
+        ['1969–1979','6139 / 6138','1969','≈1979','Chronographes automatiques intégrés, roue à colonnes et embrayage vertical.',[
+          ['6139A / B','Chronographe automatique 30 min, jour-date ; 17 ou 21 rubis selon versions.'],
+          ['6138A / B','Chronographe automatique avec totalisateurs 30 min + 12 h, jour-date.']
+        ]],
+        ['1970–1996','70xx / 700x','≈1970','1996','Famille Daini très diffusée, base de nombreuses Seiko 5.',[
+          ['7005','Date seule ; architecture simple, automatique sans remontage manuel.'],
+          ['7006','Jour-date ; prédécesseur direct du 7009.'],
+          ['7009A','Jour-date, 17 rubis, 21 600 A/h ; sans stop-seconde ni remontage manuel, quickset amélioré. Produit jusqu’en 1996.'],
+          ['7002','Date seule, dérivé plus tardif très utilisé dans les plongeuses Seiko 150/200 m.']
+        ]],
+        ['1976–1990s','63xx','≈1976','≈1990s','Famille automatique robuste, particulièrement importante dans les plongeuses et les Seiko 5.',[
+          ['6306','Jour-date, 21 rubis, stop-seconde ; principalement marché japonais.'],
+          ['6309','Jour-date, 17 rubis, 21 600 A/h ; sans stop-seconde, célèbre dans les plongeuses « Turtle » et de nombreuses Seiko 5.'],
+          ['6319','Jour-date, dérivé de la même famille, très répandu dans les années 1980.']
+        ]],
+        ['1996–2019','7Sxx','1996','≈2019','Nouvelle génération économique et durable, héritière de la philosophie des 700x.',[
+          ['7S26','Jour-date, 21 rubis, 21 600 A/h ; sans remontage manuel ni stop-seconde.'],
+          ['7S36','Version 23 rubis, fonctions similaires au 7S26.']
+        ]],
+        ['2010–auj.','4Rxx','≈2010','actuel','Évolution moderne avec remontage manuel et stop-seconde.',[
+          ['4R35','Date seule.'],
+          ['4R36','Jour-date.'],
+          ['4R34','GMT 24 h sur base moderne Seiko.']
+        ]],
+        ['2006–auj.','6Rxx','≈2006','actuel','Famille de milieu de gamme supérieure à la série 4R, réserve et finitions améliorées selon générations.',[
+          ['6R15','Ancienne génération à ~50 h de réserve.'],
+          ['6R35','≈70 h de réserve, utilisé notamment dans Prospex et Presage.'],
+          ['6R54','GMT moderne à longue réserve de marche.']
+        ]]
       ],
       source:'https://www.seikowatches.com/fr-fr/special/heritage/'
     },
@@ -1984,13 +2027,43 @@
         ['1995','Déploiement de la désignation Eco-Drive.']
       ],
       movements:[
-        ['1950–1960s','Homer / 0200 et familles manuelles','≈1960','≈1970s','Mouvements manuels simples et robustes, très répandus dans les Citizen habillées.'],
-        ['1960s–1970s','52xx / 54xx','≈1965','≈1970s','Familles automatiques et manuelles de transition vers les architectures modernes Citizen.'],
-        ['1970s–auj.','82xx / 8200','≈1977','actuel','Automatique 21 rubis, 21 600 A/h ; extrêmement diffusé, également chez Miyota.'],
-        ['1980s–auj.','Miyota 8215','≈1977–1980','actuel','Dérivé de la famille 82xx, vendu à de très nombreuses marques tierces.'],
-        ['1990s–auj.','Eco-Drive E / B / J series','≈1990s','actuel','Familles quartz solaires rechargeant un accumulateur à partir de la lumière.'],
-        ['2010s–auj.','Miyota 9000','≈2009','actuel','Automatique plus fin à 28 800 A/h, destiné à un segment supérieur.'],
-        ['2021–auj.','Calibre 0200','2021','actuel','Mécanique haut de gamme moderne de The Citizen, architecture distincte du 0200 historique.']
+        ['1950–1960s','Homer / 02xx et familles manuelles','≈1960','≈1970s','Mouvements manuels simples et robustes, très répandus dans les Citizen habillées.',[
+          ['Homer / Homer Date','Familles manuelles économiques et robustes, nombreuses variantes avec ou sans date.'],
+          ['Diamond Flake','Famille manuelle extra-plate, importante dans la recherche de finesse au début des années 1960.']
+        ]],
+        ['1960s–1970s','52xx / 54xx','≈1965','≈1970s','Familles automatiques de transition vers les architectures Citizen plus modernes.',[
+          ['5200 / 5201','Automatiques selon variantes, plusieurs niveaux de rubis et calendriers.'],
+          ['5400 series','Familles automatiques proches chronologiquement, utilisées dans plusieurs gammes Citizen.']
+        ]],
+        ['1974–1970s','80xx haute fréquence','1974','≈fin 1970s','Première branche 80xx à 28 800 A/h avant la longue série 82xx.',[
+          ['8050A','Automatique 28 800 A/h, 21 rubis, jour-date.'],
+          ['8060A','Automatique 28 800 A/h, jour-date, utilisé notamment sur certaines Citizen/Eagle 7.']
+        ]],
+        ['1975–auj.','82xx / 8200','≈1975','actuel / dérivés','Grande famille automatique Citizen/Miyota à 21 600 A/h, extrêmement durable et largement réutilisée.',[
+          ['8200 / 8200A','Jour-date, généralement 21 rubis, 21 600 A/h ; quickset jour + date, souvent jour bilingue.'],
+          ['8210 / 8210A','Date seule, 21 600 A/h ; branche plus simple de la famille.'],
+          ['8203','Dérivé jour-date utilisé notamment dans des Promaster.'],
+          ['8260 / 8270','Variantes manuelles de la famille 82.'],
+          ['8280','Jour-date, proche du 8200 mais architecture/calendrier spécifiques.']
+        ]],
+        ['1980s–auj.','Miyota 82xx export','≈1980','actuel','Déclinaisons vendues à de nombreuses marques tierces.',[
+          ['8215','Date seule, 21 rubis, 21 600 A/h ; mouvement automatique industriel très diffusé.'],
+          ['8205','Jour-date, version export courante.'],
+          ['821A / 8315','Évolutions récentes, avec finitions ou réserve améliorées selon variantes.']
+        ]],
+        ['1990s–auj.','Eco-Drive','≈1995','actuel','Familles quartz solaires utilisant une cellule sous le cadran et un accumulateur rechargeable.',[
+          ['E0xx / E1xx','Trois aiguilles/date, nombreuses variantes.'],
+          ['B6xx / B8xx','Familles multifonctions et chronographes selon références.'],
+          ['J8xx / H8xx','Générations modernes avec fonctions avancées, radio ou GPS selon familles.']
+        ]],
+        ['2009–auj.','Miyota 90xx','≈2009','actuel','Automatiques plus fins à 28 800 A/h, destinés à un segment supérieur.',[
+          ['9015','Date seule, remontage manuel + stop-seconde ; très diffusé chez les micro-marques.'],
+          ['9039','Sans date, cadran propre sans position fantôme.'],
+          ['9075','GMT « flyer » à heure locale sautante.']
+        ]],
+        ['2021–auj.','Calibre 0200 moderne','2021','actuel','Mécanique haut de gamme moderne de The Citizen, architecture distincte du 0200 historique.',[
+          ['0200','Automatique haut de gamme, finition et réglage supérieurs, développé avec l’apport de La Joux-Perret au sein du groupe Citizen.']
+        ]]
       ],
       source:'https://www.citizenwatch-global.com/about/technology/eco-drive/'
     },
@@ -2167,11 +2240,26 @@
         ['2017','Fusion d’Orient Watch avec Seiko Epson.']
       ],
       movements:[
-        ['1950s–1960s','T / N / 67 et familles anciennes','≈1950s','≈1960s','Familles mécaniques antérieures à la série 46 ; nomenclature très variable selon générations.'],
-        ['1971–auj.','46 series / 469xx','1971','actuel / dérivés','Architecture automatique extrêmement durable, base technique d’Orient pendant des décennies.'],
-        ['1970s–2010s','46940 / 46941 / 46943','≈1970s','≈2010s','Variantes jour-date très répandues, souvent sans remontage manuel ni stop-seconde.'],
-        ['2010s–auj.','F6 / F672x','≈2016','actuel','Évolution moderne de la lignée 46 avec remontage manuel et stop-seconde.'],
-        ['2017–auj.','46-F7 / F7','2017','actuel','Famille Orient Star plus haut de gamme, finitions et précision améliorées.']
+        ['1950s–1960s','Familles anciennes T / N / 67','≈1950s','≈1960s','Générations antérieures à la série 46 ; nomenclature plus morcelée et documentation moins homogène.',[
+          ['T / N series','Familles manuelles et automatiques des premières décennies Orient.'],
+          ['67 series','Automatiques de la fin des années 1960, transition vers l’architecture 46.']
+        ]],
+        ['1971–auj.','46 series','1971','actuel / dérivés','Architecture automatique extrêmement durable, véritable colonne vertébrale mécanique d’Orient.',[
+          ['46940 / 46941','Jour-date, automatiques, variantes très répandues dans les années 1970–90.'],
+          ['46943','Jour-date, 21 600 A/h, sans remontage manuel ni stop-seconde ; extrêmement fréquent sur les Orient automatiques classiques.'],
+          ['46944 / 46945','Variantes proches selon affichage/calendrier et gamme.']
+        ]],
+        ['1990s–2010s','46 avec réserve de marche','≈1996','≈2010s','Évolutions de la famille 46, notamment dans Orient Star.',[
+          ['46R / 46N','Dérivés intégrant selon références indicateur de réserve de marche ou autres fonctions.']
+        ]],
+        ['2010s–auj.','F6 series','≈2014–2016','actuel','Évolution moderne de la lignée Orient : remontage manuel et stop-seconde deviennent standards.',[
+          ['F6722','Jour-date, 22 rubis, >40 h ; remontage manuel + stop-seconde. Utilisé encore sur des modèles 2026.'],
+          ['F6922','Jour-date, 22 rubis, >40 h ; très courant dans les Orient Sports modernes.'],
+          ['F6T22 / F6N43','Variantes avec réserve de marche ou fonctions supplémentaires selon gammes.']
+        ]],
+        ['2017–auj.','F7 / 46-F7','2017','actuel','Famille Orient Star plus haut de gamme, finitions et précision améliorées.',[
+          ['F7F / F7M / F7R','Variantes Orient Star, plusieurs complications et niveaux de finition selon références.']
+        ]]
       ],
       source:'https://orient-watch.com/en/about_orient/'
     },
@@ -2286,6 +2374,15 @@
                   <span><small>Dernière utilisation repère</small><strong>${esc(m[3])}</strong></span>
                 </div>
                 <p>${esc(m[4])}</p>
+                ${Array.isArray(m[5]) && m[5].length ? `
+                  <div class="brand-subfamilies">
+                    <div class="brand-subfamilies-title">Sous-familles & variantes</div>
+                    ${m[5].map(sf => `
+                      <div class="brand-subfamily-row">
+                        <strong>${esc(sf[0])}</strong>
+                        <span>${esc(sf[1])}</span>
+                      </div>`).join('')}
+                  </div>` : ''}
               </article>`).join('')}
           </div>
         </section>
