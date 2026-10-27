@@ -884,3 +884,9 @@ button { -webkit-tap-highlight-color: transparent; }
 .brand-subfamily-dates span{display:flex;align-items:baseline;gap:5px;padding:4px 7px;border-radius:999px;background:#efede8}
 .brand-subfamily-dates small{font-size:7px;text-transform:uppercase;letter-spacing:.05em;color:#8b857d}
 .brand-subfamily-dates b{font-size:9px;color:#34312d}
+
+.brand-lineage{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:2px}
+.brand-lineage span{display:flex;flex-direction:column;gap:2px;padding:7px 8px;border-radius:10px;background:#f5f2ec;border:1px solid #e5dfd6}
+.brand-lineage small{font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#928b83}
+.brand-lineage b{font-size:9.5px;line-height:1.35;color:#38342f}
+@media(max-width:520px){.brand-lineage{grid-template-columns:1fr}}
