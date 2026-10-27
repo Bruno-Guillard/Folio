@@ -1974,10 +1974,10 @@
           ['6218','Version plus haut de gamme avec jour-date selon variantes.']
         ]],
         ['1967–1979','61xx','1967','≈1979','Grande famille automatique Suwa à 21 600 A/h ; architecture robuste et très diffusée.',[
-          ['6105','Date, 17 rubis ; versions A/B, certaines avec stop-seconde. Très lié aux plongeuses Seiko de la fin des années 1960–70.','1968','1977'],
-          ['6106','Jour-date, 17/23/25 rubis selon versions, quickset date et stop-seconde ; base importante de la famille.','1967','≈1976–1977'],
-          ['6119A / B','Jour-date, 21 rubis, sans stop-seconde ; date rapide par pression de couronne.','1967','1976'],
-          ['6119C','Jour-date, 21 rubis ; quickset jour + date par pression différenciée de la couronne.','≈1969','1976'],
+          ['6105','Date, 17 rubis ; versions A/B, certaines avec stop-seconde. Très lié aux plongeuses Seiko de la fin des années 1960–70.','1968','1977','62xx date','6306 / 6309'],
+          ['6106','Jour-date, 17/23/25 rubis selon versions, quickset date et stop-seconde ; base importante de la famille.','1967','≈1976–1977','62xx jour-date','7006 / 7009'],
+          ['6119A / B','Jour-date, 21 rubis, sans stop-seconde ; date rapide par pression de couronne.','1967','1976','Sportsmatic / 66xx','6119C puis 7006 / 7009'],
+          ['6119C','Jour-date, 21 rubis ; quickset jour + date par pression différenciée de la couronne.','≈1969','1976','6119A / B','7006 / 7009'],
           ['6117 / 6118','Dérivés GMT / complications de la même famille.','1968','≈1976–1977'],
           ['6159','Version haute fréquence 36 000 A/h dérivée de la lignée 61 pour plongeuses professionnelles.','1968','1979']
         ]],
@@ -1987,22 +1987,22 @@
         ]],
         ['1970–1996','70xx / 700x','≈1970','1996','Famille Daini très diffusée, base de nombreuses Seiko 5.',[
           ['7005','Date seule ; architecture simple, automatique sans remontage manuel.','1969','≈1977–1979'],
-          ['7006','Jour-date ; prédécesseur direct du 7009.','1969','≈1978–1981'],
-          ['7009A','Jour-date, 17 rubis, 21 600 A/h ; sans stop-seconde ni remontage manuel, quickset amélioré. Produit jusqu’en 1996.','1976','1996'],
+          ['7006','Jour-date ; prédécesseur direct du 7009.','1969','≈1978–1981','6119 / 6106','7009A'],
+          ['7009A','Jour-date, 17 rubis, 21 600 A/h ; sans stop-seconde ni remontage manuel, quickset amélioré. Produit jusqu’en 1996.','1976','1996','7006 / 6119','7S26'],
           ['7002','Date seule, dérivé plus tardif très utilisé dans les plongeuses Seiko 150/200 m.','1988','1997']
         ]],
         ['1976–1990s','63xx','≈1976','≈1990s','Famille automatique robuste, particulièrement importante dans les plongeuses et les Seiko 5.',[
           ['6306','Jour-date, 21 rubis, stop-seconde ; principalement marché japonais.','1976','1981'],
-          ['6309','Jour-date, 17 rubis, 21 600 A/h ; sans stop-seconde, célèbre dans les plongeuses « Turtle » et de nombreuses Seiko 5.','1976','1988'],
+          ['6309','Jour-date, 17 rubis, 21 600 A/h ; sans stop-seconde, célèbre dans les plongeuses « Turtle » et de nombreuses Seiko 5.','1976','1988','6105 / 6306','7002 pour les plongeuses ; 7S26 pour la lignée économique'],
           ['6319','Jour-date, dérivé de la même famille, très répandu dans les années 1980.','≈1976','1988']
         ]],
         ['1996–2019','7Sxx','1996','≈2019','Nouvelle génération économique et durable, héritière de la philosophie des 700x.',[
-          ['7S26','Jour-date, 21 rubis, 21 600 A/h ; sans remontage manuel ni stop-seconde.','1996','2019'],
+          ['7S26','Jour-date, 21 rubis, 21 600 A/h ; sans remontage manuel ni stop-seconde.','1996','2019','7009A','4R36'],
           ['7S36','Version 23 rubis, fonctions similaires au 7S26.','1996','2019']
         ]],
         ['2010–auj.','4Rxx','≈2010','actuel','Évolution moderne avec remontage manuel et stop-seconde.',[
           ['4R35','Date seule.','2010','actuel'],
-          ['4R36','Jour-date.','2011','actuel'],
+          ['4R36','Jour-date.','2011','actuel','7S36 / 7S26','actuel / évolutions 4R'],
           ['4R34','GMT 24 h sur base moderne Seiko.']
         ]],
         ['2006–auj.','6Rxx','≈2006','actuel','Famille de milieu de gamme supérieure à la série 4R, réserve et finitions améliorées selon générations.',[
@@ -2040,15 +2040,15 @@
           ['8060A','Automatique 28 800 A/h, jour-date, utilisé notamment sur certaines Citizen/Eagle 7.']
         ]],
         ['1975–auj.','82xx / 8200','≈1975','actuel / dérivés','Grande famille automatique Citizen/Miyota à 21 600 A/h, extrêmement durable et largement réutilisée.',[
-          ['8200 / 8200A','Jour-date, généralement 21 rubis, 21 600 A/h ; quickset jour + date, souvent jour bilingue.','≈1977','≈2006 pour 8200 vintage ; dérivés ultérieurs'],
+          ['8200 / 8200A','Jour-date, généralement 21 rubis, 21 600 A/h ; quickset jour + date, souvent jour bilingue.','≈1977','≈2006 pour 8200 vintage ; dérivés ultérieurs','80xx haute fréquence','8205 / autres 82xx modernes'],
           ['8210 / 8210A','Date seule, 21 600 A/h ; branche plus simple de la famille.','≈fin 1970s','usage prolongé'],
           ['8203','Dérivé jour-date utilisé notamment dans des Promaster.','≈1980s','≈2000s+'],
           ['8260 / 8270','Variantes manuelles de la famille 82.'],
           ['8280','Jour-date, proche du 8200 mais architecture/calendrier spécifiques.']
         ]],
         ['1980s–auj.','Miyota 82xx export','≈1980','actuel','Déclinaisons vendues à de nombreuses marques tierces.',[
-          ['8215','Date seule, 21 rubis, 21 600 A/h ; mouvement automatique industriel très diffusé.','≈1980s','actuel'],
-          ['8205','Jour-date, version export courante.','1986','actuel'],
+          ['8215','Date seule, 21 rubis, 21 600 A/h ; mouvement automatique industriel très diffusé.','≈1980s','actuel','8210 / famille 82xx','9015 pour une architecture plus fine et plus moderne'],
+          ['8205','Jour-date, version export courante.','1986','actuel','8200 / 8200A','actuel / 82xx modernes'],
           ['821A / 8315','Évolutions récentes, avec finitions ou réserve améliorées selon variantes.','≈2010s / 2017','actuel']
         ]],
         ['1990s–auj.','Eco-Drive','≈1995','actuel','Familles quartz solaires utilisant une cellule sous le cadran et un accumulateur rechargeable.',[
@@ -2057,9 +2057,9 @@
           ['J8xx / H8xx','Générations modernes avec fonctions avancées, radio ou GPS selon familles.']
         ]],
         ['2009–auj.','Miyota 90xx','≈2009','actuel','Automatiques plus fins à 28 800 A/h, destinés à un segment supérieur.',[
-          ['9015','Date seule, remontage manuel + stop-seconde ; très diffusé chez les micro-marques.','2009','actuel'],
-          ['9039','Sans date, cadran propre sans position fantôme.','2018','actuel'],
-          ['9075','GMT « flyer » à heure locale sautante.','2021','actuel']
+          ['9015','Date seule, remontage manuel + stop-seconde ; très diffusé chez les micro-marques.','2009','actuel','8215 (positionnement industriel inférieur)','90xx dérivés : 9039 / 9075'],
+          ['9039','Sans date, cadran propre sans position fantôme.','2018','actuel','9015','actuel'],
+          ['9075','GMT « flyer » à heure locale sautante.','2021','actuel','90xx automatique','actuel']
         ]],
         ['2021–auj.','Calibre 0200 moderne','2021','actuel','Mécanique haut de gamme moderne de The Citizen, architecture distincte du 0200 historique.',[
           ['0200','Automatique haut de gamme, finition et réglage supérieurs, développé avec l’apport de La Joux-Perret au sein du groupe Citizen.']
@@ -2246,15 +2246,15 @@
         ]],
         ['1971–auj.','46 series','1971','actuel / dérivés','Architecture automatique extrêmement durable, véritable colonne vertébrale mécanique d’Orient.',[
           ['46940 / 46941','Jour-date, automatiques, variantes très répandues dans les années 1970–90.','≈1970s','≈2000s'],
-          ['46943','Jour-date, 21 600 A/h, sans remontage manuel ni stop-seconde ; extrêmement fréquent sur les Orient automatiques classiques.','≈1970s','2016'],
+          ['46943','Jour-date, 21 600 A/h, sans remontage manuel ni stop-seconde ; extrêmement fréquent sur les Orient automatiques classiques.','≈1970s','2016','46 series première génération','F6922'],
           ['46944 / 46945','Variantes proches selon affichage/calendrier et gamme.']
         ]],
         ['1990s–2010s','46 avec réserve de marche','≈1996','≈2010s','Évolutions de la famille 46, notamment dans Orient Star.',[
           ['46R / 46N','Dérivés intégrant selon références indicateur de réserve de marche ou autres fonctions.']
         ]],
         ['2010s–auj.','F6 series','≈2014–2016','actuel','Évolution moderne de la lignée Orient : remontage manuel et stop-seconde deviennent standards.',[
-          ['F6722','Date, 22 rubis, >40 h ; remontage manuel + stop-seconde. Documenté sur des modèles commercialisés en 2019 et toujours utilisé ensuite.','≤2019','actuel'],
-          ['F6922','Jour-date, 22 rubis, >40 h ; très courant dans les Orient Sports modernes.','2016','actuel'],
+          ['F6722','Date, 22 rubis, >40 h ; remontage manuel + stop-seconde. Documenté sur des modèles commercialisés en 2019 et toujours utilisé ensuite.','≤2019','actuel','46 series / dérivés','actuel'],
+          ['F6922','Jour-date, 22 rubis, >40 h ; très courant dans les Orient Sports modernes.','2016','actuel','46943','actuel'],
           ['F6T22 / F6N43','Variantes avec réserve de marche ou fonctions supplémentaires selon gammes.']
         ]],
         ['2017–auj.','F7 / 46-F7','2017','actuel','Famille Orient Star plus haut de gamme, finitions et précision améliorées.',[
@@ -2387,6 +2387,11 @@
                           <div class="brand-subfamily-dates">
                             ${sf[2] ? `<span><small>Apparition</small><b>${esc(sf[2])}</b></span>` : ''}
                             ${sf[3] ? `<span><small>Dernière utilisation</small><b>${esc(sf[3])}</b></span>` : ''}
+                          </div>` : ''}
+                        ${sf[4] || sf[5] ? `
+                          <div class="brand-lineage">
+                            ${sf[4] ? `<span><small>Succède à</small><b>${esc(sf[4])}</b></span>` : ''}
+                            ${sf[5] ? `<span><small>Remplacé par</small><b>${esc(sf[5])}</b></span>` : ''}
                           </div>` : ''}
                       </div>`).join('')}
                   </div>` : ''}
