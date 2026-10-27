@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-19-movement-subfamilies';
+const CACHE = 'folio-v6-20-subfamily-dates';
 const ASSETS = [
   './',
   './index.html',
