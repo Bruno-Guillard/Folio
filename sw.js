@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-21-movement-lineage';
+const CACHE = 'folio-v6-22-study-filters';
 const ASSETS = [
   './',
   './index.html',
