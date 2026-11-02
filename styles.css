@@ -890,3 +890,8 @@ button { -webkit-tap-highlight-color: transparent; }
 .brand-lineage small{font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#928b83}
 .brand-lineage b{font-size:9.5px;line-height:1.35;color:#38342f}
 @media(max-width:520px){.brand-lineage{grid-template-columns:1fr}}
+
+/* Filtres des études de montres */
+.study-filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px;padding:4px 0}
+.study-filter-bar label{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid var(--border, #7775);border-radius:12px;cursor:pointer;font-size:14px}
+.study-filter-bar input{accent-color:var(--accent, #b9955d);width:17px;height:17px}
