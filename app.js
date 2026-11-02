@@ -27,7 +27,8 @@
     lastSyncError: '',
     miscExpenses: 0,
     miscExpensesUpdatedAt: 0,
-    miscExpensesPendingSync: false
+    miscExpensesPendingSync: false,
+    studyFilters: { sale: true, sold: true, collection: true }
   };
 
   const uid = (prefix='id') => `${prefix}_${Date.now()}_${Math.random().toString(36).slice(2,9)}`;
@@ -1904,7 +1905,7 @@
     }
 
     const soldFolder = state.folders.find(isSoldFolder);
-    const soldCount = soldFolder ? state.watches.filter(w => w.folderId === soldFolder.id).length : 0;
+    const soldCount = state.watches.filter(w => studyHasContent(w.study)).length;
     html += `
       <section class="brands-entry-wrap">
         <button class="brands-entry" data-action="open-brands">
@@ -1921,7 +1922,7 @@
           <div class="study-entry-icon">⌕</div>
           <div class="study-entry-copy">
             <strong>Études de montres</strong>
-            <span>${soldCount} montre${soldCount > 1 ? 's' : ''} vendue${soldCount > 1 ? 's' : ''} · analyses techniques et datation.</span>
+            <span>${soldCount} étude${soldCount > 1 ? 's' : ''} renseignée${soldCount > 1 ? 's' : ''} · analyses techniques et datation.</span>
           </div>
           <div class="study-entry-arrow">›</div>
         </button>
@@ -2824,6 +2825,22 @@
   }
 
 
+  function studyCategory(w) {
+    const folder = state.folders.find(f => f.id === w.folderId);
+    if (!folder) return null;
+    const name = normalizeFolderName(folder.name);
+    if (isSoldFolder(folder)) return 'sold';
+    if (['en vente','a vendre','a vendre / en vente','vente'].includes(name)) return 'sale';
+    if (['perso','personnel','collection','ma collection'].includes(name)) return 'collection';
+    return null;
+  }
+
+  function studyWatchesInOrder() {
+    return [...state.watches]
+      .filter(w => studyHasContent(w.study) && studyCategory(w) && state.studyFilters[studyCategory(w)])
+      .sort((a,b) => (Number(a.order)||0)-(Number(b.order)||0) || (Number(a.createdAt)||0)-(Number(b.createdAt)||0));
+  }
+
   function soldWatchesInOrder() {
     const folder = state.folders.find(isSoldFolder);
     if (!folder) return [];
@@ -2845,15 +2862,21 @@
   function renderStudies() {
     els.subtitle.textContent = 'Études de montres';
     els.fab.classList.add('hidden');
-    const watches = soldWatchesInOrder();
+    const watches = studyWatchesInOrder();
+    const filters = state.studyFilters;
     let html = `
       <section class="study-page-head">
-        <div class="history-eyebrow">Collection vendue</div>
+        <div class="history-eyebrow">Archives horlogères</div>
         <h1>Études de montres</h1>
         <p>Chaque fiche regroupe les photos, les données déjà connues et une analyse organisée : identification, datation, boîtier, cadran, mouvement, fond de boîte, cohérence et contexte historique.</p>
-      </section>`;
+      </section>
+      <div class="study-filter-bar" role="group" aria-label="Filtrer les études par dossier">
+        <label><input type="checkbox" data-study-filter="sale" ${filters.sale ? 'checked' : ''}> À vendre</label>
+        <label><input type="checkbox" data-study-filter="sold" ${filters.sold ? 'checked' : ''}> Vendus</label>
+        <label><input type="checkbox" data-study-filter="collection" ${filters.collection ? 'checked' : ''}> Collection</label>
+      </div>`;
     if (!watches.length) {
-      html += `<div class="empty"><span class="big">⌕</span>Aucune montre dans le dossier « Vendu ».</div>`;
+      html += `<div class="empty"><span class="big">⌕</span>Aucune étude dans les catégories sélectionnées.</div>`;
     } else {
       html += `<div class="study-list">`;
       watches.forEach((w, i) => {
@@ -2900,8 +2923,7 @@
   function renderStudy(watchId) {
     const w = state.watches.find(x => x.id === watchId);
     if (!w) return setView('studies');
-    const soldFolder = state.folders.find(isSoldFolder);
-    if (!soldFolder || w.folderId !== soldFolder.id) return setView('studies');
+    if (!studyHasContent(w.study) || !studyCategory(w)) return setView('studies');
     els.subtitle.textContent = 'Étude';
     els.fab.classList.add('hidden');
     const photos = Array.isArray(w.photos) ? w.photos : [];
@@ -3114,6 +3136,7 @@
     document.querySelectorAll('[data-action="open-brands"]').forEach(el => el.addEventListener('click', () => setView('brands')));
     document.querySelectorAll('[data-brand-key]').forEach(el => el.addEventListener('click', () => setView('brand', el.dataset.brandKey)));
     document.querySelectorAll('[data-action="open-studies"]').forEach(el => el.addEventListener('click', () => setView('studies')));
+    document.querySelectorAll('[data-study-filter]').forEach(el => el.addEventListener('change', () => { state.studyFilters[el.dataset.studyFilter] = el.checked; renderStudies(); }));
     document.querySelectorAll('[data-study-id]').forEach(el => el.addEventListener('click', () => setView('study', el.dataset.studyId)));
     document.querySelectorAll('[data-action="edit-study"]').forEach(el => el.addEventListener('click', () => showStudyForm(state.view.id)));
     document.querySelectorAll('[data-action="open-history"]').forEach(el => el.addEventListener('click', () => setView('history')));
