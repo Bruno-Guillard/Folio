@@ -2368,6 +2368,11 @@
             <div class="seiko-cal-years">${c.start}–${c.end >= SEIKO_TIMELINE_MAX ? '2000+' : c.end}</div>
           </summary>
           <div class="seiko-cal-detail">
+            <div class="seiko-cal-summary">
+              <span><small>Début de fabrication</small><strong>${c.start}</strong></span>
+              <span><small>Fin de fabrication</small><strong>${c.end >= SEIKO_TIMELINE_MAX ? '2000+' : c.end}</strong></span>
+              <span><small>Famille</small><strong>${esc(c.family)}</strong></span>
+            </div>
             <div class="seiko-cal-ratings">
               <span class="tier-${c.tier}"><small>Gamme à l’époque</small><b>${c.tier}/5 · ${esc(SEIKO_TIER_LABELS[c.tier])}</b></span>
               <span class="interest-${c.interest}"><small>Valeur de collection aujourd’hui</small><b class="seiko-stars" aria-label="${c.interest} étoiles sur 5">${'★'.repeat(c.interest)}${'☆'.repeat(5-c.interest)}</b><em>${esc(SEIKO_INTEREST_LABELS[c.interest])}</em></span>
