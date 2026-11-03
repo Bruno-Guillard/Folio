@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-25-seiko-stars-visible';
+const CACHE = 'folio-v6-26-seiko-production-summary';
 const ASSETS = [
   './',
   './index.html',
