@@ -2309,6 +2309,99 @@
     }
   ];
 
+  // V6.23 — Frise des calibres Seiko.
+  // "Gamme d'origine" = positionnement relatif dans la production Seiko de l'époque.
+  // "Intérêt actuel" = indice éditorial Folio (rareté, importance historique, demande collectionneur),
+  // pas une cote monétaire en temps réel.
+  const SEIKO_CALIBER_TIMELINE = [
+    {name:'6602', start:1961, end:1968, tier:2, interest:2, family:'66xx · Suwa', specs:'Manuel · 18 000 A/h', note:'Calibre simple et robuste de la première moitié des années 1960. Important historiquement, mais pas une famille de prestige.'},
+    {name:'6619', start:1963, end:1968, tier:2, interest:2, family:'66xx · Suwa', specs:'Automatique · jour-date · 21 rubis', note:'Automatique populaire et fiable. Bon repère avant les 61xx, mais positionnement plutôt courant.'},
+    {name:'6206', start:1963, end:1968, tier:3, interest:3, family:'62xx · Suwa', specs:'Automatique · jour-date', note:'Seikomatic Weekdater / Business. Plus ambitieux que les Sportsmatic courants et typique du milieu de gamme Seiko des années 1960.'},
+    {name:'6218', start:1964, end:1968, tier:4, interest:4, family:'62xx · Suwa', specs:'Automatique · jour-date · nombreuses versions très rubis', note:'Version supérieure des Weekdater. Construction et positionnement nettement au-dessus des automatiques de grande diffusion.'},
+    {name:'6217', start:1964, end:1969, tier:3, interest:5, family:'62xx · Suwa', specs:'Automatique · date · 17 rubis', note:'Techniquement pas le plus luxueux de la famille, mais extrêmement recherché aujourd’hui grâce à la 62MAS et à son importance dans l’histoire des plongeuses Seiko.'},
+    {name:'8305', start:1963, end:1968, tier:4, interest:4, family:'83xx · Suwa', specs:'Automatique · date · 30 rubis selon versions', note:'Seikomatic Slimdate / Seikomatic-R. Architecture plus fine et plus ambitieuse que les mouvements utilitaires contemporains.'},
+    {name:'8306', start:1965, end:1969, tier:4, interest:4, family:'83xx · Suwa', specs:'Automatique + remontage manuel · jour-date · 30 rubis', note:'Seikomatic-R / Business-A. Mouvement soigné avec remontage manuel et mécanisme automatique intégré : clairement au-dessus d’un 7009 en positionnement historique.'},
+    {name:'8346', start:1966, end:1969, tier:4, interest:4, family:'83xx · Suwa', specs:'Automatique · jour-date · 27 rubis', note:'Variante rare de la lignée Seikomatic-R / Business-A. Aujourd’hui intéressante surtout pour sa rareté et son contexte de production court.'},
+    {name:'6106', start:1967, end:1977, tier:3, interest:3, family:'61xx · Suwa', specs:'Automatique · jour-date · stop-seconde selon versions', note:'61xx plus équipé que le 6119 : quickset et stop-seconde sur les variantes concernées. Positionnement supérieur au mouvement populaire 6119.'},
+    {name:'6119', start:1966, end:1977, tier:2, interest:2, family:'61xx · Suwa', specs:'Automatique · jour-date · 21 rubis', note:'Très diffusé dans les Seiko 5 et 5 Sports. Solide et historique, mais conçu comme un bon mouvement de grande série.'},
+    {name:'6145 / 6146', start:1967, end:1975, tier:5, interest:5, family:'61GS · Suwa', specs:'Hi-Beat 36 000 A/h · Grand Seiko', note:'Autre univers que les 6106/6119 : versions haute fréquence destinées à Grand Seiko. Très haut de gamme à l’époque et très recherchées aujourd’hui.'},
+    {name:'5606', start:1968, end:1976, tier:3, interest:3, family:'56xx · Suwa', specs:'Automatique · jour-date · 21 600 A/h', note:'Lord Matic : milieu/haut de gamme civil, plus fin et plus sophistiqué qu’un 7009. Attention au correcteur de calendrier souvent fragile aujourd’hui.'},
+    {name:'5625 / 5626', start:1968, end:1975, tier:4, interest:4, family:'56KS · Suwa', specs:'Automatique · 28 800 A/h · 25 rubis', note:'King Seiko / Chronometer. Même grande architecture que les 56xx mais réglage, fréquence et positionnement nettement supérieurs.'},
+    {name:'7005', start:1969, end:1979, tier:2, interest:2, family:'70xx · Daini', specs:'Automatique · date · 17 rubis', note:'Famille de grande diffusion, simple et robuste. Base technique importante de la lignée Daini économique.'},
+    {name:'7006', start:1970, end:1981, tier:3, interest:2, family:'70xx · Daini', specs:'Automatique · jour-date · 17/19/21 rubis', note:'Plus ancien et généralement plus soigné que le 7009, avec plusieurs niveaux de rubis. On peut le placer un cran au-dessus du 7009 en construction/positionnement, sans en faire un mouvement haut de gamme.'},
+    {name:'7019', start:1969, end:1979, tier:3, interest:3, family:'70xx · Daini', specs:'Automatique · jour-date · 21 rubis', note:'Souvent rencontré dans les Actus et certaines lignes mieux positionnées. Plus valorisant qu’un 7009 standard, sans atteindre les 56xx/King Seiko.'},
+    {name:'6139', start:1969, end:1979, tier:4, interest:5, family:'61xx chrono · Suwa', specs:'Chronographe automatique · roue à colonnes · embrayage vertical', note:'Importance historique majeure. La demande actuelle vient autant de l’architecture que des références emblématiques comme la Pogue.'},
+    {name:'6138', start:1970, end:1979, tier:4, interest:5, family:'61xx chrono · Suwa', specs:'Chronographe automatique · 2 compteurs', note:'Chronographe intégré plus complexe que le 6139 grâce au compteur d’heures. Très recherché aujourd’hui.'},
+    {name:'7016', start:1971, end:1982, tier:4, interest:4, family:'70xx chrono · Daini', specs:'Chronographe automatique flyback selon variantes', note:'Famille Daini techniquement sophistiquée, compacte et aujourd’hui recherchée, notamment pour ses chronographes à architecture atypique.'},
+    {name:'6306', start:1976, end:1982, tier:3, interest:5, family:'63xx · Suwa', specs:'Automatique · jour-date · 21 rubis · stop-seconde', note:'Version japonaise plus équipée que le 6309 : quatre rubis supplémentaires et stop-seconde. Rare et nettement plus recherchée aujourd’hui.'},
+    {name:'6309', start:1976, end:1988, tier:2, interest:4, family:'63xx · Suwa', specs:'Automatique · jour-date · 17 rubis', note:'Mouvement de grande diffusion très robuste. La forte demande actuelle vient surtout des Turtle et de leur statut de classique, pas d’un positionnement haut de gamme d’origine.'},
+    {name:'7009', start:1976, end:1996, tier:2, interest:1, family:'70xx · Daini', specs:'Automatique · jour-date · 17 rubis · 21 600 A/h', note:'Optimisé pour la fabrication de masse pendant la crise du quartz. Extrêmement fiable et utile pour la réparation, mais plus économique dans sa conception que le 7006.'},
+    {name:'7002', start:1988, end:1997, tier:2, interest:3, family:'70xx · Daini', specs:'Automatique · date · 17 rubis', note:'Dérivé tardif très connu dans les plongeuses. Intérêt collectionneur supérieur à son positionnement initial grâce aux références de plongée.'},
+    {name:'7S26', start:1996, end:2000, tier:1, interest:2, family:'7Sxx', specs:'Automatique · jour-date · 21 rubis', note:'Début d’une très longue génération économique Seiko 5 / SKX. Ici la frise s’arrête en 2000 ; le calibre continuera bien après.'}
+  ];
+
+  const SEIKO_TIER_LABELS = ['','Essentiel / économique','Courant','Supérieur','Premium','Haute horlogerie'];
+  const SEIKO_INTEREST_LABELS = ['','Faible','Courant','Recherché','Très recherché','Iconique / collection'];
+  const SEIKO_TIMELINE_MIN = 1960;
+  const SEIKO_TIMELINE_MAX = 2000;
+
+  function seikoTimelineHtml() {
+    const ticks = [];
+    for (let y = SEIKO_TIMELINE_MIN; y <= SEIKO_TIMELINE_MAX; y += 5) ticks.push(y);
+    const range = SEIKO_TIMELINE_MAX - SEIKO_TIMELINE_MIN;
+    const rows = SEIKO_CALIBER_TIMELINE.map(c => {
+      const start = Math.max(SEIKO_TIMELINE_MIN, c.start);
+      const end = Math.min(SEIKO_TIMELINE_MAX, c.end);
+      const left = ((start - SEIKO_TIMELINE_MIN) / range) * 100;
+      const width = Math.max(1.8, ((end - start) / range) * 100);
+      return `
+        <details class="seiko-cal-row interest-${c.interest}">
+          <summary>
+            <div class="seiko-cal-id">
+              <strong>${esc(c.name)}</strong>
+              <span>${esc(c.family)}</span>
+            </div>
+            <div class="seiko-cal-track" aria-label="${esc(c.name)} : ${c.start} à ${c.end}">
+              <i class="seiko-cal-span tier-${c.tier}" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%"></i>
+            </div>
+            <div class="seiko-cal-years">${c.start}–${c.end >= SEIKO_TIMELINE_MAX ? '2000+' : c.end}</div>
+          </summary>
+          <div class="seiko-cal-detail">
+            <div class="seiko-cal-ratings">
+              <span class="tier-${c.tier}"><small>Gamme à l’époque</small><b>${c.tier}/5 · ${esc(SEIKO_TIER_LABELS[c.tier])}</b></span>
+              <span class="interest-${c.interest}"><small>Intérêt aujourd’hui</small><b>${c.interest}/5 · ${esc(SEIKO_INTEREST_LABELS[c.interest])}</b></span>
+            </div>
+            <p><strong>${esc(c.specs)}</strong> — ${esc(c.note)}</p>
+          </div>
+        </details>`;
+    }).join('');
+    return `
+      <section class="brand-section seiko-caliber-section">
+        <div class="brand-section-kicker">Lecture comparative</div>
+        <h2>Frise des calibres Seiko</h2>
+        <p class="brand-section-intro">La barre indique la période d’utilisation repère. Sa hauteur de gamme est codée indépendamment de l’intérêt collectionneur actuel. L’indice « intérêt aujourd’hui » est volontairement relatif : il synthétise rareté, importance historique et demande, mais ne remplace pas une cote de marché en temps réel.</p>
+        <div class="seiko-cal-legend">
+          <span><i class="legend-tier"></i> Positionnement à l’époque : 1 → 5</span>
+          <span><i class="legend-interest"></i> Bordure / pastille : intérêt actuel</span>
+          <span>Appuie sur un calibre pour le détail.</span>
+        </div>
+        <div class="seiko-timeline-scroll">
+          <div class="seiko-timeline-inner">
+            <div class="seiko-timeline-axis">
+              <div></div>
+              <div class="seiko-axis-track">${ticks.map(y => `<span style="left:${((y-SEIKO_TIMELINE_MIN)/range)*100}%">${y}</span>`).join('')}</div>
+              <div></div>
+            </div>
+            <div class="seiko-timeline-rows">${rows}</div>
+          </div>
+        </div>
+        <div class="seiko-comparison-note">
+          <strong>Exemple : 7006 vs 7009</strong>
+          <p>Le <b>7006</b> est ici placé un cran au-dessus du <b>7009</b> en gamme d’origine : il appartient à une génération antérieure, existe avec davantage de rubis selon les versions et sa construction est moins poussée vers l’économie de fabrication. Le 7009 est plus récent et très robuste, mais il a été optimisé pour la grande série pendant l’ère du quartz.</p>
+        </div>
+      </section>`;
+  }
+
   function renderBrands() {
     els.subtitle.textContent = 'Marques';
     els.fab.classList.add('hidden');
@@ -2360,6 +2453,8 @@
             ${b.milestones.map(m => `<div class="brand-timeline-row"><strong>${esc(m[0])}</strong><span>${esc(m[1])}</span></div>`).join('')}
           </div>
         </section>
+
+        ${b.key === 'seiko' ? seikoTimelineHtml() : ''}
 
         <section class="brand-section brand-movements-section">
           <div class="brand-section-kicker">Technique</div>
