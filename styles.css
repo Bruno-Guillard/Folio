@@ -950,3 +950,24 @@ button { -webkit-tap-highlight-color: transparent; }
   .seiko-timeline-scroll{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
   .seiko-cal-detail{padding-left:12px}
 }
+
+/* V6.24 — étoiles de valeur de collection */
+.seiko-stars{
+  display:block;
+  margin-top:2px;
+  font-size:15px!important;
+  line-height:1;
+  letter-spacing:.8px;
+  font-weight:800!important;
+  color:#8a6431;
+  white-space:nowrap;
+}
+.seiko-cal-ratings span em{
+  margin-top:3px;
+  font-style:normal;
+  font-size:8px;
+  line-height:1.2;
+  color:#6d675f;
+}
+.seiko-cal-ratings .interest-4 .seiko-stars{color:#8c503b}
+.seiko-cal-ratings .interest-5 .seiko-stars{color:#6f3027}
