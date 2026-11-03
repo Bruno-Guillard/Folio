@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-22-study-filters';
+const CACHE = 'folio-v6-23-seiko-caliber-timeline';
 const ASSETS = [
   './',
   './index.html',
