@@ -895,3 +895,58 @@ button { -webkit-tap-highlight-color: transparent; }
 .study-filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 18px;padding:4px 0}
 .study-filter-bar label{display:inline-flex;align-items:center;gap:7px;padding:10px 13px;border:1px solid var(--border, #7775);border-radius:12px;cursor:pointer;font-size:14px}
 .study-filter-bar input{accent-color:var(--accent, #b9955d);width:17px;height:17px}
+
+
+/* V6.23 — Frise comparative des calibres Seiko */
+.seiko-caliber-section{overflow:hidden}
+.seiko-cal-legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin:12px 0 15px;padding:11px 12px;border-radius:14px;background:#f3f0ea;font-size:9px;line-height:1.4;color:#625d56}
+.seiko-cal-legend span{display:inline-flex;align-items:center;gap:6px}
+.seiko-cal-legend i{width:14px;height:7px;border-radius:999px;display:inline-block}
+.legend-tier{background:linear-gradient(90deg,#e4e1da,#20201e)}
+.legend-interest{background:#fff;border:2px solid #8d6a2e}
+.seiko-timeline-scroll{overflow-x:auto;margin:0 -4px;padding:0 4px 9px;-webkit-overflow-scrolling:touch}
+.seiko-timeline-inner{min-width:830px}
+.seiko-timeline-axis{display:grid;grid-template-columns:118px minmax(560px,1fr) 54px;gap:10px;align-items:end;margin-bottom:8px}
+.seiko-axis-track{position:relative;height:22px;border-bottom:1px solid #cfc9bf}
+.seiko-axis-track span{position:absolute;bottom:4px;transform:translateX(-50%);font-size:8px;color:#8b857d}
+.seiko-axis-track span::after{content:'';position:absolute;left:50%;top:14px;height:8px;border-left:1px solid #d7d1c8}
+.seiko-timeline-rows{display:grid;gap:5px}
+.seiko-cal-row{border:1px solid #e1ddd6;border-left-width:4px;border-radius:12px;background:#fff;overflow:hidden}
+.seiko-cal-row>summary{list-style:none;display:grid;grid-template-columns:118px minmax(560px,1fr) 54px;gap:10px;align-items:center;min-height:45px;padding:5px 8px 5px 7px;cursor:pointer}
+.seiko-cal-row>summary::-webkit-details-marker{display:none}
+.seiko-cal-id{display:flex;flex-direction:column;gap:2px;min-width:0}
+.seiko-cal-id strong{font-size:11px;line-height:1.1}
+.seiko-cal-id span{font-size:7.5px;color:#8b857d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.seiko-cal-track{position:relative;height:24px;border-radius:8px;background:repeating-linear-gradient(90deg,#f6f4ef 0,#f6f4ef calc(12.5% - 1px),#e6e1d8 calc(12.5% - 1px),#e6e1d8 12.5%)}
+.seiko-cal-span{position:absolute;top:5px;height:14px;border-radius:999px;min-width:8px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.seiko-cal-years{font-size:8px;text-align:right;color:#7b756d;font-variant-numeric:tabular-nums}
+.seiko-cal-detail{padding:12px 12px 13px 129px;border-top:1px solid #eeeae4;background:#faf9f6}
+.seiko-cal-ratings{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:9px}
+.seiko-cal-ratings span{display:flex;flex-direction:column;gap:1px;padding:6px 8px;border-radius:10px;border:1px solid #ded8ce;background:#fff}
+.seiko-cal-ratings small{font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#8c857c}
+.seiko-cal-ratings b{font-size:9px}
+.seiko-cal-detail p{margin:0;font-size:10.5px;line-height:1.58;color:#5d5851}
+.seiko-cal-detail p strong{color:#292621}
+.seiko-comparison-note{margin-top:15px;padding:13px 14px;border-radius:15px;background:#24231f;color:#fff}
+.seiko-comparison-note strong{font-size:11px}
+.seiko-comparison-note p{margin:5px 0 0!important;font-size:10.5px!important;line-height:1.58!important;color:rgba(255,255,255,.74)!important}
+.seiko-comparison-note b{color:#fff}
+.seiko-cal-span.tier-1,.seiko-cal-ratings .tier-1{background:#efede8}
+.seiko-cal-span.tier-2,.seiko-cal-ratings .tier-2{background:#d9d5cd}
+.seiko-cal-span.tier-3,.seiko-cal-ratings .tier-3{background:#bdb7ad}
+.seiko-cal-span.tier-4,.seiko-cal-ratings .tier-4{background:#817a70;color:#fff}
+.seiko-cal-span.tier-5,.seiko-cal-ratings .tier-5{background:#272622;color:#fff}
+.seiko-cal-row.interest-1{border-left-color:#cfc9bf}
+.seiko-cal-row.interest-2{border-left-color:#9ea8a0}
+.seiko-cal-row.interest-3{border-left-color:#a69262}
+.seiko-cal-row.interest-4{border-left-color:#9b684d}
+.seiko-cal-row.interest-5{border-left-color:#6f3f36}
+.seiko-cal-ratings .interest-1{border-color:#cfc9bf}
+.seiko-cal-ratings .interest-2{border-color:#9ea8a0}
+.seiko-cal-ratings .interest-3{border-color:#a69262}
+.seiko-cal-ratings .interest-4{border-color:#9b684d}
+.seiko-cal-ratings .interest-5{border-color:#6f3f36}
+@media(max-width:620px){
+  .seiko-timeline-scroll{margin-left:-16px;margin-right:-16px;padding-left:16px;padding-right:16px}
+  .seiko-cal-detail{padding-left:12px}
+}
