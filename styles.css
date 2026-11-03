@@ -1020,3 +1020,83 @@ button { -webkit-tap-highlight-color: transparent; }
   .seiko-cal-summary{grid-template-columns:1fr 1fr}
   .seiko-cal-summary span:last-child{grid-column:1/-1}
 }
+
+
+/* V6.27 — frise Seiko avec colonne calibres figée */
+.seiko-caliber-section{
+  overflow:hidden;
+}
+.seiko-timeline-scroll{
+  position:relative;
+  overflow-x:auto;
+  overflow-y:visible;
+  width:100%;
+  max-width:100%;
+  overscroll-behavior-x:contain;
+  -webkit-overflow-scrolling:touch;
+}
+.seiko-timeline-inner{
+  min-width:860px;
+  width:max-content;
+}
+.seiko-timeline-axis,
+.seiko-cal-row>summary{
+  grid-template-columns:118px 620px 58px;
+}
+.seiko-timeline-axis>div:first-child,
+.seiko-cal-id{
+  position:sticky;
+  left:0;
+  z-index:6;
+  background:#fff;
+}
+.seiko-timeline-axis>div:first-child{
+  min-height:22px;
+}
+.seiko-cal-id{
+  align-self:stretch;
+  justify-content:center;
+  padding-right:8px;
+  box-shadow:8px 0 10px -10px rgba(0,0,0,.45);
+}
+.seiko-cal-row[open] .seiko-cal-id{
+  background:#fff;
+}
+.seiko-cal-detail{
+  position:sticky;
+  left:0;
+  width:calc(100vw - 48px);
+  max-width:720px;
+  padding-left:12px;
+  background:#faf9f6;
+  z-index:5;
+}
+@media(max-width:620px){
+  .seiko-timeline-scroll{
+    margin-left:0;
+    margin-right:0;
+    padding-left:0;
+    padding-right:0;
+  }
+  .seiko-timeline-inner{
+    min-width:820px;
+  }
+  .seiko-timeline-axis,
+  .seiko-cal-row>summary{
+    grid-template-columns:104px 610px 52px;
+  }
+  .seiko-cal-id{
+    min-width:104px;
+    max-width:104px;
+  }
+  .seiko-cal-id strong{
+    font-size:10px;
+  }
+  .seiko-cal-id span{
+    max-width:92px;
+  }
+  .seiko-cal-detail{
+    width:calc(100vw - 34px);
+    max-width:none;
+  }
+}
