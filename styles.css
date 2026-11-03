@@ -971,3 +971,18 @@ button { -webkit-tap-highlight-color: transparent; }
 }
 .seiko-cal-ratings .interest-4 .seiko-stars{color:#8c503b}
 .seiko-cal-ratings .interest-5 .seiko-stars{color:#6f3027}
+
+
+/* V6.25 — étoiles visibles directement sur chaque calibre */
+.seiko-cal-id .seiko-row-stars{
+  display:block;
+  margin-top:1px;
+  font-size:11px;
+  line-height:1;
+  letter-spacing:.45px;
+  color:#8a6431;
+  font-weight:800;
+  white-space:nowrap;
+}
+.seiko-cal-row.interest-4 .seiko-row-stars{color:#8c503b}
+.seiko-cal-row.interest-5 .seiko-row-stars{color:#6f3027}
