@@ -2359,6 +2359,7 @@
           <summary>
             <div class="seiko-cal-id">
               <strong>${esc(c.name)}</strong>
+              <b class="seiko-row-stars" aria-label="${c.interest} étoiles sur 5">${'★'.repeat(c.interest)}${'☆'.repeat(5-c.interest)}</b>
               <span>${esc(c.family)}</span>
             </div>
             <div class="seiko-cal-track" aria-label="${esc(c.name)} : ${c.start} à ${c.end}">
