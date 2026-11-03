@@ -2369,7 +2369,7 @@
           <div class="seiko-cal-detail">
             <div class="seiko-cal-ratings">
               <span class="tier-${c.tier}"><small>Gamme à l’époque</small><b>${c.tier}/5 · ${esc(SEIKO_TIER_LABELS[c.tier])}</b></span>
-              <span class="interest-${c.interest}"><small>Intérêt aujourd’hui</small><b>${c.interest}/5 · ${esc(SEIKO_INTEREST_LABELS[c.interest])}</b></span>
+              <span class="interest-${c.interest}"><small>Valeur de collection aujourd’hui</small><b class="seiko-stars" aria-label="${c.interest} étoiles sur 5">${'★'.repeat(c.interest)}${'☆'.repeat(5-c.interest)}</b><em>${esc(SEIKO_INTEREST_LABELS[c.interest])}</em></span>
             </div>
             <p><strong>${esc(c.specs)}</strong> — ${esc(c.note)}</p>
           </div>
@@ -2379,10 +2379,10 @@
       <section class="brand-section seiko-caliber-section">
         <div class="brand-section-kicker">Lecture comparative</div>
         <h2>Frise des calibres Seiko</h2>
-        <p class="brand-section-intro">La barre indique la période d’utilisation repère. Sa hauteur de gamme est codée indépendamment de l’intérêt collectionneur actuel. L’indice « intérêt aujourd’hui » est volontairement relatif : il synthétise rareté, importance historique et demande, mais ne remplace pas une cote de marché en temps réel.</p>
+        <p class="brand-section-intro">La barre indique la période d’utilisation repère. Sa hauteur de gamme est codée indépendamment de l’intérêt collectionneur actuel. La note en étoiles est volontairement relative : elle synthétise rareté, importance historique, demande et désirabilité collectionneur. Elle ne correspond pas directement au prix d’une montre précise et ne remplace pas une cote de marché en temps réel.</p>
         <div class="seiko-cal-legend">
           <span><i class="legend-tier"></i> Positionnement à l’époque : 1 → 5</span>
-          <span><i class="legend-interest"></i> Bordure / pastille : intérêt actuel</span>
+          <span><i class="legend-interest"></i> ★ à ★★★★★ : valeur de collection actuelle</span>
           <span>Appuie sur un calibre pour le détail.</span>
         </div>
         <div class="seiko-timeline-scroll">
