@@ -1100,3 +1100,135 @@ button { -webkit-tap-highlight-color: transparent; }
     max-width:none;
   }
 }
+
+
+/* V6.28 — frise Seiko réellement séparée : noms fixes, années scrollables */
+.seiko-split-timeline{
+  display:grid;
+  grid-template-columns:112px minmax(0,1fr);
+  width:100%;
+  max-width:100%;
+  border:1px solid #e0dbd2;
+  border-radius:14px;
+  overflow:hidden;
+  background:#fff;
+}
+.seiko-fixed-column{
+  position:relative;
+  z-index:5;
+  background:#fff;
+  border-right:1px solid #d9d4cb;
+  box-shadow:6px 0 14px -14px rgba(0,0,0,.65);
+}
+.seiko-fixed-head{
+  height:30px;
+  display:flex;
+  align-items:center;
+  padding:0 9px;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#8b857d;
+  background:#f3f0ea;
+  border-bottom:1px solid #ddd8cf;
+}
+.seiko-fixed-label{
+  appearance:none;
+  width:100%;
+  height:46px;
+  border:0;
+  border-bottom:1px solid #ece8e1;
+  border-left:4px solid transparent;
+  background:#fff;
+  padding:5px 7px 5px 8px;
+  text-align:left;
+  color:inherit;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:1px;
+}
+.seiko-fixed-label strong{font-size:10px;line-height:1.05}
+.seiko-fixed-label span{
+  display:block;
+  max-width:92px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  font-size:7px;
+  color:#8b857d;
+}
+.seiko-fixed-label .seiko-row-stars{font-size:9px!important}
+.seiko-fixed-label.open{background:#f7f4ee}
+.seiko-fixed-label.interest-1{border-left-color:#cfc9bf}
+.seiko-fixed-label.interest-2{border-left-color:#9ea8a0}
+.seiko-fixed-label.interest-3{border-left-color:#a69262}
+.seiko-fixed-label.interest-4{border-left-color:#9b684d}
+.seiko-fixed-label.interest-5{border-left-color:#6f3f36}
+
+.seiko-scroll-column{
+  min-width:0;
+  overflow-x:auto;
+  overflow-y:visible;
+  -webkit-overflow-scrolling:touch;
+  overscroll-behavior-x:contain;
+  background:#fff;
+}
+.seiko-scroll-inner{
+  min-width:700px;
+}
+.seiko-scroll-axis{
+  display:grid;
+  grid-template-columns:minmax(610px,1fr) 58px;
+  gap:10px;
+  height:30px;
+  padding:0 8px;
+  background:#f3f0ea;
+  border-bottom:1px solid #ddd8cf;
+}
+.seiko-scroll-axis .seiko-axis-track{
+  height:30px;
+  border-bottom:0;
+}
+.seiko-scroll-axis .seiko-axis-track span{bottom:9px}
+.seiko-scroll-axis .seiko-axis-track span::after{top:14px;height:16px}
+.seiko-scroll-rows{display:grid}
+.seiko-scroll-row{
+  margin:0;
+  border:0;
+  border-bottom:1px solid #ece8e1;
+  border-radius:0;
+  background:#fff;
+}
+.seiko-scroll-row>summary{
+  list-style:none;
+  display:grid;
+  grid-template-columns:minmax(610px,1fr) 58px;
+  gap:10px;
+  align-items:center;
+  height:46px;
+  min-height:46px;
+  padding:0 8px;
+  cursor:pointer;
+}
+.seiko-scroll-row>summary::-webkit-details-marker{display:none}
+.seiko-scroll-row .seiko-cal-detail{
+  position:static!important;
+  width:auto!important;
+  max-width:none!important;
+  padding:12px!important;
+  border-top:1px solid #eeeae4;
+  background:#faf9f6;
+}
+.seiko-scroll-row[open]{
+  background:#f7f4ee;
+}
+@media(max-width:620px){
+  .seiko-split-timeline{grid-template-columns:104px minmax(0,1fr)}
+  .seiko-fixed-label{height:46px;padding-left:7px}
+  .seiko-fixed-label span{max-width:84px}
+  .seiko-scroll-inner{min-width:690px}
+  .seiko-scroll-axis{grid-template-columns:600px 54px}
+  .seiko-scroll-row>summary{grid-template-columns:600px 54px}
+}
