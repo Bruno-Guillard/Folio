@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-27-seiko-sticky-calibers';
+const CACHE = 'folio-v6-28-seiko-fixed-left-column';
 const ASSETS = [
   './',
   './index.html',
