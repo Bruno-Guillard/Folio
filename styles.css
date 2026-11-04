@@ -1232,3 +1232,27 @@ button { -webkit-tap-highlight-color: transparent; }
   .seiko-scroll-axis{grid-template-columns:600px 54px}
   .seiko-scroll-row>summary{grid-template-columns:600px 54px}
 }
+
+
+/* V6.28 — correctif sticky réel colonne calibres */
+.seiko-cal-row{
+  overflow:visible;
+}
+.seiko-cal-row>summary{
+  overflow:visible;
+}
+.seiko-cal-id{
+  position:sticky !important;
+  left:0 !important;
+  z-index:20 !important;
+  background:#fff;
+}
+.seiko-timeline-axis>div:first-child{
+  position:sticky !important;
+  left:0 !important;
+  z-index:21 !important;
+  background:#fff;
+}
+.seiko-cal-row[open] .seiko-cal-id{
+  background:#fff;
+}
