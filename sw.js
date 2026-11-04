@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-28-seiko-fixed-left-column';
+const CACHE = 'folio-v6-28-seiko-sticky-fix';
 const ASSETS = [
   './',
   './index.html',
