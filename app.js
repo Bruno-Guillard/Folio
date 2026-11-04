@@ -2349,19 +2349,22 @@
     const ticks = [];
     for (let y = SEIKO_TIMELINE_MIN; y <= SEIKO_TIMELINE_MAX; y += 5) ticks.push(y);
     const range = SEIKO_TIMELINE_MAX - SEIKO_TIMELINE_MIN;
+
+    const labels = SEIKO_CALIBER_TIMELINE.map(c => `
+      <button class="seiko-fixed-label interest-${c.interest}" type="button" data-seiko-row="${esc(c.name)}">
+        <strong>${esc(c.name)}</strong>
+        <b class="seiko-row-stars" aria-label="${c.interest} étoiles sur 5">${'★'.repeat(c.interest)}${'☆'.repeat(5-c.interest)}</b>
+        <span>${esc(c.family)}</span>
+      </button>`).join('');
+
     const rows = SEIKO_CALIBER_TIMELINE.map(c => {
       const start = Math.max(SEIKO_TIMELINE_MIN, c.start);
       const end = Math.min(SEIKO_TIMELINE_MAX, c.end);
       const left = ((start - SEIKO_TIMELINE_MIN) / range) * 100;
       const width = Math.max(1.8, ((end - start) / range) * 100);
       return `
-        <details class="seiko-cal-row interest-${c.interest}">
+        <details class="seiko-scroll-row interest-${c.interest}" data-seiko-details="${esc(c.name)}">
           <summary>
-            <div class="seiko-cal-id">
-              <strong>${esc(c.name)}</strong>
-              <b class="seiko-row-stars" aria-label="${c.interest} étoiles sur 5">${'★'.repeat(c.interest)}${'☆'.repeat(5-c.interest)}</b>
-              <span>${esc(c.family)}</span>
-            </div>
             <div class="seiko-cal-track" aria-label="${esc(c.name)} : ${c.start} à ${c.end}">
               <i class="seiko-cal-span tier-${c.tier}" style="left:${left.toFixed(2)}%;width:${width.toFixed(2)}%"></i>
             </div>
@@ -2381,6 +2384,7 @@
           </div>
         </details>`;
     }).join('');
+
     return `
       <section class="brand-section seiko-caliber-section">
         <div class="brand-section-kicker">Lecture comparative</div>
@@ -2389,23 +2393,56 @@
         <div class="seiko-cal-legend">
           <span><i class="legend-tier"></i> Positionnement à l’époque : 1 → 5</span>
           <span><i class="legend-interest"></i> ★ à ★★★★★ : valeur de collection actuelle</span>
-          <span>Appuie sur un calibre pour le détail.</span>
+          <span>Appuie sur une ligne pour le détail.</span>
         </div>
-        <div class="seiko-timeline-scroll">
-          <div class="seiko-timeline-inner">
-            <div class="seiko-timeline-axis">
-              <div></div>
-              <div class="seiko-axis-track">${ticks.map(y => `<span style="left:${((y-SEIKO_TIMELINE_MIN)/range)*100}%">${y}</span>`).join('')}</div>
-              <div></div>
+
+        <div class="seiko-split-timeline">
+          <div class="seiko-fixed-column">
+            <div class="seiko-fixed-head">Calibre</div>
+            ${labels}
+          </div>
+
+          <div class="seiko-scroll-column">
+            <div class="seiko-scroll-inner">
+              <div class="seiko-scroll-axis">
+                <div class="seiko-axis-track">${ticks.map(y => `<span style="left:${((y-SEIKO_TIMELINE_MIN)/range)*100}%">${y}</span>`).join('')}</div>
+                <div></div>
+              </div>
+              <div class="seiko-scroll-rows">${rows}</div>
             </div>
-            <div class="seiko-timeline-rows">${rows}</div>
           </div>
         </div>
+
         <div class="seiko-comparison-note">
           <strong>Exemple : 7006 vs 7009</strong>
           <p>Le <b>7006</b> est ici placé un cran au-dessus du <b>7009</b> en gamme d’origine : il appartient à une génération antérieure, existe avec davantage de rubis selon les versions et sa construction est moins poussée vers l’économie de fabrication. Le 7009 est plus récent et très robuste, mais il a été optimisé pour la grande série pendant l’ère du quartz.</p>
         </div>
       </section>`;
+  }
+
+
+  function setupSeikoTimelineBindings() {
+    const labels = Array.from(document.querySelectorAll('.seiko-fixed-label'));
+    const rows = Array.from(document.querySelectorAll('.seiko-scroll-row'));
+    if (!labels.length || !rows.length) return;
+
+    labels.forEach(label => {
+      label.addEventListener('click', () => {
+        const name = label.dataset.seikoRow;
+        const row = rows.find(r => r.dataset.seikoDetails === name);
+        if (!row) return;
+        row.open = !row.open;
+        row.scrollIntoView({ block: 'nearest' });
+      });
+    });
+
+    rows.forEach(row => {
+      row.addEventListener('toggle', () => {
+        const name = row.dataset.seikoDetails;
+        const label = labels.find(l => l.dataset.seikoRow === name);
+        if (label) label.classList.toggle('open', row.open);
+      });
+    });
   }
 
   function renderBrands() {
@@ -2505,6 +2542,7 @@
       </article>`;
     els.main.innerHTML = html;
     bindCommon();
+    if (b.key === 'seiko') setupSeikoTimelineBindings();
   }
 
   function historyEraCard(era) {
