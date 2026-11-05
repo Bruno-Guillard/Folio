@@ -1277,3 +1277,26 @@ button { -webkit-tap-highlight-color: transparent; }
 @media(max-width:620px){
   .seiko-timeline-axis{top:70px}
 }
+
+
+/* V6.29 — dates sticky en haut de la frise Seiko */
+.seiko-timeline-axis{
+  position:sticky;
+  top:78px;
+  z-index:30;
+  background:#fff;
+  padding-top:4px;
+  padding-bottom:4px;
+  box-shadow:0 8px 12px -12px rgba(0,0,0,.45);
+}
+.seiko-timeline-axis>div:first-child{
+  z-index:32 !important;
+}
+.seiko-axis-track{
+  background:#fff;
+}
+@media(max-width:620px){
+  .seiko-timeline-axis{
+    top:72px;
+  }
+}
