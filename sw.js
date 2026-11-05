@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-29-seiko-sticky-years';
+const CACHE = 'folio-v6-29-seiko-sticky-dates';
 const ASSETS = [
   './',
   './index.html',
