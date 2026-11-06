@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-29-seiko-sticky-dates';
+const CACHE = 'folio-v6-30-seiko-sticky-axis-real';
 const ASSETS = [
   './',
   './index.html',
