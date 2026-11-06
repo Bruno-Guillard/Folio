@@ -1300,3 +1300,81 @@ button { -webkit-tap-highlight-color: transparent; }
     top:72px;
   }
 }
+
+
+/* V6.30 — vrai axe Seiko sticky synchronisé */
+.seiko-caliber-section{
+  overflow:visible !important;
+}
+.seiko-sticky-axis-shell{
+  position:sticky;
+  top:72px;
+  z-index:45;
+  display:grid;
+  grid-template-columns:112px minmax(0,1fr);
+  width:100%;
+  height:31px;
+  margin-bottom:-31px;
+  pointer-events:none;
+  background:#f3f0ea;
+  border:1px solid #ddd8cf;
+  border-radius:14px 14px 0 0;
+  overflow:hidden;
+  box-shadow:0 8px 14px -13px rgba(0,0,0,.55);
+}
+.seiko-sticky-axis-label{
+  display:flex;
+  align-items:center;
+  padding:0 9px;
+  border-right:1px solid #d9d4cb;
+  background:#f3f0ea;
+  font-size:8px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+  color:#8b857d;
+  z-index:2;
+}
+.seiko-sticky-axis-viewport{
+  overflow:hidden;
+  min-width:0;
+  background:#f3f0ea;
+}
+.seiko-sticky-axis-inner{
+  display:grid;
+  grid-template-columns:minmax(610px,1fr) 58px;
+  gap:10px;
+  width:700px;
+  min-width:700px;
+  height:30px;
+  padding:0 8px;
+  will-change:transform;
+}
+.seiko-sticky-axis-inner .seiko-axis-track{
+  position:relative;
+  height:30px;
+  border-bottom:0;
+  background:#f3f0ea;
+}
+.seiko-sticky-axis-inner .seiko-axis-track span{bottom:9px}
+.seiko-sticky-axis-inner .seiko-axis-track span::after{top:14px;height:16px}
+.seiko-split-timeline{padding-top:31px}
+.seiko-scroll-axis{
+  visibility:hidden;
+  height:0;
+  min-height:0;
+  padding-top:0;
+  padding-bottom:0;
+  border:0;
+}
+@media(max-width:620px){
+  .seiko-sticky-axis-shell{
+    top:68px;
+    grid-template-columns:104px minmax(0,1fr);
+  }
+  .seiko-sticky-axis-inner{
+    grid-template-columns:600px 54px;
+    width:690px;
+    min-width:690px;
+  }
+}
