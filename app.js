@@ -2396,6 +2396,16 @@
           <span>Appuie sur une ligne pour le détail.</span>
         </div>
 
+        <div class="seiko-sticky-axis-shell" aria-hidden="true">
+          <div class="seiko-sticky-axis-label">Calibre</div>
+          <div class="seiko-sticky-axis-viewport">
+            <div class="seiko-sticky-axis-inner">
+              <div class="seiko-axis-track">${ticks.map(y => `<span style="left:${((y-SEIKO_TIMELINE_MIN)/range)*100}%">${y}</span>`).join('')}</div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+
         <div class="seiko-split-timeline">
           <div class="seiko-fixed-column">
             <div class="seiko-fixed-head">Calibre</div>
@@ -2424,7 +2434,17 @@
   function setupSeikoTimelineBindings() {
     const labels = Array.from(document.querySelectorAll('.seiko-fixed-label'));
     const rows = Array.from(document.querySelectorAll('.seiko-scroll-row'));
+    const scroller = document.querySelector('.seiko-scroll-column');
+    const stickyInner = document.querySelector('.seiko-sticky-axis-inner');
     if (!labels.length || !rows.length) return;
+
+    if (scroller && stickyInner) {
+      const syncStickyAxis = () => {
+        stickyInner.style.transform = `translateX(-${scroller.scrollLeft}px)`;
+      };
+      scroller.addEventListener('scroll', syncStickyAxis, { passive:true });
+      syncStickyAxis();
+    }
 
     labels.forEach(label => {
       label.addEventListener('click', () => {
