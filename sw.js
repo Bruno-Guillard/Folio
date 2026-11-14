@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-31-seiko-1950-1970-story';
+const CACHE = 'folio-v6-32-sportsmatic-timeline';
 const ASSETS = [
   './',
   './index.html',
