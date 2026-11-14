@@ -2657,6 +2657,99 @@
   }
 
 
+  const SPORTSMATIC_FAMILY_TIMELINE = [
+    {
+      name:'Sportsmatic', years:'1962–1968', start:1962, end:1968, tone:'base',
+      calibres:'325 / 6601',
+      feature:'Trois aiguilles',
+      detail:'La branche la plus simple : automatique sans calendrier. Elle installe Sportsmatic comme gamme automatique accessible du début des années 1960.'
+    },
+    {
+      name:'Sportsmatic Calendar', years:'1962–≈1968', start:1962, end:1968, tone:'calendar',
+      calibres:'790 / 820 / 7625',
+      feature:'Date seule',
+      detail:'Ajoute la date à la formule Sportsmatic. Le nom « Calendar 820 » apparaît sur plusieurs références avant que la gamme ne soit progressivement simplifiée.'
+    },
+    {
+      name:'Sportsmatic SilverWave', years:'1963–1964', start:1963, end:1964, tone:'tool',
+      calibres:'famille Sportsmatic',
+      feature:'Sport / étanchéité renforcée',
+      detail:'Branche plus sportive et aujourd’hui nettement plus rare. Certaines références reçoivent une couronne vissée et un positionnement plus orienté usage aquatique.'
+    },
+    {
+      name:'Sportsmatic 5', years:'1963–≈1967', start:1963, end:1967, tone:'five',
+      calibres:'410 / 6606 / 6619',
+      feature:'Jour + date · automatique',
+      detail:'La Seiko 5 d’origine. Le 410 inaugure le jour-date, puis les 6606/6619 prennent le relais. Le 6619 apporte notamment une correction rapide de la date par pression sur la couronne.'
+    },
+    {
+      name:'Sportsmatic Deluxe', years:'≈1964–1967', start:1964, end:1967, tone:'deluxe',
+      calibres:'7605',
+      feature:'Date seule · finition supérieure',
+      detail:'Version plus soignée de la Sportsmatic classique : boîtier mieux fini et présentation plus ambitieuse, tout en restant sur une complication date seule.'
+    },
+    {
+      name:'5 Sportsmatic Deluxe', years:'≈1964–1967', start:1964, end:1967, tone:'premium',
+      calibres:'7606 / 7619',
+      feature:'Jour + date · poussoir dédié',
+      detail:'Sommet de la famille Sportsmatic 5 : boîtier acier, finition plus poussée et poussoir séparé pour corriger la date. Une vraie montée en gamme par rapport aux 5 Sportsmatic standard.'
+    }
+  ];
+
+  function sportsmaticTimelineHtml() {
+    const min=1962, max=1968, range=max-min;
+    return `
+      <section class="brand-section sportsmatic-section">
+        <div class="brand-section-kicker">Famille Sportsmatic</div>
+        <div class="sportsmatic-head">
+          <div>
+            <h2>Sportsmatic : les branches de 1962 à 1968</h2>
+            <p>Les modèles coexistent souvent. La frise montre donc des branches parallèles plutôt qu’une succession stricte.</p>
+          </div>
+          <div class="sportsmatic-badge">1962<br><span>→</span><br>1968</div>
+        </div>
+
+        <div class="sportsmatic-axis">
+          <div></div>
+          <div class="sportsmatic-axis-track">
+            ${[1962,1963,1964,1965,1966,1967,1968].map(y=>`<span style="left:${((y-min)/range)*100}%">${y}</span>`).join('')}
+          </div>
+        </div>
+
+        <div class="sportsmatic-rows">
+          ${SPORTSMATIC_FAMILY_TIMELINE.map(m => {
+            const left=((m.start-min)/range)*100;
+            const width=Math.max(2,((m.end-m.start)/range)*100);
+            return `
+              <details class="sportsmatic-row tone-${m.tone}">
+                <summary>
+                  <div class="sportsmatic-name">
+                    <strong>${esc(m.name)}</strong>
+                    <span>${esc(m.feature)}</span>
+                  </div>
+                  <div class="sportsmatic-track">
+                    <i style="left:${left}%;width:${width}%"></i>
+                  </div>
+                </summary>
+                <div class="sportsmatic-detail">
+                  <div class="sportsmatic-meta">
+                    <span><small>Période</small><b>${esc(m.years)}</b></span>
+                    <span><small>Calibre(s)</small><b>${esc(m.calibres)}</b></span>
+                  </div>
+                  <p>${esc(m.detail)}</p>
+                </div>
+              </details>`;
+          }).join('')}
+        </div>
+
+        <div class="sportsmatic-note">
+          <strong>Repère rapide</strong>
+          <span>Sportsmatic = automatique accessible · Calendar = date · “5” = jour-date + concept Seiko 5 · Deluxe = finition et présentation supérieures.</span>
+        </div>
+      </section>`;
+  }
+
+
   function renderBrands() {
     els.subtitle.textContent = 'Marques';
     els.fab.classList.add('hidden');
@@ -2710,6 +2803,8 @@
         </section>
 
         ${b.key === 'seiko' ? seiko1950to1970Html() : ''}
+
+        ${b.key === 'seiko' ? sportsmaticTimelineHtml() : ''}
 
         ${b.key === 'seiko' ? seikoTimelineHtml() : ''}
 
