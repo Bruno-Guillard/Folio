@@ -1439,3 +1439,49 @@ button { -webkit-tap-highlight-color: transparent; }
   .seiko-story-five{grid-template-columns:48px 1fr;padding:13px;gap:11px}
   .seiko-story-five-mark{width:48px;height:48px;font-size:29px}
 }
+
+
+/* V6.32 — frise Sportsmatic */
+.sportsmatic-section{background:#fbfaf7}
+.sportsmatic-head{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:start;margin-bottom:12px}
+.sportsmatic-head h2{margin-bottom:6px}
+.sportsmatic-head p{margin:0;font-size:11px;line-height:1.55;color:#666159}
+.sportsmatic-badge{min-width:56px;padding:8px 7px;border-radius:15px;background:#2a2925;color:#fff;text-align:center;font-family:Georgia,"Times New Roman",serif;font-size:15px;line-height:1}
+.sportsmatic-badge span{font-size:12px;color:#aaa397}
+
+.sportsmatic-axis{display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;margin:4px 0 8px}
+.sportsmatic-axis-track{position:relative;height:24px;border-bottom:1px solid #d8d2c9}
+.sportsmatic-axis-track span{position:absolute;bottom:5px;transform:translateX(-50%);font-size:7.5px;color:#8b857d}
+.sportsmatic-axis-track span::after{content:'';position:absolute;left:50%;top:13px;height:8px;border-left:1px solid #ddd7ce}
+
+.sportsmatic-rows{display:grid;gap:6px}
+.sportsmatic-row{border:1px solid #e1ddd6;border-radius:14px;background:#fff;overflow:hidden}
+.sportsmatic-row summary{list-style:none;display:grid;grid-template-columns:118px minmax(0,1fr);gap:10px;align-items:center;min-height:52px;padding:6px 10px;cursor:pointer}
+.sportsmatic-row summary::-webkit-details-marker{display:none}
+.sportsmatic-name{display:flex;flex-direction:column;gap:3px}
+.sportsmatic-name strong{font-size:10px;line-height:1.1}
+.sportsmatic-name span{font-size:7.5px;line-height:1.25;color:#807970}
+.sportsmatic-track{position:relative;height:18px;border-radius:999px;background:repeating-linear-gradient(90deg,#f6f4ef 0,#f6f4ef calc(16.666% - 1px),#e5dfd6 calc(16.666% - 1px),#e5dfd6 16.666%)}
+.sportsmatic-track i{position:absolute;top:4px;height:10px;border-radius:999px;background:#8d867c;min-width:8px}
+.sportsmatic-row.tone-five .sportsmatic-track i{background:#66755f}
+.sportsmatic-row.tone-deluxe .sportsmatic-track i{background:#9a805c}
+.sportsmatic-row.tone-premium .sportsmatic-track i{background:#6d5543}
+.sportsmatic-row.tone-tool .sportsmatic-track i{background:#667b82}
+.sportsmatic-row.tone-calendar .sportsmatic-track i{background:#7d7d73}
+
+.sportsmatic-detail{padding:11px 12px 13px;border-top:1px solid #eee9e2;background:#faf8f4}
+.sportsmatic-meta{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px}
+.sportsmatic-meta span{display:flex;flex-direction:column;gap:2px;padding:7px 8px;border-radius:9px;background:#efebe4}
+.sportsmatic-meta small{font-size:7px;text-transform:uppercase;letter-spacing:.06em;color:#918a81}
+.sportsmatic-meta b{font-size:9px}
+.sportsmatic-detail p{margin:0;font-size:10px;line-height:1.55;color:#625d56}
+.sportsmatic-note{margin-top:12px;padding:10px 12px;border-radius:13px;background:#2a2925;color:#fff;display:grid;gap:4px}
+.sportsmatic-note strong{font-size:9px}
+.sportsmatic-note span{font-size:8.5px;line-height:1.45;color:rgba(255,255,255,.72)}
+
+@media(max-width:620px){
+  .sportsmatic-head{grid-template-columns:1fr 50px;gap:10px}
+  .sportsmatic-axis{grid-template-columns:98px minmax(0,1fr);gap:7px}
+  .sportsmatic-row summary{grid-template-columns:98px minmax(0,1fr);gap:7px;padding:6px 8px}
+  .sportsmatic-name strong{font-size:9.5px}
+}
