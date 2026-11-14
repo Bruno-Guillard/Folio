@@ -2465,6 +2465,198 @@
     });
   }
 
+  const SEIKO_1950_1970_STEPS = [
+    {
+      year:'1950–55', tone:'foundation', tag:'RECONSTRUCTION',
+      title:'Rattraper puis dépasser',
+      points:[
+        'Après-guerre : reconstruction de l’outil industriel et montée rapide en qualité.',
+        'Objectif : ne plus seulement imiter les standards suisses, mais développer des architectures maison.',
+        'La précision devient le fil rouge de toute la décennie.'
+      ]
+    },
+    {
+      year:'1956', tone:'mechanical', tag:'MARVEL',
+      title:'Le Marvel change de niveau',
+      points:[
+        'Premier grand mouvement Seiko conçu de façon réellement originale.',
+        'Plus grand, plus précis, plus moderne : il sert de base à la montée en gamme.',
+        'Il ouvre la voie au Crown, puis à Grand Seiko.'
+      ]
+    },
+    {
+      year:'1959', tone:'factory', tag:'SUWA / DAINI',
+      title:'Deux pôles qui se stimulent',
+      points:[
+        'Suwa Seikosha devient une entité indépendante en 1959.',
+        'Daini Seikosha et Suwa développent leurs propres mouvements et solutions.',
+        'La concurrence technique interne devient un moteur : Suwa portera Grand Seiko, Daini King Seiko.'
+      ]
+    },
+    {
+      year:'1959–60', tone:'automatic', tag:'AUTOMATIQUE',
+      title:'Gyro Marvel puis Sportsmatic',
+      points:[
+        '1959 : Gyro Marvel, première automatique Seiko de série.',
+        'Le remontage automatique devient progressivement un produit de masse.',
+        'Sportsmatic prépare la montre quotidienne, robuste et facile à porter.'
+      ]
+    },
+    {
+      year:'1960', tone:'premium', tag:'GRAND SEIKO',
+      title:'Défier la Suisse sur la précision',
+      points:[
+        'Première Grand Seiko.',
+        'Ambition explicite : atteindre les meilleurs standards chronométriques mondiaux.',
+        'Seiko ne veut plus être seulement “bon pour le Japon” : la référence devient internationale.'
+      ]
+    },
+    {
+      year:'1961', tone:'factory', tag:'KING SEIKO',
+      title:'Daini répond à Suwa',
+      points:[
+        'King Seiko apparaît chez Daini.',
+        'Très haute qualité et précision, mais avec un positionnement plus accessible que Grand Seiko.',
+        'La rivalité Suwa / Daini accélère les progrès de finition, de réglage et d’architecture.'
+      ]
+    },
+    {
+      year:'1963', tone:'five', tag:'SPORTSMATIC 5',
+      title:'Naissance de la Seiko 5',
+      points:[
+        'Première automatique japonaise réunissant jour + date dans un même guichet.',
+        'Le “5” désigne cinq promesses : automatique, étanchéité, jour-date à 3 h, couronne encastrée à 4 h, boîtier/bracelet robustes.',
+        'Le concept vise une montre moderne, pratique, jeune et produite à grande échelle.'
+      ]
+    },
+    {
+      year:'1963', tone:'quartz', tag:'QUARTZ',
+      title:'Le quartz existe déjà chez Seiko',
+      points:[
+        'Seiko travaille le quartz avant la montre-bracelet : horloges puis Crystal Chronometer portable.',
+        'Le défi n’est plus la précision, mais la miniaturisation et l’autonomie.',
+        'La rupture de 1969 se prépare donc plusieurs années à l’avance.'
+      ]
+    },
+    {
+      year:'1964', tone:'world', tag:'TOKYO 1964',
+      title:'Les Jeux olympiques changent l’image de Seiko',
+      points:[
+        'Seiko devient chronométreur officiel des Jeux de Tokyo.',
+        'Vitrine mondiale pour sa précision et ses instruments de mesure du temps.',
+        'La notoriété internationale de Sportsmatic 5 explose ensuite à l’export.'
+      ]
+    },
+    {
+      year:'1964–68', tone:'precision', tag:'SUISSE',
+      title:'La course face aux Suisses',
+      points:[
+        'Seiko engage Suwa et Daini dans les concours d’observatoire en Suisse.',
+        'Débuts difficiles, puis progression rapide par les matériaux, l’usinage et le réglage.',
+        '1967 : 2e et 3e places à Neuchâtel. 1968 : résultats de premier plan à Genève.'
+      ]
+    },
+    {
+      year:'1965', tone:'tool', tag:'PLONGÉE',
+      title:'La montre-outil devient stratégique',
+      points:[
+        'Première plongeuse japonaise : la 62MAS, automatique et étanche à 150 m.',
+        'Seiko élargit son image : précision oui, mais aussi robustesse et usage professionnel.',
+        'Cette branche donnera ensuite les 6105, 6306/6309 puis une grande lignée Prospex.'
+      ]
+    },
+    {
+      year:'1967–68', tone:'design', tag:'STYLE SEIKO',
+      title:'Le design devient une identité',
+      points:[
+        'Grand Seiko et King Seiko imposent des boîtiers plus nets, facettés et graphiques.',
+        'Le “Grammar of Design” formalise une esthétique immédiatement reconnaissable.',
+        '1968 : Seiko 5 Sports renforce étanchéité, verre, lume et couleurs pour une clientèle plus jeune.'
+      ]
+    },
+    {
+      year:'1969', tone:'chrono', tag:'6139',
+      title:'Chronographe automatique : autre révolution',
+      points:[
+        'Calibre 6139 : l’un des premiers chronographes automatiques au monde.',
+        'Roue à colonnes + embrayage vertical : architecture extrêmement moderne.',
+        'Seiko montre qu’il peut encore pousser très loin la mécanique au moment où le quartz arrive.'
+      ]
+    },
+    {
+      year:'25.12.1969', tone:'quartz', tag:'ASTRON',
+      title:'Astron : Seiko provoque la révolution quartz',
+      points:[
+        'Première montre-bracelet à quartz commercialisée au monde.',
+        'Environ ±5 s/mois : changement d’échelle face à la précision mécanique.',
+        'Important : Seiko ne “répond” pas au quartz — il fait partie des acteurs qui déclenchent la rupture.'
+      ]
+    },
+    {
+      year:'1970', tone:'turn', tag:'BASCULE',
+      title:'Deux mondes coexistent',
+      points:[
+        'La mécanique reste très forte : 61GS, 45KS/GS, 56xx, 6139…',
+        'Mais le quartz ouvre une nouvelle logique industrielle et technologique.',
+        'À partir des années 1970, Seiko va mener les deux fronts : mécanique accessible + électronique de pointe.'
+      ]
+    }
+  ];
+
+  function seiko1950to1970Html() {
+    return `
+      <section class="brand-section seiko-story-section">
+        <div class="brand-section-kicker">Repères rapides</div>
+        <div class="seiko-story-title-row">
+          <div>
+            <h2>1950 → 1970 : vingt ans qui transforment Seiko</h2>
+            <p>Les étapes essentielles pour comprendre le passage d’un fabricant japonais en reconstruction à un acteur mondial capable de rivaliser avec la Suisse — puis de bouleverser l’industrie avec le quartz.</p>
+          </div>
+          <div class="seiko-story-range">1950<br><span>→</span><br>1970</div>
+        </div>
+
+        <div class="seiko-story-callouts">
+          <div><small>FIL ROUGE</small><strong>Précision</strong><span>Du Marvel aux concours suisses.</span></div>
+          <div><small>MOTEUR INTERNE</small><strong>Suwa ↔ Daini</strong><span>Deux équipes, deux cultures, une compétition technique.</span></div>
+          <div><small>BASCULE</small><strong>Mécanique → Quartz</strong><span>Sans abandonner la mécanique.</span></div>
+        </div>
+
+        <div class="seiko-story-flow">
+          ${SEIKO_1950_1970_STEPS.map((s,i) => `
+            <article class="seiko-story-step tone-${s.tone}">
+              <div class="seiko-story-rail">
+                <span class="seiko-story-dot"></span>
+                ${i < SEIKO_1950_1970_STEPS.length - 1 ? '<i></i>' : ''}
+              </div>
+              <div class="seiko-story-date">${esc(s.year)}</div>
+              <div class="seiko-story-card">
+                <div class="seiko-story-tag">${esc(s.tag)}</div>
+                <h3>${esc(s.title)}</h3>
+                <ul>${s.points.map(p => `<li>${esc(p)}</li>`).join('')}</ul>
+              </div>
+            </article>`).join('')}
+        </div>
+
+        <div class="seiko-story-five">
+          <div class="seiko-story-five-mark">5</div>
+          <div>
+            <small>POURQUOI “SEIKO 5” ?</small>
+            <strong>Une promesse produit, pas un numéro de calibre.</strong>
+            <div class="seiko-five-grid">
+              <span><b>1</b> Automatique</span>
+              <span><b>2</b> Étanche</span>
+              <span><b>3</b> Jour + date à 3 h</span>
+              <span><b>4</b> Couronne à 4 h</span>
+              <span><b>5</b> Boîtier / bracelet robustes</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="seiko-story-source">Repères historiques : Seiko Museum Ginza · Seiko Heritage · archives King Seiko.</div>
+      </section>`;
+  }
+
+
   function renderBrands() {
     els.subtitle.textContent = 'Marques';
     els.fab.classList.add('hidden');
@@ -2516,6 +2708,8 @@
             ${b.milestones.map(m => `<div class="brand-timeline-row"><strong>${esc(m[0])}</strong><span>${esc(m[1])}</span></div>`).join('')}
           </div>
         </section>
+
+        ${b.key === 'seiko' ? seiko1950to1970Html() : ''}
 
         ${b.key === 'seiko' ? seikoTimelineHtml() : ''}
 
