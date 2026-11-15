@@ -1485,3 +1485,60 @@ button { -webkit-tap-highlight-color: transparent; }
   .sportsmatic-row summary{grid-template-columns:98px minmax(0,1fr);gap:7px;padding:6px 8px}
   .sportsmatic-name strong{font-size:9.5px}
 }
+
+
+/* V6.33 — bibliothèque Seiko en bulles ouvrables */
+.seiko-library-group{margin:18px 0}
+.seiko-library-head{padding:2px 2px 11px}
+.seiko-library-head h2{font-family:Georgia,"Times New Roman",serif;font-size:26px;font-weight:500;margin:2px 0 6px}
+.seiko-library-head p{margin:0;font-size:11px;line-height:1.55;color:#6b665f}
+.seiko-bubble-stack{display:grid;gap:9px}
+.seiko-info-bubble{border:1px solid #ded9d1;border-radius:20px;background:#fff;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.025)}
+.seiko-info-bubble>summary{list-style:none;display:grid;grid-template-columns:44px minmax(0,1fr) 22px;gap:11px;align-items:center;padding:13px 14px;cursor:pointer}
+.seiko-info-bubble>summary::-webkit-details-marker{display:none}
+.seiko-bubble-symbol{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:#282723;color:#fff;font-family:Georgia,"Times New Roman",serif;font-size:18px}
+.seiko-bubble-summary{min-width:0;display:grid;gap:2px}
+.seiko-bubble-summary small{font-size:7.5px;font-weight:850;letter-spacing:.07em;text-transform:uppercase;color:#8c857c}
+.seiko-bubble-summary strong{font-family:Georgia,"Times New Roman",serif;font-size:19px;font-weight:500;line-height:1.1}
+.seiko-bubble-summary span{font-size:9px;line-height:1.4;color:#706a62}
+.seiko-bubble-chevron{font-size:20px;color:#8e877e;transition:transform .18s ease}
+.seiko-info-bubble[open] .seiko-bubble-chevron{transform:rotate(180deg)}
+.seiko-info-bubble[open]>summary{background:#f8f6f1;border-bottom:1px solid #e4dfd7}
+.seiko-bubble-body{padding:14px}
+.factory-bubble .seiko-bubble-symbol{background:#313a3d}
+.factory-bubble:nth-child(2) .seiko-bubble-symbol{background:#554d3e}
+.seiko-factory-facts{display:grid;gap:4px;padding:10px 11px;border-radius:13px;background:#f2f0eb;margin-bottom:12px}
+.seiko-factory-facts span{font-size:9.5px;line-height:1.45;color:#5e5952}
+.seiko-mini-timeline{display:grid;border-top:1px solid #ece7df}
+.seiko-mini-timeline>div{display:grid;grid-template-columns:64px 110px 1fr;gap:9px;padding:9px 2px;border-bottom:1px solid #ece7df;align-items:start}
+.seiko-mini-timeline b{font-size:8px;color:#8b847b}
+.seiko-mini-timeline strong{font-size:9.5px;color:#302d29}
+.seiko-mini-timeline span{font-size:9px;line-height:1.42;color:#6a655e}
+
+.range-bubble.range-sportsmatic .seiko-bubble-symbol{background:#65745f}
+.range-bubble.range-skyliner .seiko-bubble-symbol{background:#68747b}
+.range-bubble.range-kingseiko .seiko-bubble-symbol{background:#6a5331}
+.range-bubble.range-lordmatic .seiko-bubble-symbol{background:#635b74}
+.range-bubble.range-dolce .seiko-bubble-symbol{background:#7a655e}
+.seiko-range-intro{margin:0 0 12px;font-size:10.5px;line-height:1.58;color:#5f5a53}
+.seiko-range-timeline{display:grid;border-top:1px solid #e8e3db}
+.seiko-range-row{display:grid;grid-template-columns:70px 1fr;gap:10px;padding:10px 1px;border-bottom:1px solid #e8e3db}
+.seiko-range-year{font-size:8px;font-weight:900;color:#817a72}
+.seiko-range-main{display:grid;gap:2px}
+.seiko-range-main strong{font-size:10.5px}
+.seiko-range-main small{font-size:8px;color:#8b847b}
+.seiko-range-main span{font-size:9.3px;line-height:1.43;color:#666159}
+.seiko-range-note{margin-top:12px;padding:10px 11px;border-radius:13px;background:#292824;color:rgba(255,255,255,.78);font-size:9.2px;line-height:1.48}
+.embedded-sportsmatic{padding:0}
+.embedded-sportsmatic>.sportsmatic-section{margin:0;border:0;border-radius:0;box-shadow:none;background:#fff}
+.embedded-sportsmatic .brand-section-kicker,
+.embedded-sportsmatic .sportsmatic-head{display:none}
+.embedded-sportsmatic .sportsmatic-axis{margin-top:4px}
+
+@media(max-width:620px){
+  .seiko-info-bubble>summary{grid-template-columns:40px minmax(0,1fr) 18px;padding:11px 12px;gap:9px}
+  .seiko-bubble-symbol{width:40px;height:40px;border-radius:12px;font-size:16px}
+  .seiko-bubble-summary strong{font-size:17px}
+  .seiko-mini-timeline>div{grid-template-columns:52px 86px 1fr;gap:6px}
+  .seiko-range-row{grid-template-columns:60px 1fr}
+}
