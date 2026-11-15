@@ -1,4 +1,4 @@
-const CACHE = 'folio-v6-33-seiko-bubble-library';
+const CACHE = 'folio-v6-34-seiko-visual-bubbles';
 const ASSETS = [
   './',
   './index.html',
