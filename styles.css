@@ -1542,3 +1542,106 @@ button { -webkit-tap-highlight-color: transparent; }
   .seiko-mini-timeline>div{grid-template-columns:52px 86px 1fr;gap:6px}
   .seiko-range-row{grid-template-columns:60px 1fr}
 }
+
+
+/* V6.34 — visuels, logos et bloc histoire repliable */
+.seiko-story-bubble{margin:18px 0}
+.seiko-story-symbol{
+  font-size:10px!important;
+  line-height:.85!important;
+  letter-spacing:.04em;
+  background:#2b2925!important;
+}
+.seiko-story-wrap{padding:0}
+.seiko-story-wrap>.seiko-story-section{
+  margin:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+.seiko-story-wrap .seiko-story-title-row{margin-top:2px}
+
+.factory-symbol{background:#f3f0ea!important;color:#2d2b27!important;border:1px solid #ddd7cd}
+.factory-mark-svg{width:34px;height:34px;display:block}
+.seiko-wordmark-symbol{
+  width:54px!important;
+  font-family:Georgia,"Times New Roman",serif!important;
+  font-size:10px!important;
+  letter-spacing:.08em;
+  background:#f1eee8!important;
+  color:#262521!important;
+  border:1px solid #ddd7cd;
+}
+.seiko-logo-bubble>summary{grid-template-columns:54px minmax(0,1fr) 22px}
+.seiko-logo-note{
+  margin:0 0 12px;
+  padding:9px 10px;
+  border-radius:12px;
+  background:#f3f0ea;
+  font-size:9px;
+  line-height:1.5;
+  color:#6b655d;
+}
+.seiko-logo-evolution{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:9px;
+}
+.seiko-logo-era{
+  overflow:hidden;
+  border:1px solid #e4dfd7;
+  border-radius:14px;
+  background:#fff;
+}
+.seiko-logo-photo{
+  aspect-ratio:1.55/1;
+  background:#eeeae3;
+  overflow:hidden;
+}
+.seiko-logo-photo img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+.seiko-logo-copy{
+  padding:9px 10px 10px;
+  display:grid;
+  gap:3px;
+}
+.seiko-logo-copy small{
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.08em;
+  color:#918a80;
+}
+.seiko-logo-copy strong{
+  font-family:Georgia,"Times New Roman",serif;
+  font-size:14px;
+  font-weight:500;
+}
+.seiko-logo-copy span{
+  font-size:8.5px;
+  line-height:1.45;
+  color:#69635c;
+}
+.range-logo-symbol{
+  overflow:hidden;
+  background:#f4f1eb!important;
+  border:1px solid #ddd7ce;
+  color:#333!important;
+}
+.range-logo-symbol img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+}
+.range-kingseiko .range-logo-symbol img{object-fit:cover;object-position:center}
+.range-dolce .range-logo-symbol img{object-fit:cover;object-position:center 58%}
+
+@media(max-width:620px){
+  .seiko-logo-evolution{grid-template-columns:1fr}
+  .seiko-logo-bubble>summary{grid-template-columns:48px minmax(0,1fr) 18px}
+  .seiko-wordmark-symbol{width:48px!important}
+}
