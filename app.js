@@ -2605,7 +2605,18 @@
 
   function seiko1950to1970Html() {
     return `
-      <section class="brand-section seiko-story-section">
+      <details class="seiko-info-bubble seiko-story-bubble">
+        <summary>
+          <div class="seiko-bubble-symbol seiko-story-symbol">50<br>70</div>
+          <div class="seiko-bubble-summary">
+            <small>Repères rapides · histoire</small>
+            <strong>1950 → 1970 : vingt ans qui transforment Seiko</strong>
+            <span>Suwa / Daini, Sportsmatic, Seiko 5, Suisse, chronographe et révolution quartz.</span>
+          </div>
+          <div class="seiko-bubble-chevron">⌄</div>
+        </summary>
+        <div class="seiko-bubble-body seiko-story-wrap">
+          <section class="brand-section seiko-story-section">
         <div class="brand-section-kicker">Repères rapides</div>
         <div class="seiko-story-title-row">
           <div>
@@ -2653,7 +2664,9 @@
         </div>
 
         <div class="seiko-story-source">Repères historiques : Seiko Museum Ginza · Seiko Heritage · archives King Seiko.</div>
-      </section>`;
+          </section>
+        </div>
+      </details>`;
   }
 
 
@@ -2804,6 +2817,7 @@
     },
     {
       key:'kingseiko', title:'King Seiko', period:'1961–1975', era:'Haute précision mécanique',
+      logoImage:'https://cdn.shopify.com/s/files/1/0505/9264/5287/collections/KingSeiko_39794827-7a4a-42f1-ad59-0536b5234ade.png?v=1710835156',
       subtitle:'La réponse Daini à la montée en gamme de Seiko.',
       intro:'King Seiko naît à Kameido chez Daini en 1961. Elle vise une très haute qualité de mouvement et de finition, avec un prix plus accessible que Grand Seiko.',
       generations:[
@@ -2830,6 +2844,7 @@
     },
     {
       key:'dolce', title:'Dolce', period:'1980 →', era:'Époque quartz · plus tardive',
+      logoImage:'https://shop.theclockhouse.jp/cdn/shop/products/sack015_2.jpg?v=1677436775',
       subtitle:'La montre habillée ultra-fine de l’ère quartz.',
       intro:'Dolce appartient à une autre époque : elle apparaît en 1980 avec Exceline. Elle transpose la montre habillée Seiko vers le quartz fin, précis et haut de gamme, particulièrement pour le marché japonais.',
       generations:[
@@ -2854,7 +2869,7 @@
           ${SEIKO_FACTORIES.map(f => `
             <details class="seiko-info-bubble factory-bubble">
               <summary>
-                <div class="seiko-bubble-symbol">${f.key==='daini'?'D':'S'}</div>
+                <div class="seiko-bubble-symbol factory-symbol">${seikoFactoryMarkSvg(f.key)}</div>
                 <div class="seiko-bubble-summary">
                   <small>${esc(f.place)} · ${esc(f.born)}</small>
                   <strong>${esc(f.name)}</strong>
@@ -2877,7 +2892,7 @@
     return `
       <details class="seiko-info-bubble range-bubble range-${r.key}">
         <summary>
-          <div class="seiko-bubble-symbol">⌚</div>
+          <div class="seiko-bubble-symbol range-logo-symbol">${r.logoImage ? `<img src="${r.logoImage}" alt="Logo ${esc(r.title)}" loading="lazy" referrerpolicy="no-referrer">` : '⌚'}</div>
           <div class="seiko-bubble-summary">
             <small>${esc(r.era)} · ${esc(r.period)}</small>
             <strong>${esc(r.title)}</strong>
@@ -2923,6 +2938,73 @@
           ${SEIKO_ICONIC_RANGES.map(seikoRangeBubbleHtml).join('')}
         </div>
       </section>`;
+  }
+
+
+  const SEIKO_LOGO_EVOLUTION = [
+    {
+      year:'1950', title:'Seiko Super',
+      image:'https://by.seiko-design.com/140th/images/topic10_01_sp.jpg',
+      note:'Logo SEIKO très espacé, accompagné du grand “S” appliqué : une signature typique du début des années 1950.'
+    },
+    {
+      year:'1958', title:'Seiko Marvel',
+      image:'https://img14.shop-pro.jp/PA01143/192/product/184220446.jpg?cmsp_timestamp=20241226161903',
+      note:'Le grand S subsiste encore sur certaines références, tandis que le mot SEIKO gagne en présence et en régularité.'
+    },
+    {
+      year:'1963', title:'Sportsmatic',
+      image:'https://assets.catawiki.com/image/cw_normal/plain/assets/catawiki/assets/2022/11/25/b/5/3/b5392506-717c-43f7-92e3-54c4e23558b4.jpg',
+      note:'Les signatures de gamme prennent une grande importance : “Sportsmatic”, “Skyliner”, “Seikomatic”… cohabitent avec SEIKO.'
+    },
+    {
+      year:'1970', title:'SEIKO moderne',
+      image:'https://shop.r10s.jp/used-tokyo-no-1/cabinet/racoon_31/a0684933-1.jpg',
+      note:'Le mot SEIKO devient plus massif, géométrique et immédiatement identifiable : on se rapproche fortement de l’identité actuelle.'
+    }
+  ];
+
+  function seikoFactoryMarkSvg(key) {
+    if (key === 'daini') return `
+      <svg viewBox="0 0 64 64" class="factory-mark-svg" aria-label="Marque Daini Seikosha">
+        <path d="M14 44 L27 31 L21 25 L34 12 L31 28 L43 24 L36 36 L47 40 L31 52 L34 39 Z"
+          fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
+      </svg>`;
+    return `
+      <svg viewBox="0 0 64 64" class="factory-mark-svg" aria-label="Marque Suwa Seikosha">
+        <path d="M43 20c-8-7-22-3-24 8-2 10 8 18 18 13 8-4 8-15 1-19-6-4-13 0-13 6 0 5 6 8 10 5"
+          fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
+        <path d="M43 20l8-2-3 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>`;
+  }
+
+  function seikoLogoEvolutionHtml() {
+    return `
+      <details class="seiko-info-bubble seiko-logo-bubble">
+        <summary>
+          <div class="seiko-bubble-symbol seiko-wordmark-symbol">SEIKO</div>
+          <div class="seiko-bubble-summary">
+            <small>Repères visuels · années 1950 → 1970</small>
+            <strong>Évolution des logos Seiko</strong>
+            <span>Quelques signatures de cadran pour reconnaître rapidement les époques.</span>
+          </div>
+          <div class="seiko-bubble-chevron">⌄</div>
+        </summary>
+        <div class="seiko-bubble-body">
+          <p class="seiko-logo-note">Il n’existe pas une bascule unique d’un logo à un autre : plusieurs graphismes et signatures de gamme ont coexisté selon les références. Cette frise sert donc de repère visuel, pas de règle absolue de datation.</p>
+          <div class="seiko-logo-evolution">
+            ${SEIKO_LOGO_EVOLUTION.map(x=>`
+              <article class="seiko-logo-era">
+                <div class="seiko-logo-photo"><img src="${x.image}" alt="${esc(x.title)} — logo Seiko" loading="lazy" referrerpolicy="no-referrer"></div>
+                <div class="seiko-logo-copy">
+                  <small>${esc(x.year)}</small>
+                  <strong>${esc(x.title)}</strong>
+                  <span>${esc(x.note)}</span>
+                </div>
+              </article>`).join('')}
+          </div>
+        </div>
+      </details>`;
   }
 
 
@@ -2979,6 +3061,8 @@
         </section>
 
         ${b.key === 'seiko' ? seiko1950to1970Html() : ''}
+
+        ${b.key === 'seiko' ? seikoLogoEvolutionHtml() : ''}
 
         ${b.key === 'seiko' ? seikoFactoryBubblesHtml() : ''}
 
