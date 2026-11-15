@@ -2750,6 +2750,182 @@
   }
 
 
+  const SEIKO_FACTORIES = [
+    {
+      key:'daini', name:'Daini Seikosha', place:'Kameido · Tokyo', born:'1937',
+      intro:'Le pôle tokyoïte. Daini naît de la séparation du département montre de Seikosha et développe une culture très forte de précision, de finesse et de design.',
+      facts:[
+        '1937 · devient un fabricant indépendant.',
+        'Usine historique à Kameido, dans l’est de Tokyo.',
+        'Usine détruite pendant la guerre puis reconstruite.',
+        'King Seiko naît ici en 1961.',
+        'Daini développe aussi de nombreuses familles 44xx, 45xx, 52xx, 70xx.'
+      ],
+      timeline:[
+        ['1950s','Super / lignes manuelles','Relance et montée en précision après-guerre.'],
+        ['1961','King Seiko','Première King Seiko, manuelle 25 rubis.'],
+        ['1964–68','44KS / 45KS','Montée en fréquence et précision ; identité Daini très affirmée.'],
+        ['1969–70s','70xx / 701x','Familles automatiques et chronographes Daini.'],
+        ['1971→','LM Special 52xx','Branche Lord Matic Special produite par Daini.']
+      ]
+    },
+    {
+      key:'suwa', name:'Suwa Seikosha', place:'Suwa · Nagano', born:'1942 / 1959',
+      intro:'Le pôle de Nagano. Issu de Daiwa Kogyo, créé en 1942 comme base éloignée de Daini, il prend le nom Suwa Seikosha en 1959 et devient un centre majeur d’ingénierie.',
+      facts:[
+        '1942 · création de Daiwa Kogyo à Suwa.',
+        '1959 · devient Suwa Seikosha.',
+        'Grand Seiko naît côté Suwa en 1960.',
+        'Sportsmatic, Seikomatic, 61xx, 56xx et 6139 sont liés à ce pôle.',
+        'Objectif : précision de très haut niveau, jusqu’aux concours suisses.'
+      ],
+      timeline:[
+        ['1956','Marvel','Première architecture Seiko véritablement originale.'],
+        ['1959','Gyro Marvel','Première automatique Seiko de série.'],
+        ['1960','Grand Seiko','La précision devient un objectif international.'],
+        ['1962–68','Sportsmatic / Seikomatic','Automatique grand public et milieu de gamme.'],
+        ['1967–75','61xx / 56xx','Grande génération automatique, de la LM à Grand Seiko.'],
+        ['1969','6139 / Astron','Chronographe automatique et révolution quartz la même année.']
+      ]
+    }
+  ];
+
+  const SEIKO_ICONIC_RANGES = [
+    {
+      key:'skyliner', title:'Skyliner', period:'≈1963–1973', era:'Années 60 → début 70',
+      subtitle:'La montre habillée manuelle, fine et discrète.',
+      intro:'La Skyliner occupe une place différente de Sportsmatic : elle reste volontairement manuelle et habillée. C’est une branche de milieu de gamme, simple, élégante et relativement peu diffusée.',
+      generations:[
+        ['1963–66','1re génération','402 / 956 puis 6220 / 6222','Heure seule ou date · logo moderniste · boîtiers Jxxxx puis 62xx.'],
+        ['1965–67','Transition','6220 / 6222','Nouveaux boîtiers et logo cursif ; style qui se rapproche de GS / KS.'],
+        ['1968–73','2e génération','6100 / 6102','Nouvelle famille 61xx · heure seule ou date · design plus moderne.']
+      ],
+      note:'À retenir : Skyliner = manuelle habillée. Elle n’est pas la “version inférieure” d’une Sportsmatic ; elle répond simplement à un autre usage.'
+    },
+    {
+      key:'kingseiko', title:'King Seiko', period:'1961–1975', era:'Haute précision mécanique',
+      subtitle:'La réponse Daini à la montée en gamme de Seiko.',
+      intro:'King Seiko naît à Kameido chez Daini en 1961. Elle vise une très haute qualité de mouvement et de finition, avec un prix plus accessible que Grand Seiko.',
+      generations:[
+        ['1961','1st King Seiko','54xx manuel','25 rubis · lignes nettes · boîtier élancé.'],
+        ['1965','KSK','44xx','Stop-seconde · design anguleux devenu emblématique.'],
+        ['1968–70','44KS / 45KS','44xx / 45xx','Haute précision ; 45KS passe à 36 000 A/h.'],
+        ['1968–75','56KS','5621 / 5625 / 5626','Automatique 28 800 A/h · date ou jour-date selon versions.'],
+        ['1970s','Vanac / variantes','56KS','Design plus spectaculaire : facettes, couleurs et bracelets intégrés.']
+      ],
+      note:'À retenir : King Seiko et Grand Seiko sont deux voies parallèles de la quête de précision, issues de deux pôles industriels différents.'
+    },
+    {
+      key:'lordmatic', title:'Lord Matic', period:'1968–1977', era:'Fin 60 → années 70',
+      subtitle:'Le milieu / haut de gamme automatique du quotidien.',
+      intro:'Lord Matic prend le relais d’une partie des Seikomatic. Plus fine et plus moderne, elle utilise principalement les 56xx de Suwa ; une branche LM Special apparaît ensuite chez Daini avec les 52xx.',
+      generations:[
+        ['1968→','Lord Matic','5601','Heure seule · rare.'],
+        ['1968–75','Lord Matic Date','5605','Date seule · stop-seconde + remontage manuel.'],
+        ['1968–77','Lord Matic Day-Date','5606','Jour-date · version la plus répandue.'],
+        ['1971–75','LM Special','5206 / 5216','Branche Daini · 28 800 A/h · styles plus colorés et audacieux.'],
+        ['Début 70s','LM “funky”','56xx','Cadrans colorés, verres facettés et boîtiers plus expérimentaux.']
+      ],
+      note:'À retenir : LM se place nettement au-dessus d’une Seiko 5 courante, mais sous King Seiko / Grand Seiko.'
+    },
+    {
+      key:'dolce', title:'Dolce', period:'1980 →', era:'Époque quartz · plus tardive',
+      subtitle:'La montre habillée ultra-fine de l’ère quartz.',
+      intro:'Dolce appartient à une autre époque : elle apparaît en 1980 avec Exceline. Elle transpose la montre habillée Seiko vers le quartz fin, précis et haut de gamme, particulièrement pour le marché japonais.',
+      generations:[
+        ['1980–82','Premières Dolce','59xx / 60xx','Quartz analogique très fin · boîtiers sobres et habillés.'],
+        ['1982–85','Dolce premium','77xx / 95xx','Saphir, or ou matériaux durs selon références ; certaines versions haute précision.'],
+        ['Milieu 80s','Expérimentations','73xx / 77xx','Tungstène, céramique, formes géométriques et ultra-fines.'],
+        ['1990s','Dolce mature','5E / 8N…','Ligne habillée durable : finesse, quartz et finition premium.']
+      ],
+      note:'À retenir : Dolce n’est pas la continuité directe de Sportsmatic ou Skyliner. C’est la réinterprétation, à l’ère quartz, de la montre habillée élégante et fine.'
+    }
+  ];
+
+  function seikoFactoryBubblesHtml() {
+    return `
+      <section class="seiko-library-group">
+        <div class="seiko-library-head">
+          <div class="brand-section-kicker">Deux cultures industrielles</div>
+          <h2>Les deux usines</h2>
+          <p>Comprendre Seiko devient beaucoup plus simple quand on sait quelle équipe développe quoi.</p>
+        </div>
+        <div class="seiko-bubble-stack">
+          ${SEIKO_FACTORIES.map(f => `
+            <details class="seiko-info-bubble factory-bubble">
+              <summary>
+                <div class="seiko-bubble-symbol">${f.key==='daini'?'D':'S'}</div>
+                <div class="seiko-bubble-summary">
+                  <small>${esc(f.place)} · ${esc(f.born)}</small>
+                  <strong>${esc(f.name)}</strong>
+                  <span>${esc(f.intro)}</span>
+                </div>
+                <div class="seiko-bubble-chevron">⌄</div>
+              </summary>
+              <div class="seiko-bubble-body">
+                <div class="seiko-factory-facts">${f.facts.map(x=>`<span>• ${esc(x)}</span>`).join('')}</div>
+                <div class="seiko-mini-timeline">
+                  ${f.timeline.map(x=>`<div><b>${esc(x[0])}</b><strong>${esc(x[1])}</strong><span>${esc(x[2])}</span></div>`).join('')}
+                </div>
+              </div>
+            </details>`).join('')}
+        </div>
+      </section>`;
+  }
+
+  function seikoRangeBubbleHtml(r) {
+    return `
+      <details class="seiko-info-bubble range-bubble range-${r.key}">
+        <summary>
+          <div class="seiko-bubble-symbol">⌚</div>
+          <div class="seiko-bubble-summary">
+            <small>${esc(r.era)} · ${esc(r.period)}</small>
+            <strong>${esc(r.title)}</strong>
+            <span>${esc(r.subtitle)}</span>
+          </div>
+          <div class="seiko-bubble-chevron">⌄</div>
+        </summary>
+        <div class="seiko-bubble-body">
+          <p class="seiko-range-intro">${esc(r.intro)}</p>
+          <div class="seiko-range-timeline">
+            ${r.generations.map(g=>`
+              <div class="seiko-range-row">
+                <div class="seiko-range-year">${esc(g[0])}</div>
+                <div class="seiko-range-main"><strong>${esc(g[1])}</strong><small>${esc(g[2])}</small><span>${esc(g[3])}</span></div>
+              </div>`).join('')}
+          </div>
+          <div class="seiko-range-note">${esc(r.note)}</div>
+        </div>
+      </details>`;
+  }
+
+  function seikoIconicRangesHtml() {
+    return `
+      <section class="seiko-library-group">
+        <div class="seiko-library-head">
+          <div class="brand-section-kicker">Gammes iconiques</div>
+          <h2>Les grandes familles à connaître</h2>
+          <p>Chaque bulle suit une gamme précise. Ouvre uniquement celle dont tu as besoin.</p>
+        </div>
+        <div class="seiko-bubble-stack">
+          <details class="seiko-info-bubble range-bubble range-sportsmatic">
+            <summary>
+              <div class="seiko-bubble-symbol">5</div>
+              <div class="seiko-bubble-summary">
+                <small>Automatique · ≈1962–1968</small>
+                <strong>Sportsmatic</strong>
+                <span>Automatique accessible, Calendar, Deluxe, Sportsmatic 5…</span>
+              </div>
+              <div class="seiko-bubble-chevron">⌄</div>
+            </summary>
+            <div class="seiko-bubble-body embedded-sportsmatic">${sportsmaticTimelineHtml()}</div>
+          </details>
+          ${SEIKO_ICONIC_RANGES.map(seikoRangeBubbleHtml).join('')}
+        </div>
+      </section>`;
+  }
+
+
   function renderBrands() {
     els.subtitle.textContent = 'Marques';
     els.fab.classList.add('hidden');
@@ -2804,7 +2980,9 @@
 
         ${b.key === 'seiko' ? seiko1950to1970Html() : ''}
 
-        ${b.key === 'seiko' ? sportsmaticTimelineHtml() : ''}
+        ${b.key === 'seiko' ? seikoFactoryBubblesHtml() : ''}
+
+        ${b.key === 'seiko' ? seikoIconicRangesHtml() : ''}
 
         ${b.key === 'seiko' ? seikoTimelineHtml() : ''}
 
