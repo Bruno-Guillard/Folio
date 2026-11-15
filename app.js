@@ -2817,7 +2817,7 @@
     },
     {
       key:'kingseiko', title:'King Seiko', period:'1961–1975', era:'Haute précision mécanique',
-      logoImage:'https://cdn.shopify.com/s/files/1/0505/9264/5287/collections/KingSeiko_39794827-7a4a-42f1-ad59-0536b5234ade.png?v=1710835156',
+      logoImage:'https://parkersjewellers.co.uk/cdn/shop/files/6501154b.jpg?v=1755189169&width=1366',
       subtitle:'La réponse Daini à la montée en gamme de Seiko.',
       intro:'King Seiko naît à Kameido chez Daini en 1961. Elle vise une très haute qualité de mouvement et de finition, avec un prix plus accessible que Grand Seiko.',
       generations:[
@@ -2844,7 +2844,7 @@
     },
     {
       key:'dolce', title:'Dolce', period:'1980 →', era:'Époque quartz · plus tardive',
-      logoImage:'https://shop.theclockhouse.jp/cdn/shop/products/sack015_2.jpg?v=1677436775',
+      logoImage:'https://i.etsystatic.com/65614789/r/il/a9c9ee/8031711538/il_1080xN.8031711538_3054.jpg',
       subtitle:'La montre habillée ultra-fine de l’ère quartz.',
       intro:'Dolce appartient à une autre époque : elle apparaît en 1980 avec Exceline. Elle transpose la montre habillée Seiko vers le quartz fin, précis et haut de gamme, particulièrement pour le marché japonais.',
       generations:[
@@ -2925,7 +2925,7 @@
         <div class="seiko-bubble-stack">
           <details class="seiko-info-bubble range-bubble range-sportsmatic">
             <summary>
-              <div class="seiko-bubble-symbol">5</div>
+              <div class="seiko-bubble-symbol range-logo-symbol sportsmatic-authentic-logo"><img src="https://by.seiko-design.com/140th/images/topic22_06_sp.jpg" alt="Seiko Sportsmatic 5 de 1963" loading="lazy" referrerpolicy="no-referrer"></div>
               <div class="seiko-bubble-summary">
                 <small>Automatique · ≈1962–1968</small>
                 <strong>Sportsmatic</strong>
@@ -2965,17 +2965,9 @@
   ];
 
   function seikoFactoryMarkSvg(key) {
-    if (key === 'daini') return `
-      <svg viewBox="0 0 64 64" class="factory-mark-svg" aria-label="Marque Daini Seikosha">
-        <path d="M14 44 L27 31 L21 25 L34 12 L31 28 L43 24 L36 36 L47 40 L31 52 L34 39 Z"
-          fill="none" stroke="currentColor" stroke-width="4" stroke-linejoin="round"/>
-      </svg>`;
-    return `
-      <svg viewBox="0 0 64 64" class="factory-mark-svg" aria-label="Marque Suwa Seikosha">
-        <path d="M43 20c-8-7-22-3-24 8-2 10 8 18 18 13 8-4 8-15 1-19-6-4-13 0-13 6 0 5 6 8 10 5"
-          fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"/>
-        <path d="M43 20l8-2-3 8" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>`;
+    const src = key === 'daini' ? 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKIAAABeAQAAAACI2fLUAAABlklEQVR42r2VP07DMBTGPycRdKjUjh0AdUNiKieg4iQ5AkeIxAU4QudOHMHdOrKydYyYMlSojdo8htipn/0NLOAlzk/PX5z31wjStcnA1t9TqX5v21F6onRL6ZJR5Q/j346TA/FOPWIKq2koIf3q8CTDst62pXeo9S+7QxUkUHA3k8x0adxa6rOa0pV2dK8rGfJTotvSWNSUriJqpJclui2NcU1pLNvrGhDdM82dPaUfcUIhi/JjoGeak/s0dzKgobbzflcp6o9aRb1rdop61zSKetccQu90aV6/PQZFci8iX+s1MLEF8FAB+C7xaQaDIncHn+9Yrt82tLImw2+8XGoIOI78tcIOU7jnlap5v50p6i9WItR12HS6c1VeVqX40suSDlMG9SYisvMFaBPbnPaom5hOARfx2NZYRrOk9zUAxmC6C9onLaM57akF2Ndm1LbU3aj3jon62RDIRGHnZSPdOaF2qAIV4+sDm04jMi/EuUbT7lJcAT3lbOJsx4zaRToZwm14s1cw22nDbN/p1Fv+5+QN1w80Iav392GvDgAAAABJRU5ErkJggg==' : 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHEAAABmAQAAAADU1kNeAAAB20lEQVR42q2UP67TQBCHvx2HxEgBuUSiMTegpKBwwQE4AhcAIWqKfTfgCFyBGiG54AApKShcUKS0kAvzFHsodna9WdCrnoson2e88+8365T8uRGun/vin+++eABUVb8/q8GpqvodwEuA/ebvAZ5s/Cb9BG6K82vA+Y3nLXCyH7m2N0W+bcYj0N9RzwBVzn1h9ykcAmiWsgDrFg4BLkCX8ZwdKZbOkPFg7yL39g2AU3BY0DDPhdRTkBDu0e2nq/o+PJgSn8F5viUeYA9tF7mHGppTZA8NHCdjDdXJYrzG6sIBOpoIOKiqz/r7J/iPVoCnAyRVDidA6Czpjt/FfLQDyfV8AlmBnQ14Kua5lPP1m14Ig016if2Wu/Q+IK60+3/9L6SJCu8zAbZIUk60V541ft2B6myrA6gXOMTccaYHTfNHgBcxh33gA30QYW35fB5CTo3xa+AcVk4AHp9DOt7YfYQ+6kxVddQLUKV5Hh/+srYHlrm1tgZ2fVxj69/zuOEu5L3sQgn5feSyflfxr7HGKWf+dcZrXEHjKa6g8Rj1KVvzfcZd3Pj/329LDJ/Z64ynwn9MN4KkcG3G3bW/FvFuC54LPuX6CXsRBprun6df3/4Ay7pS4NX93vfx+QsMAI6ptvZVXwAAAABJRU5ErkJggg==';
+    const label = key === 'daini' ? 'Marque Daini Seikosha' : 'Marque Suwa Seikosha';
+    return `<img class="factory-mark-img" src="${src}" alt="${label}">`;
   }
 
   function seikoLogoEvolutionHtml() {
@@ -3068,8 +3060,31 @@
 
         ${b.key === 'seiko' ? seikoIconicRangesHtml() : ''}
 
-        ${b.key === 'seiko' ? seikoTimelineHtml() : ''}
+        ${b.key === 'seiko' ? `
+          <details class="seiko-info-bubble seiko-calibers-bubble">
+            <summary>
+              <div class="seiko-bubble-symbol">61</div>
+              <div class="seiko-bubble-summary">
+                <small>Technique · chronologie</small>
+                <strong>Frise des calibres Seiko</strong>
+                <span>Périodes, niveau de gamme et intérêt collectionneur.</span>
+              </div>
+              <div class="seiko-bubble-chevron">⌄</div>
+            </summary>
+            <div class="seiko-bubble-body seiko-calibers-wrap">${seikoTimelineHtml()}</div>
+          </details>` : ''}
 
+        <details class="seiko-info-bubble seiko-movements-bubble">
+          <summary>
+            <div class="seiko-bubble-symbol">⚙</div>
+            <div class="seiko-bubble-summary">
+              <small>Technique · familles</small>
+              <strong>Mouvements classés par époque</strong>
+              <span>Les grandes familles de calibres et leurs variantes.</span>
+            </div>
+            <div class="seiko-bubble-chevron">⌄</div>
+          </summary>
+          <div class="seiko-bubble-body seiko-movements-wrap">
         <section class="brand-section brand-movements-section">
           <div class="brand-section-kicker">Technique</div>
           <h2>Mouvements classés par époque</h2>
@@ -3108,6 +3123,8 @@
               </article>`).join('')}
           </div>
         </section>
+          </div>
+        </details>
 
         <a class="brand-source" href="${b.source}" target="_blank" rel="noopener noreferrer">Source patrimoniale principale ↗</a>
       </article>`;
